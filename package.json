@@ -8,7 +8,9 @@
     "lint": "next lint",
     "start": "next start"
   },
-  "dependencies": {},
+  "dependencies": {
+    "mongodb": "^4.13.0"
+  },
   "devDependencies": {
     "@chakra-ui/react": "^2.4.4",
     "@emotion/react": "^11.10.5",
@@ -19,6 +21,7 @@
     "@trpc/next": "^10.0.0",
     "@trpc/react-query": "^10.0.0",
     "@trpc/server": "^10.0.0",
+    "@types/mongodb": "^4.0.7",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
@@ -26,10 +29,10 @@
     "@typescript-eslint/parser": "^5.33.0",
     "eslint": "^8.26.0",
     "eslint-config-next": "13.0.2",
-    "prettier": "^2.8.1",
     "ethers": "^5.7.2",
     "framer-motion": "^8.0.2",
     "next": "13.0.2",
+    "prettier": "^2.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "1.9.1",
