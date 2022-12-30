@@ -35,7 +35,7 @@ export async function insertChartdata(
   const { value, ok } = await coll.findOneAndReplace(
     { round: round },
     payload,
-    { upsert: true }
+    { upsert: true, returnDocument: "after" }
   );
   if (!ok || !value) return null;
   const { _id, ...result } = value;

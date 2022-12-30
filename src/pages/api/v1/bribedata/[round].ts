@@ -1,18 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Chartdata } from "utils/api/chartdata.model";
+import { Bribefile } from "utils/api/bribedata.model";
 import { readApiKeyList } from "utils/database/apikeys.db";
 import {
-  insertChartdata,
-  readOneChartdata,
-  removeChartdata,
-} from "utils/database/chartdata.db";
+  insertBribefile,
+  readOneBribefile,
+  removeBribefile,
+} from "utils/database/bribefile.db";
 import { ZodError } from "zod";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // get round
+  // get round from path
   const {
     query: { round },
   } = req;
@@ -25,45 +25,30 @@ export default async function handler(
   // handle different methods
   switch (req.method) {
     case "GET":
-      const data = await readOneChartdata(round);
-      if (!data) {
-        res.status(404).send("No object with given ID found");
-        break;
-      }
+      const data = await readOneBribefile(+round);
+      if (!data) return res.status(404).send("No object with given ID found");
       res.json(data);
       break;
     case "POST":
-      if (!validApikey) {
-        res.status(403).send("not allowed");
-        break;
-      }
-      let payload: Chartdata;
+      if (!validApikey) return res.status(403).send("not allowed");
+      let payload: Bribefile;
       try {
-        payload = Chartdata.parse(req.body);
+        payload = Bribefile.parse(req.body);
       } catch (error) {
         if (error instanceof ZodError) {
           return res.status(422).send(error);
         }
         return res.status(400).send(error);
       }
-      const result = await insertChartdata(payload, round);
-      if (!result) {
-        res.status(500).send("Error inserting Chartdata");
-        break;
-      }
+      const result = await insertBribefile(payload, +round);
+      if (!result) return res.status(500).send("Error inserting Bribefile");
       res.status(201).json(result);
       break;
     case "DELETE":
-      if (!validApikey) {
-        res.status(403).send("not allowed");
-        break;
-      }
-      const success = await removeChartdata(round);
-      if (!success) {
-        res.status(500).send("could not delete");
-        break;
-      }
-      res.send(`deleted round ${round}`);
+      if (!validApikey) return res.status(403).send("not allowed");
+      const success = await removeBribefile(+round);
+      if (!success) return res.status(500).send("could not delete");
+      res.send("Bribefile deleted successfully");
       break;
     default:
       res.status(501).send("not implemented");
