@@ -1,9 +1,9 @@
 import clientPromise from "./mongodb";
 import { Chartdata } from "../api/chartdata.model";
 
-type WithId<T> = T & { _id: string };
-
-export async function readOne(round: string): Promise<Chartdata | null> {
+export async function readOneChartdata(
+  round: string
+): Promise<Chartdata | null> {
   const client = await clientPromise;
   const coll = client.db("beetswars").collection<Chartdata>("chartdata");
   const item = await coll.findOne<Chartdata>({ round: round });
@@ -12,7 +12,7 @@ export async function readOne(round: string): Promise<Chartdata | null> {
   return item;
 }
 
-export async function readAll(): Promise<Chartdata[] | null> {
+export async function readAllChartdata(): Promise<Chartdata[] | null> {
   const client = await clientPromise;
   const coll = client.db("beetswars").collection<Chartdata>("chartdata");
   const items = await coll.find<Chartdata>({}).toArray();
@@ -20,23 +20,24 @@ export async function readAll(): Promise<Chartdata[] | null> {
   return items;
 }
 
-export async function insert(payload: Chartdata): Promise<Chartdata | null> {
-  const client = await clientPromise;
-  const coll = client.db("beetswars").collection<Chartdata>("chartdata");
-  const result = await coll.insertOne;
-  return null;
-}
-
-export async function replace(
-  round: number,
-  payload: Chartdata
+export async function insertChartdata(
+  payload: Chartdata,
+  round: string
 ): Promise<Chartdata | null> {
   const client = await clientPromise;
   const coll = client.db("beetswars").collection<Chartdata>("chartdata");
-  const result = await coll.insertOne;
-  return null;
+  const { value, ok } = await coll.findOneAndReplace(
+    { round: round },
+    payload,
+    { upsert: true }
+  );
+  if (!ok) return null;
+  return value;
 }
 
-export async function remove(round: string): Promise<boolean> {
-  return false;
+export async function removeChartdata(round: string): Promise<boolean> {
+  const client = await clientPromise;
+  const coll = client.db("beetswars").collection<Chartdata>("chartdata");
+  const { deletedCount } = await coll.deleteOne({ round: round });
+  return deletedCount === 1;
 }
