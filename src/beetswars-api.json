@@ -1,0 +1,1153 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Beetswars Backend",
+    "description": "Beetswars Backend API",
+    "version": "1.1.2"
+  },
+  "servers": [
+    {
+      "url": "https://beetswars-backend.cyclic.app/API/v1"
+    },
+    {
+      "url": "https://v2.beetswars.live/api/v1"
+    }
+  ],
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "tags": [
+          "Check, if service is available"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/chartdata": {
+      "get": {
+        "tags": [
+          "List of voting results"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "no data found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chartdata/{round}": {
+      "get": {
+        "tags": [
+          "List of voting results for specified round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "cannot serve request"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "No Object with given ID found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Enter vote data for one round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "axf-08-sdrk"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Contents of the new database entry",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Chartdata"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "not allowed"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Invalid input type"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Error inserting Chartdata"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Delete full data for given round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "axf-08-sdrk"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "deleted round"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "not allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Could not delete"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bribedata": {
+      "get": {
+        "tags": [
+          "List of Bribe rounds"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Bribelist"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bribedata/{round}": {
+      "get": {
+        "tags": [
+          "Bribedata for round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "Number of round",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bribefile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "No Object with given key found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Enter incentives for one round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "axf-08-sdrk"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Contents of the new database entry",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bribefile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_201"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "not allowed"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Invalid input type"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Error inserting Bribedata"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Delete full Bribefile for given round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "axf-08-sdrk"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "deleted round"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "not allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Could not delete"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bribedata/offer/{round}": {
+      "post": {
+        "tags": [
+          "Enter or Update incentive for existing round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "axf-08-sdrk"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Contents of the Incentive to add/update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bribedata"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_201_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "not allowed"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "round does not exist"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Invalid input type"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Error inserting Bribedata"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bribedata/token/{round}": {
+      "post": {
+        "tags": [
+          "Enter or Update tokendata for existing round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "axf-08-sdrk"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Contents of Tokendata to add/update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tokendata"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_201_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "not allowed"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "round does not exist"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Invalid input type"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Error inserting Tokendata"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bribedata/latest": {
+      "get": {
+        "tags": [
+          "Bribedata for current round"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bribefile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "No Object with given key found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot load from Database"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bribedata/latest/{round}": {
+      "post": {
+        "tags": [
+          "set current round"
+        ],
+        "parameters": [
+          {
+            "name": "round",
+            "in": "path",
+            "description": "String with 2-figure round number",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "07"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "axf-08-sdrk"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "key set successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Cannot serve request"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "not allowed"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "No such round found"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Chartdata": {
+        "type": "object",
+        "properties": {
+          "round": {
+            "type": "string",
+            "example": "07"
+          },
+          "voteEnd": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1649001600
+          },
+          "totalVotes": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12345
+          },
+          "bribedVotes": {
+            "type": "integer",
+            "format": "int32",
+            "example": 9345
+          },
+          "totalBribes": {
+            "type": "integer",
+            "format": "int32",
+            "example": 123456
+          },
+          "totalVoter": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1234
+          },
+          "totalBriber": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12
+          },
+          "priceBeets": {
+            "type": "number",
+            "format": "double",
+            "example": 0.7449121150496086
+          },
+          "priceFbeets": {
+            "type": "number",
+            "format": "double",
+            "example": 0.74271
+          }
+        }
+      },
+      "Bribefile": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "example": "7.5.1"
+          },
+          "snapshot": {
+            "type": "string",
+            "example": "0xa3478bd5cbe2b422b94dfcccae5277703ba08f923b10ba710062eef08ec672d5"
+          },
+          "description": {
+            "type": "string",
+            "example": "Farming Incentive Gauge Vote (round 7)"
+          },
+          "round": {
+            "type": "integer",
+            "example": 7
+          },
+          "voteStart": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1649001600
+          },
+          "voteEnd": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1649001600
+          },
+          "snapshotDateTime": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1649001600
+          },
+          "tokendata": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tokendata"
+            }
+          },
+          "bribedata": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Bribedata"
+            }
+          }
+        }
+      },
+      "Tokendata": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "BEETS"
+          },
+          "tokenaddress": {
+            "type": "string",
+            "example": "0xf24bcf4d1e507740041c9cfd2dddb29585adce1e"
+          },
+          "coingeckoid": {
+            "type": "string",
+            "example": "beethoven-x"
+          },
+          "bptpoolid": {
+            "type": "string",
+            "example": "0xf3a602d30dcb723a74a0198313a7551feaca7dac00010000000000000000005f"
+          },
+          "isbpt": {
+            "type": "boolean",
+            "example": false
+          },
+          "lastprice": {
+            "type": "number",
+            "format": "float",
+            "example": 1.034
+          }
+        }
+      },
+      "Bribedata": {
+        "type": "object",
+        "properties": {
+          "voteindex": {
+            "type": "integer",
+            "description": "Number of pool zero-based",
+            "example": 0
+          },
+          "poolname": {
+            "type": "string",
+            "example": "Fantom of the Opera (FTM-USDC)"
+          },
+          "poolurl": {
+            "type": "string",
+            "format": "url",
+            "example": "https://beets.fi/pool/0xcdf68a4d525ba2e90fe959c74330430a5a6b8226000200000000000000000008"
+          },
+          "rewarddescription": {
+            "type": "string",
+            "example": "BEETS Reward 60,563.51 BEETS"
+          },
+          "assumption": {
+            "type": "string",
+            "example": "Raffle for 3 FNFTs not included in calculation"
+          },
+          "percentagethreshold": {
+            "type": "number",
+            "format": "float",
+            "example": 17.5
+          },
+          "rewardcap": {
+            "type": "number",
+            "format": "float",
+            "example": 9000
+          },
+          "additionalrewards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Additionalrewards"
+            }
+          },
+          "reward": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Reward"
+            }
+          },
+          "payoutthreshold": {
+            "type": "number",
+            "format": "float",
+            "example": 4.25
+          }
+        }
+      },
+      "Reward": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "reward-type",
+            "example": "percent",
+            "enum": [
+              "fixed",
+              "percent",
+              "pervote"
+            ]
+          },
+          "token": {
+            "type": "string",
+            "example": "BEETS"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "example": 1234.56
+          },
+          "isfixed": {
+            "type": "boolean",
+            "description": "Offered in USD value",
+            "example": true
+          }
+        }
+      },
+      "Additionalrewards": {
+        "type": "object",
+        "properties": {
+          "tier": {
+            "type": "string",
+            "example": "Boosted bribes"
+          },
+          "factor": {
+            "type": "number",
+            "format": "float",
+            "example": 1.25
+          }
+        }
+      },
+      "Bribelist": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "25"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://server.com/API/v1/bribedata/25"
+          }
+        }
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "chartdata": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Chartdata"
+            }
+          }
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "chartdata": {
+            "$ref": "#/components/schemas/Chartdata"
+          }
+        }
+      },
+      "inline_response_201": {
+        "type": "object",
+        "properties": {
+          "chartdata": {
+            "$ref": "#/components/schemas/Bribedata"
+          }
+        }
+      },
+      "inline_response_201_1": {
+        "type": "object",
+        "properties": {
+          "chartdata": {
+            "$ref": "#/components/schemas/Bribefile"
+          }
+        }
+      }
+    }
+  }
+}
