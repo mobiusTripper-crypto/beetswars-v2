@@ -31,7 +31,7 @@ export default async function handler(
     return res.status(400).send(error);
   }
   const oldData = await readOneBribefile(+round);
-  if (!oldData) return res.status(400).send("No entry found to add data");
+  if (!oldData) return res.status(404).send("No entry found to add data");
   const { tokendata, ...rest } = oldData;
   const newTokendata = tokendata.filter((x) => x.token !== payload.token);
   newTokendata.push(payload);
