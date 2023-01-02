@@ -10,6 +10,7 @@ import { ColorModeScript } from "@chakra-ui/react";
 import theme from "../styles/theme";
 //import "../styles/globals.css";
 
+
 const queryClient = new QueryClient();
 
 const MyApp: AppType = ({ Component, pageProps }) => {

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { type NextPage } from "next";
-import { Box, HStack, Text } from "@chakra-ui/react";
+import { Box, HStack, Text, Center } from "@chakra-ui/react";
+
 
 async function fetchChartData() {
   const res = await fetch("/api/v1/chartdata");
@@ -13,17 +14,26 @@ export const TestPage: NextPage = () => {
     status,
     isLoading,
     isFetching,
+    error,
   } = useQuery({
     queryKey: ["chart"],
     queryFn: fetchChartData,
     refetchInterval: false,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
   console.log(status);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Center>Loading...</Center>;
+  }
+
+  if (error) {
+    return (
+      <Center>
+        <pre style={{ color: "red" }}>Error</pre>
+      </Center>
+    );
   }
 
   return (
@@ -31,8 +41,8 @@ export const TestPage: NextPage = () => {
       {isFetching ? <div>Refreshing...</div> : null}
       <HStack justify="center">
         <div>
-          {chartdata.map((chart:any, i:any) => (
-            <pre>
+          {chartdata.map((chart: any, i: any) => (
+            <pre key={i}>
               {i} - {chart.round} : {chart.voteEnd}
             </pre>
           ))}
@@ -41,4 +51,3 @@ export const TestPage: NextPage = () => {
     </>
   );
 };
-
