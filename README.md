@@ -1,28 +1,43 @@
-# Create T3 App
+<H1> Overview: </H1>
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Beets Wars - this repository is designed to serve as a useful resource for $fBEETS holders and $BEETS holders on the BeethovenX DEX on Fantom.
 
-## What's next? How do I make an app with this?
+The primary purpose is to give users a view of an estimated return on investment (ROI) of the voting incentives (bribes) during the gauge voting process.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Trade >>> **BeethovenX DEX** - https://beets.fi
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+Deposit Incentives/Claim Incentives >>> **Votehoven** - https://votehoven.com
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+Data Dashboard >>> **Beets Wars** - https://beetswars.live
 
-## Learn More
+Vote >>> **Snapshot** - https://snapshot.org/#/beets.eth/
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+---
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+Please share any feedback or ideas for improvement if you have any!
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Disclaimer: we do our best to make sure all the data provided is as accurate and reliable as possible; but this being said, please keep in mind as with all things in crypto, it is important to DYOR and always remember that only you are responsible for the final decisions you choose.
 
-## How do I deploy this?
+BeethovenX is leading the way in DeFi innovation on Fantom.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+---
+
+For more information see:
+
+-Twitter: https://twitter.com/beethoven_x
+
+-Votehoven Twitter: https://twitter.com/votehoven
+
+-Beets Wars Twitter: https://twitter.com/Beets_Wars
+
+---
+
+-BeethovenX GitBook Documentation: https://docs.beets.fi/
+
+-Votehoven GitBook Documentation: https://votehoven.gitbook.io/votehoven-docs
+
+---
+
+-Join the BeethovenX Community on Discord! Link: http://discord.gg/beethovenx
+
+Go $BEETS!
