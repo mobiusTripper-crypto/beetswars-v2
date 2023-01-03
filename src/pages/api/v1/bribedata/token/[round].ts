@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Tokendata } from "utils/api/bribedata.model";
+import { Tokendata } from "types/bribedata.raw";
 import { readApiKeyList } from "utils/database/apikeys.db";
 import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
 import { ZodError } from "zod";

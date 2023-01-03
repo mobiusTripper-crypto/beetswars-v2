@@ -1,5 +1,5 @@
 import clientPromise from "./mongodb";
-import { Bribefile } from "utils/api/bribedata.model";
+import { Bribefile } from "types/bribedata.raw";
 
 export async function readOneBribefile(
   round: number

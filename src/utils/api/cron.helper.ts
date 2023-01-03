@@ -1,4 +1,4 @@
-import { Chartdata } from "./chartdata.model";
+import { Chartdata } from "../../types/chartdata.raw";
 import {
   getSnapshotProposal,
   getSnapshotVotes,

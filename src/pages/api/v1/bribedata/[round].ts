@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Bribefile } from "utils/api/bribedata.model";
+import { Bribefile } from "types/bribedata.raw";
 import { readApiKeyList } from "utils/database/apikeys.db";
 import {
   insertBribefile,

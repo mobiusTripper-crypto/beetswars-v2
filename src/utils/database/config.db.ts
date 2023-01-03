@@ -1,5 +1,5 @@
 import clientPromise from "./mongodb";
-import { Config } from "utils/api/config.model";
+import { Config } from "types/config.raw";
 
 export async function findConfigEntry(key: string): Promise<string | null> {
   const client = await clientPromise;

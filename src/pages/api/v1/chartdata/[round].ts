@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Chartdata } from "utils/api/chartdata.model";
+import { Chartdata } from "types/chartdata.raw";
 import { readApiKeyList } from "utils/database/apikeys.db";
 import {
   insertChartdata,
