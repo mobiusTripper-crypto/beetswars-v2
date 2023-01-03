@@ -8,8 +8,9 @@ import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { ChakraProvider } from "@chakra-ui/react";
 import { ColorModeScript } from "@chakra-ui/react";
 import theme from "../styles/theme";
+import { Header } from "components/Header";
+import { TopRow } from "components/TopRow";
 //import "../styles/globals.css";
-
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,8 @@ const MyApp: AppType = ({ Component, pageProps }) => {
               <ColorModeScript
                 initialColorMode={theme.config.initialColorMode}
               />
+              <TopRow />
+              <Header />
               <Component {...pageProps} />
             </ChakraProvider>
           </RainbowKitProvider>
