@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Config } from "utils/api/config.model";
+import { Config } from "types/config.raw";
 import { setConfigEntry } from "utils/database/config.db";
 
 export default async function handler(

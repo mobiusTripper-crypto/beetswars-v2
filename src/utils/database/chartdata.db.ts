@@ -1,5 +1,5 @@
 import clientPromise from "./mongodb";
-import { Chartdata } from "../api/chartdata.model";
+import { Chartdata } from "../../types/chartdata.raw";
 
 type WithId<T> = T & { _id: string };
 
