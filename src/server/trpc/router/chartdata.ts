@@ -1,5 +1,4 @@
 import getEchartData from "utils/api/chartdata.helper";
-import getChartdata from "utils/api/chartdata.helper";
 
 import { router, publicProcedure } from "../trpc";
 
