@@ -21,6 +21,7 @@ export async function readAllChartdata(): Promise<Chartdata[] | null> {
   const coll = client.db("beetswars").collection<Chartdata>("chartdata");
   const items = await coll
     .find<Chartdata>({}, { projection: { _id: 0 } })
+    .sort({ voteEnd: 1 })
     .toArray();
   if (!items || items.length === 0) return null;
   return items;
