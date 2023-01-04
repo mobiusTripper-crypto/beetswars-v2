@@ -9,13 +9,12 @@ const Chart: NextPage = () => {
     return <p>Loading...</p>;
   }
 
+
+
+
+
   return (
     <div>
-      {data?.map((item: any, i: number) => (
-        <p>
-          {i + 1} - {item.endTime}
-        </p>
-      ))}
       <p>{JSON.stringify(data)}</p>
     </div>
   );

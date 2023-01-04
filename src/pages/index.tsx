@@ -4,9 +4,17 @@ import { Header } from "components/Header";
 import { TopRow } from "components/TopRow";
 import { TestPage } from "components/TestPage";
 import { ErrorBoundary } from "react-error-boundary";
+import Router from "next/router";
 
 const Home: NextPage = () => {
   //  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+
+  const voteActive = false;
+
+  if (!voteActive) {
+    Router.push("/chart");
+  }
+
   return (
     <>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
