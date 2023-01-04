@@ -4,16 +4,23 @@ import { CustomConnectButton } from "components/CustomConnectButton";
 import { ColorModeSwitcher } from "components/ColorModeSwitcher";
 import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { CgCardSpades as CardIcon } from "react-icons/cg";
+import { trpc } from "../utils/trpc";
+
 
 const iconSize = "2rem";
 const iconMarginR = "1rem";
 
 export const TopRow = () => {
+  const roundlist = trpc.rounds.roundlist.useQuery().data?.data ?? {rounds:[],latest:0}
   return (
     <>
       <HStack justify="flex-end" margin="1rem">
         <Box flex="1">
           <Text fontSize="1xl">Beets Wars V2</Text>
+        </Box>
+        <Box>
+          <p>latest: {roundlist.latest}</p>
+          <p>{roundlist.rounds.toString()}</p>
         </Box>
         <Box marginTop="5rem">
           <Link href="/chart">
