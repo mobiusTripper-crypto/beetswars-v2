@@ -9,8 +9,6 @@ const Home: NextPage = () => {
   //  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
   return (
     <>
-      <TopRow />
-      <Header />
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <TestPage />
       </ErrorBoundary>
@@ -20,7 +18,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-function ErrorFallback({ error }: {error:any}) {
+function ErrorFallback({ error }: { error: any }) {
   return (
     <div role="alert">
       <p>Something went wrong:</p>
