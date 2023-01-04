@@ -34,6 +34,14 @@ export const TopRow = () => {
     router.push(href);
   };
 
+import { trpc } from "../utils/trpc";
+
+
+const iconSize = "2rem";
+const iconMarginR = "1rem";
+
+export const TopRow = () => {
+  const roundlistT = trpc.rounds.roundlist.useQuery().data?.data ?? {rounds:[],latest:0}
   return (
     <>
       <HStack justify="flex-end" margin="1rem">
@@ -50,6 +58,10 @@ export const TopRow = () => {
               </option>
             ))}
           </select>
+        </Box>
+        <Box>
+          <p>latest: {roundlist.latest}</p>
+          <p>{roundlist.rounds.toString()}</p>
         </Box>
         <Box marginTop="5rem">
           <Link href="/chart">
