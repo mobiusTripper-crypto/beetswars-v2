@@ -2,7 +2,10 @@ import { Roundheader } from "types/roundheader.trpc";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { getTokenPrice } from "utils/externalData/beetsBack";
-import { getCoingeckoCurrentPrice } from "utils/externalData/coingecko";
+import {
+  getCoingeckoCurrentPrice,
+  getCoingeckoPrice,
+} from "utils/externalData/coingecko";
 import {
   getSnapshotProposal,
   getSnapshotVotes,
@@ -24,11 +27,12 @@ export default async function getRoundHeader(
   if (!bribefile) return null;
   // read data from snapshot
   const proposal = bribefile.snapshot;
+  const votes = await getSnapshotVotes(proposal);
+  const snapshot = await getSnapshotProposal(proposal);
+  // voteindex string array of bribed votes only
   const bribedOffers = bribefile.bribedata.map((x) =>
     (x.voteindex + 1).toString()
   );
-  const votes = await getSnapshotVotes(proposal);
-  const snapshot = await getSnapshotProposal(proposal);
 
   const roundName = bribefile.description;
   const voteStart = new Date(snapshot.start * 1000).toUTCString();
@@ -60,7 +64,10 @@ export default async function getRoundHeader(
   const bribedVoter = bribedVoters.length;
 
   // calculate prices
-  const priceBeets = await getCoingeckoCurrentPrice("beethoven-x");
+  const priceBeets =
+    snapshot.end > Date.now() / 1000
+      ? await getCoingeckoCurrentPrice("beethoven-x")
+      : await getCoingeckoPrice("beethoven-x", snapshot.end);
 
   // calculate total bribes
   const bribes = bribedOffers.map((x) => {
