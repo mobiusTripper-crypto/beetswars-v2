@@ -8,6 +8,7 @@ export interface snapVote {
     [key: string]: number;
   };
   vp: number;
+  voter: string;
 }
 
 export async function getSnapshotVotes(proposal: string): Promise<snapVote[]> {
@@ -29,6 +30,7 @@ export async function getSnapshotVotes(proposal: string): Promise<snapVote[]> {
       ) {
         choice
         vp
+        voter
       }
     }
     `;
@@ -46,9 +48,16 @@ export async function getSnapshotProposal(proposal: string) {
       proposal(id:"${proposal}") {
         start
         end
+        state
+        snapshot
       }
     }
   `;
   const data = await request(queryUrl, QUERY);
-  return data.proposal as { start: number; end: number };
+  return data.proposal as {
+    start: number;
+    end: number;
+    state: string;
+    snapshot: string;
+  };
 }

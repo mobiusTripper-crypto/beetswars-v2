@@ -8,6 +8,7 @@ export const Roundheader = z.object({
   totalVotes: z.number(),
   bribedVotes: z.number(),
   totalVoter: z.number(),
+  bribedVoter: z.number(),
   totalBribes: z.number(),
   avgPer1000: z.number(),
 });

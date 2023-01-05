@@ -15,3 +15,18 @@ export async function getCoingeckoPrice(token: string, at: number) {
   }
   return answer;
 }
+
+export async function getCoingeckoCurrentPrice(token: string) {
+  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${token}&vs_currencies=usd`;
+  let answer = 0;
+  try {
+    const result = await fetch(url);
+    if (result.ok) {
+      const data = await result.json();
+      answer = Number(data[token].usd);
+    }
+  } catch (error) {
+    return 0;
+  }
+  return answer;
+}
