@@ -1,4 +1,5 @@
 import { router } from "../trpc";
+import { bribesRouter } from "./bribes";
 import { chartdataRouter } from "./chartdata";
 import { exampleRouter } from "./example";
 import { loginRouter } from "./loginId";
@@ -11,6 +12,7 @@ export const appRouter = router({
   rounds: roundlistRouter,
   stats: statsRouter,
   login: loginRouter,
+  bribes: bribesRouter,
 });
 
 // export type definition of API
