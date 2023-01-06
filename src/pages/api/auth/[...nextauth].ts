@@ -10,7 +10,6 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET || "",
     }),
   ],
-  secret: process.env.SECRET,
   cookies: {
     sessionToken: {
       name: `${useSecureCookies ? "__Secure-" : ""}next-auth.session-token`,
@@ -18,7 +17,6 @@ export const authOptions = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        domain: ".solutions-subdomain-auth.vercel.sh",
         secure: useSecureCookies,
       },
     },

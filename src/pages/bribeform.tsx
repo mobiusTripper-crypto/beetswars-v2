@@ -8,7 +8,8 @@ const BribeForm: NextPage = () => {
   if (session) {
     return (
       <>
-        Signed in as {session?.user?.email} <br />
+        Signed in as {session?.user?.email} - {session?.user?.name}
+        <br />
         <Button onClick={() => signOut()}>Sign out</Button>
       </>
     );
