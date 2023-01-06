@@ -1,9 +1,15 @@
 import { type NextPage } from "next";
 import { Button } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { trpc } from "../utils/trpc";
 
 const BribeForm: NextPage = () => {
   const { data: session } = useSession();
+  const userlist = trpc.login.list.useQuery().data?.userlist ?? [] // array to compare
+
+  // // do this on any event (button click, ...)
+  // const newUser = "Onkeljoe"; // example
+  // trpc.login.addUser.useMutation().mutate({key: newUser});
 
   if (session) {
     return (
@@ -11,6 +17,7 @@ const BribeForm: NextPage = () => {
         Signed in as {session?.user?.email} - {session?.user?.name}
         <br />
         <Button onClick={() => signOut()}>Sign out</Button>
+        {/* <p>{userlist.toString()}</p> */}
       </>
     );
   }
