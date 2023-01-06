@@ -1,4 +1,5 @@
-import { type AppType } from "next/app";
+import type { AppProps } from "next/app";
+import type { Session } from "next-auth";
 import { trpc } from "../utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiConfig } from "wagmi";
@@ -10,13 +11,16 @@ import { ColorModeScript } from "@chakra-ui/react";
 import theme from "../styles/theme";
 import { Header } from "components/Header";
 import { TopRow } from "components/TopRow";
-//import "../styles/globals.css";
+import { SessionProvider } from "next-auth/react";
 
 const queryClient = new QueryClient();
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps<{ session: Session }>) => {
   return (
-    <>
+    <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <WagmiConfig client={client}>
           <RainbowKitProvider
@@ -35,7 +39,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           </RainbowKitProvider>
         </WagmiConfig>
       </QueryClientProvider>
-    </>
+    </SessionProvider>
   );
 };
 
