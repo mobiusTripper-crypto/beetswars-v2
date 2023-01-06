@@ -1,9 +1,7 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
-const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith("https://");
-const cookiePrefix = useSecureCookies ? "__Secure-" : "";
-const hostName = new URL(process.env.NEXTAUTH_URL || "").hostname;
+const useSecureCookies = !!process.env.VERCEL_URL;
 
 export const authOptions = {
   providers: [
@@ -12,15 +10,16 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET || "",
     }),
   ],
+  secret: process.env.SECRET,
   cookies: {
     sessionToken: {
-      name: `${cookiePrefix}next-auth.session-token`,
+      name: `${useSecureCookies ? "__Secure-" : ""}next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
+        domain: ".solutions-subdomain-auth.vercel.sh",
         secure: useSecureCookies,
-        domain: hostName == "localhost" ? hostName : "." + hostName, // add a . in front so that subdomains are included
       },
     },
   },
