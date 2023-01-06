@@ -14,6 +14,7 @@ const BribeForm: NextPage = () => {
   }
   return (
     <>
+      {process.env.NEXTAUTH_URL || "url not set"}
       Not signed in <br />
       <Button onClick={() => signIn()}>Sign in</Button>
     </>
