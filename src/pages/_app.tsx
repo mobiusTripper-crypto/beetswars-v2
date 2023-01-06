@@ -1,6 +1,5 @@
 import { type AppType } from "next/app";
 import { useState } from "react";
-
 import { trpc } from "../utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiConfig } from "wagmi";
@@ -21,8 +20,6 @@ const queryClient = new QueryClient();
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [requestedRound, requestRound] = useState<string>("latest");
   const [gVersion, setGVersion] = useState<string>("");
-  const [gProposal, setGProposal] = useState<string>("");
-  const [showChart, setShowChart] = useState<boolean>(false);
 
   return (
     <>
@@ -30,12 +27,8 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         value={{
           requestedRound,
           requestRound,
-          showChart,
-          setShowChart,
           gVersion,
           setGVersion,
-          gProposal,
-          setGProposal,
         }}
       >
         <QueryClientProvider client={queryClient}>
@@ -62,3 +55,4 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 };
 
 export default trpc.withTRPC(MyApp);
+

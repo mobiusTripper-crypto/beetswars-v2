@@ -3,7 +3,7 @@ import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
-import { type AppRouter } from "../server/trpc/router/_app";
+import type { AppRouter } from "../server/trpc/router/_app";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -25,6 +25,17 @@ export const trpc = createTRPCNext<AppRouter>({
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
+      //      queryClientConfig: { defaultOptions: { queries: { refetchInterval: 10000 } } },
+      /*
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchInterval: 20000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      },
+*/
     };
   },
   ssr: false,

@@ -18,8 +18,6 @@ export default function Round() {
     fetchRoundData(Url)
   );
 
-  console.log(bribedata);
-
   if (isLoading) {
     return <Center>Loading ... </Center>;
   }
@@ -27,15 +25,21 @@ export default function Round() {
   return (
     <>
       <Center>
-        Round {number} -- <Link href={Url}> {Url} </Link>
+        <Box>
+          <pre>
+            Round {number} -- <Link href={Url}>{Url}</Link>
+          </pre>
+        </Box>
       </Center>
       <Center>
-        <pre>{bribedata?.version}</pre>
+        <Box>
+          <pre>{bribedata?.version}</pre>
+        </Box>
       </Center>
       <Center>
         <Box>
           {bribedata?.bribedata.map((bribe: any, i: number) => (
-            <pre>
+            <pre key={i}>
               {i + 1} - {bribe.poolname}
             </pre>
           ))}

@@ -1,19 +1,25 @@
 import { type NextPage } from "next";
-import { trpc } from "../utils/trpc";
 import { Header } from "components/Header";
 import { TopRow } from "components/TopRow";
 import { TestPage } from "components/TestPage";
 import { ErrorBoundary } from "react-error-boundary";
-import Router from "next/router";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useGlobalContext } from "contexts/GlobalContext";
+
+const voteActive = true;
 
 const Home: NextPage = () => {
-  //  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  const { requestedRound } = useGlobalContext();
+  const router = useRouter();
 
-  const voteActive = false;
-
-  if (!voteActive) {
-    Router.push("/chart");
-  }
+  useEffect(() => {
+    if (!voteActive) {
+      router.push("/chart");
+    } else {
+      router.push("/round/" + requestedRound);
+    }
+  }, []);
 
   return (
     <>
