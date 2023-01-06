@@ -18,9 +18,10 @@ import { MyGlobalContext } from "contexts/GlobalContext";
 
 const queryClient = new QueryClient();
 
-const MyApp = ({ Component, pageProps: { session, ...pageProps }, }: AppProps<{ session: Session }>) => {
-
-
+const MyApp = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps<{ session: Session }>) => {
   const [requestedRound, requestRound] = useState<string>("latest");
   const [gVersion, setGVersion] = useState<string>("");
 
@@ -34,28 +35,27 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps }, }: AppProps<{ 
           setGVersion,
         }}
       >
-      <QueryClientProvider client={queryClient}>
-        <WagmiConfig client={client}>
-          <RainbowKitProvider
-            chains={chains}
-            modalSize="compact"
-            theme={darkTheme()}
-          >
-            <ChakraProvider theme={theme}>
-              <ColorModeScript
-                initialColorMode={theme.config.initialColorMode}
-              />
-              <TopRow />
-              <Header />
-              <Component {...pageProps} />
-            </ChakraProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>
-      </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <WagmiConfig client={client}>
+            <RainbowKitProvider
+              chains={chains}
+              modalSize="compact"
+              theme={darkTheme()}
+            >
+              <ChakraProvider theme={theme}>
+                <ColorModeScript
+                  initialColorMode={theme.config.initialColorMode}
+                />
+                <TopRow />
+                <Header />
+                <Component {...pageProps} />
+              </ChakraProvider>
+            </RainbowKitProvider>
+          </WagmiConfig>
+        </QueryClientProvider>
       </MyGlobalContext.Provider>
     </SessionProvider>
   );
 };
 
 export default trpc.withTRPC(MyApp);
-
