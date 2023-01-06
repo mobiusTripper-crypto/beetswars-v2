@@ -2,6 +2,8 @@ import NextAuth from "next-auth";
 import { Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
+const useSecureCookies = !!process.env.VERCEL_URL;
+
 export const authOptions = {
   providers: [
     GithubProvider({
@@ -11,12 +13,13 @@ export const authOptions = {
   ],
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: `${useSecureCookies ? "__Secure-" : ""}next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: true,
+        domain: ".solutions-subdomain-auth.vercel.sh",
+        secure: useSecureCookies,
       },
     },
   },
