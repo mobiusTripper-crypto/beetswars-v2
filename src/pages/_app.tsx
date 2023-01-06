@@ -1,5 +1,7 @@
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
+import type { AppType } from "next/app";
+import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiConfig } from "wagmi";
@@ -12,15 +14,26 @@ import theme from "../styles/theme";
 import { Header } from "components/Header";
 import { TopRow } from "components/TopRow";
 import { SessionProvider } from "next-auth/react";
+import { MyGlobalContext } from "contexts/GlobalContext";
 
 const queryClient = new QueryClient();
 
-const MyApp = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps<{ session: Session }>) => {
+const MyApp = ({ Component, pageProps: { session, ...pageProps }, }: AppProps<{ session: Session }>) => {
+
+
+  const [requestedRound, requestRound] = useState<string>("latest");
+  const [gVersion, setGVersion] = useState<string>("");
+
   return (
     <SessionProvider session={session}>
+      <MyGlobalContext.Provider
+        value={{
+          requestedRound,
+          requestRound,
+          gVersion,
+          setGVersion,
+        }}
+      >
       <QueryClientProvider client={queryClient}>
         <WagmiConfig client={client}>
           <RainbowKitProvider
@@ -39,8 +52,10 @@ const MyApp = ({
           </RainbowKitProvider>
         </WagmiConfig>
       </QueryClientProvider>
+      </MyGlobalContext.Provider>
     </SessionProvider>
   );
 };
 
 export default trpc.withTRPC(MyApp);
+
