@@ -1,9 +1,10 @@
 import { type NextPage } from "next";
-import { Button, Text } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 const BribeForm: NextPage = () => {
   const { data: session } = useSession();
+
   if (session) {
     return (
       <>
@@ -14,7 +15,6 @@ const BribeForm: NextPage = () => {
   }
   return (
     <>
-      {process.env.NEXTAUTH_URL || "url not set"}
       Not signed in <br />
       <Button onClick={() => signIn()}>Sign in</Button>
     </>
