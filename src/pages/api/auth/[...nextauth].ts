@@ -10,6 +10,8 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET || "",
     }),
   ],
+  // This code is only necessary for subdomains
+
   cookies: {
     sessionToken: {
       name: `${useSecureCookies ? "__Secure-" : ""}next-auth.session-token`,
