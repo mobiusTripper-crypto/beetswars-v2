@@ -1,4 +1,15 @@
-import { Box, Center } from "@chakra-ui/react";
+import {
+  SimpleGrid,
+  Heading,
+  Button,
+  Text,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Box,
+  Center,
+} from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -30,6 +41,8 @@ export default function Round() {
     fetchRoundData(Url)
   );
 
+  console.log(bribedata);
+
   if (isLoading) {
     return <Center>Loading ... </Center>;
   }
@@ -49,13 +62,46 @@ export default function Round() {
         </Box>
       </Center>
       <Center>
-        <Box>
-          {bribedata?.bribedata.map((bribe: any, i: number) => (
-            <pre key={i}>
-              {i + 1} - {bribe.poolname}
-            </pre>
-          ))}
-        </Box>
+        {disp === "cards" ? (
+          <SimpleGrid
+            spacing="20px"
+            minChildWidth='190px' 
+            columns={[3, null, 4]}
+          >
+            {bribedata?.bribedata.map((bribe: any, i: number) => (
+              <Box key={i}>
+                <Card>
+                  <CardHeader>
+                    <Heading size="md">{bribe.poolname}</Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Text>
+                      {bribe.rewarddescription}
+                      <Text></Text>
+                      {bribe.assumption}
+                    </Text>
+                  </CardBody>
+                  <CardFooter>
+                    <Button>
+                      <Link href={bribe.poolurl}>Pool Link</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </Box>
+            ))}
+          </SimpleGrid>
+        ) : (
+          <table>
+            {bribedata?.bribedata.map((bribe: any, i: number) => (
+              <tr key={i}>
+                <td > {bribe.voteindex}</td>
+                <td > {bribe.poolname}</td>
+                <td > {bribe.rewarddescription}</td>
+                <td > {bribe.url}</td>
+              </tr>
+            ))}
+          </table>
+        )}
       </Center>
     </>
   );
