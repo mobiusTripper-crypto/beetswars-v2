@@ -11,8 +11,20 @@ async function fetchRoundData(url: string) {
 
 export default function Round() {
   const router = useRouter();
-  const { number } = router.query;
+  const { number, display } = router.query;
   const Url = "/api/v1/bribedata/" + number;
+
+  console.log(router.query);
+
+  var disp: string;
+  switch (display) {
+    case "table":
+      disp = "table";
+      break;
+    default:
+      disp = "cards";
+  }
+  console.log(disp);
 
   const { data: bribedata, isLoading } = useQuery(["bribedata", Url], () =>
     fetchRoundData(Url)

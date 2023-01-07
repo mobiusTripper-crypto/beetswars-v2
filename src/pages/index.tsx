@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import { Header } from "components/Header";
 import { TopRow } from "components/TopRow";
 import { TestPage } from "components/TestPage";
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
   return (
     <>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <TestPage />
+        <div>Home</div>
       </ErrorBoundary>
     </>
   );

@@ -11,14 +11,16 @@ const REFRESH_INTERVAL = 10000;
 const globalRefetchOptions = {
   refetchOnWindowFocus: false,
   refetchIntervalInBackground: false,
-  refetchInterval:( (voteActive: any) =>
-    voteActive === true ? REFRESH_INTERVAL : 0),
+  refetchInterval: (voteActive: any) =>
+    voteActive === true ? REFRESH_INTERVAL : 0,
 };
 
 const Chart1: NextPage = () => {
   const chartData =
     trpc.chart.chartdata.useQuery(undefined, globalRefetchOptions).data
       ?.chartdata ?? "";
+
+  //console.log(chartData.rounds);
 
   const { requestedRound, requestRound } = useGlobalContext();
 
@@ -27,55 +29,6 @@ const Chart1: NextPage = () => {
   const linewidth = "2";
   const opacity = "0.04";
   const areastyle = { opacity: opacity };
-
-  //  const bribedVotes = chartData?.bribedVotes.map((item: any, i: number) => {
-  //    return item;
-  //  });
-
-  //  console.log(chartData.rounds);
-
-  /*
-  const rounds = chartData?.rounds
-
-  const bribedVotes = chartData?.chartdata.map((round) => {
-    return round.bribedVotes;
-  });
-  const bribedVotesRatio = chartData?.chartdata.map((round) => {
-    return ((round.bribedVotes / round.totalVotes) * 100).toFixed(2);
-  });
-  const totalVotes = chartData?.chartdata.map((round) => {
-    return round.totalVotes;
-  });
-  const totalVoter = chartData?.chartdata.map((round) => {
-    return round.totalVoter;
-  });
-  const totalBribes = chartData?.chartdata.map((round) => {
-    return round.totalBribes === 0 ? "NaN" : round.totalBribes;
-  });
-  const totalOffers = chartData?.chartdata.map((round) => {
-    return round.totalBriber;
-  });
-  const avgPer1000 = chartData?.chartdata.map((round) => {
-    return ((round.totalBribes / round.bribedVotes) * 1000).toFixed(2);
-  });
-  const priceBeets = chartData?.chartdata.map((round) => {
-    return round.priceBeets.toFixed(4);
-  });
-*/
-  /*
-  const priceFbeets = chartData?.chartdata.map((round) => {
-    return round.priceFbeets;
-  });
-*/
-  /*
-  const endTime = chartData?.chartdata.map((round) => {
-    return new Date(round.voteEnd * 1000).toLocaleDateString("en-US");
-  });
-  const votingApr = chartData?.chartdata.map((round) => {
-    return (round.totalBribes / round.priceFbeets / round.bribedVotes) * 2600;
-  });
-  //numRounds = rounds.length;
-*/
 
   const option = {
     color: [
@@ -115,17 +68,8 @@ const Chart1: NextPage = () => {
                           <table> `;
 
         args.forEach((item: any) => {
-          tooltip += `<tr><td>${item.marker}</td><td> ${
-            item.seriesName
-          }:</td><td align='right'> 
-            ${
-              item.value === "0"
-                ? "0"
-                : item.value.toLocaleString("en-US", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  })
-            }</td></tr>`;
+          tooltip += `<tr><td>${item.marker}</td><td> ${item.seriesName}:</td><td align='right'> 
+            ${item.value}</td></tr>`;
         });
         tooltip += `</table>`;
 
@@ -171,7 +115,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.rounds,
         gridIndex: 0,
         show: false,
@@ -183,7 +126,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 0,
         show: false,
@@ -194,7 +136,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.rounds,
         gridIndex: 1,
         offset: 20,
@@ -206,7 +147,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 1,
         show: false,
@@ -229,7 +169,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.rounds,
         gridIndex: 2,
         show: true,
@@ -242,7 +181,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: true,
@@ -255,7 +193,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: false,
@@ -267,7 +204,6 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: false,
@@ -380,7 +316,6 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "magenta", width: linewidth },
-        // @ts-ignore
         data: chartData.totalOffers,
         xAxisIndex: 0,
         yAxisIndex: 0,
@@ -396,7 +331,6 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "cyan", width: linewidth },
-        // @ts-ignore
         data: chartData.totalBribes,
         xAxisIndex: 1,
         yAxisIndex: 1,
@@ -411,7 +345,6 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "orange", width: linewidth },
-        // @ts-ignore
         data: chartData.avgPer1000,
         xAxisIndex: 2,
         yAxisIndex: 2,
@@ -426,7 +359,6 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "red", width: linewidth },
-        // @ts-ignore
         data: chartData.priceBeets,
         xAxisIndex: 3,
         yAxisIndex: 3,
@@ -441,7 +373,6 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "white", width: linewidth },
-        // @ts-ignore
         data: chartData.votingApr,
         xAxisIndex: 4,
         yAxisIndex: 4,
@@ -456,7 +387,6 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "yellow", width: linewidth },
-        // @ts-ignore
         data: chartData.totalVoter,
         xAxisIndex: 5,
         yAxisIndex: 5,
@@ -471,7 +401,6 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: areastyle,
         lineStyle: { color: "lime", width: linewidth },
-        // @ts-ignore
         data: chartData.totalVotes,
         xAxisIndex: 6,
         yAxisIndex: 6,
@@ -486,11 +415,9 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "green", width: linewidth },
-        // @ts-ignore
         data: chartData.bribedVotes,
         xAxisIndex: 7,
         yAxisIndex: 7,
-        //markPoint: { itemStyle: { color: "#15883b" } },
       },
       {
         animation: false,
@@ -498,7 +425,6 @@ const Chart1: NextPage = () => {
         type: "bar",
         showSymbol: false,
         itemStyle: { opacity: 0.0 },
-        // @ts-ignore
         data: chartData.bribedVotesRatio,
         xAxisIndex: 8,
         yAxisIndex: 8,

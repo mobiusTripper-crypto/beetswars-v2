@@ -3,15 +3,16 @@ import { ColorModeSwitcher } from "components/ColorModeSwitcher";
 import { CustomConnectButton } from "components/CustomConnectButton";
 import { useGlobalContext } from "contexts/GlobalContext";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
+import { useEffect } from "react";
 import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { trpc } from "../utils/trpc";
 
 export const TopRow = () => {
   const { requestedRound, requestRound } = useGlobalContext();
-  const cardLink = "/round/" + requestedRound + "?cards";
-  const tableLink = "/round/" + requestedRound + "?table";
+  const cardLink = "/round/" + requestedRound + "?display=cards";
+  const tableLink = "/round/" + requestedRound + "?display=table";
   const router = useRouter();
 
   const roundList = trpc.rounds.roundlist.useQuery(undefined, {
@@ -20,8 +21,6 @@ export const TopRow = () => {
     rounds: [],
     latest: 0,
   };
-
-  //  console.log(roundList);
 
   const iconProps = {
     size: "1.6rem",
@@ -39,9 +38,9 @@ export const TopRow = () => {
     <>
       <HStack justify="flex-end" margin="1rem">
         <Box flex="1">
-          <Link href="/?">
+          <Link href="/bribeform">
             <Text fontSize="1xl">
-              Beets Wars V2 -- {requestedRound} -- latest: {roundList.latest}
+              bribeform
             </Text>
           </Link>
         </Box>
