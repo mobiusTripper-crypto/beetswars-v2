@@ -5,18 +5,13 @@ import { trpc } from "../utils/trpc";
 
 const BribeForm: NextPage = () => {
   const { data: session, status } = useSession();
-  const userlist = trpc.login.list.useQuery().data?.userlist ?? []; // array to compare
   const bribeList = trpc.bribes.list.useQuery().data?.bribeList; // array to compare
 
-  // // do this on any event (button click, ...)
+  // // // do this on any event (button click, ...), must be authenticated to run this
   // const newUser = ""; // example
-  // trpc.login.addUser.useMutation().mutate({key: newUser});
+  // trpc.login.addUser.useMutation().mutate({ key: newUser });
 
-  if (
-    session &&
-    status === "authenticated" &&
-    userlist.includes(session?.user?.name || "")
-  ) {
+  if (session && status === "authenticated") {
     return (
       <>
         <HStack>
@@ -45,7 +40,15 @@ const BribeForm: NextPage = () => {
     <VStack>
       <HStack>
         <Text>Not signed in</Text>
-        <Button onClick={() => signIn()}>Sign in</Button>
+        <Button
+          onClick={() =>
+            //I think setting callbackUrl will do dynamic redirect, but not working just yet. so we can have just a single OAuth Github app
+            //signIn("GitHubProvider", {callbackUrl: "http://localhost:3000/api/auth/callback/github",})
+            signIn()
+          }
+        >
+          Sign in
+        </Button>
       </HStack>
     </VStack>
   );
