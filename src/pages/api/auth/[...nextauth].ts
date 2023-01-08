@@ -17,22 +17,10 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn({ user }) {
       const isAllowedToSignIn = (await userlist()).includes(user.name || "");
-      if (isAllowedToSignIn) {
-        return true;
-      } else {
-        // Return false to display a default error message
-        return false;
-        // Or you can return a URL to redirect to:
-        // return '/unauthorized'
-      }
+      return isAllowedToSignIn;
+      // Or you can return a URL to redirect to:  return '/unauthorized'
     },
-    // if modification of the callbackUrl is required us this
-    // async redirect({ url, baseUrl }) {
-    //   console.log(url, baseUrl);
-    //   return url;
-    // },
   },
-
   // This code is only necessary for subdomains
   cookies: {
     sessionToken: {
