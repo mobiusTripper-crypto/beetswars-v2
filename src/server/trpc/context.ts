@@ -22,7 +22,7 @@ type CreateContextOptions = Record<string, never>;
  **/
 export const createContext = async (opts: CreateNextContextOptions) => {
   const session = await getSession({ req: opts.req });
-  return session;
+  return session!;
 };
 
 export type Context = inferAsyncReturnType<typeof createContext>;
