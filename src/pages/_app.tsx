@@ -12,6 +12,9 @@ import theme from "../styles/theme";
 import { Header } from "components/Header";
 import { TopRow } from "components/TopRow";
 import { SessionProvider } from "next-auth/react";
+//add additional font weights here in needed
+import "@fontsource/raleway/400.css";
+import "@fontsource/raleway/800.css";
 
 const queryClient = new QueryClient();
 
