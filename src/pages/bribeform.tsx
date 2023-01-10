@@ -18,18 +18,16 @@ const BribeForm: NextPage = () => {
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
-        <Grid gap={4} templateColumns="1fr 1fr 6fr 2fr">
+        <Grid gap={4} templateColumns="1fr 3fr 6fr">
           <GridItem fontWeight="800">Index</GridItem>
           <GridItem fontWeight="800">Pool Name</GridItem>
           <GridItem fontWeight="800">Description</GridItem>
-          <GridItem fontWeight="800">Assumption</GridItem>
           {!bribeList ||
             bribeList.bribedata.map((bribe) => (
               <>
                 <GridItem>{bribe.voteindex}</GridItem>
                 <GridItem>{bribe.poolname}</GridItem>
                 <GridItem>{bribe.rewarddescription}</GridItem>
-                <GridItem>{bribe.assumption}</GridItem>
               </>
             ))}
         </Grid>

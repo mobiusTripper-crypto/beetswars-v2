@@ -6,15 +6,16 @@ import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { trpc } from "../utils/trpc";
 
-
-const iconSize = "2rem";
-const iconMarginR = "1rem";
+const iconSize = 8;
 
 export const TopRow = () => {
-  const roundlist = trpc.rounds.roundlist.useQuery().data?.data ?? {rounds:[],latest:0}
+  const roundlist = trpc.rounds.roundlist.useQuery().data?.data ?? {
+    rounds: [],
+    latest: 0,
+  };
   return (
     <>
-      <HStack justify="flex-end" margin="1rem">
+      <HStack justify="flex-end" p={4}>
         <Box flex="1">
           <Text fontSize="1xl">Beets Wars V2</Text>
         </Box>
@@ -22,34 +23,19 @@ export const TopRow = () => {
           <p>latest: {roundlist.latest}</p>
           <p>{roundlist.rounds.toString()}</p>
         </Box>
-        <Box marginTop="5rem">
+        <HStack mt={20} spacing={4}>
           <Link href="/chart">
-            <Icon
-              as={StatsIcon}
-              height={iconSize}
-              width={iconSize}
-              marginRight={iconMarginR}
-            />
+            <Icon as={StatsIcon} h={iconSize} w={iconSize} />
           </Link>
           <Link href="/">
-            <Icon
-              as={CardIcon}
-              height={iconSize}
-              width={iconSize}
-              marginRight={iconMarginR}
-            />
+            <Icon as={CardIcon} h={iconSize} w={iconSize} />
           </Link>
           <Link href="/">
-            <Icon
-              as={TableIcon}
-              height={iconSize}
-              width={iconSize}
-              marginRight={iconMarginR}
-            />
+            <Icon as={TableIcon} h={iconSize} w={iconSize} />
           </Link>
-        </Box>
-        <CustomConnectButton />
-        <ColorModeSwitcher />
+          <CustomConnectButton />
+          <ColorModeSwitcher />
+        </HStack>
       </HStack>
     </>
   );
