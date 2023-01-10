@@ -41,7 +41,7 @@ export const TestPage: NextPage = () => {
       {isFetching ? <div>Refreshing...</div> : null}
       <HStack justify="center">
         <div>
-          {chartdata.map((chart: any, i: any) => (
+          {chartdata.chartdata.map((chart: any, i: any) => (
             <pre key={i}>
               {i} - {chart.round} : {chart.voteEnd}
             </pre>

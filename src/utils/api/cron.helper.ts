@@ -18,8 +18,10 @@ export async function getData(round: string) {
   const bribedOffers = bribefile.bribedata.map((x) =>
     (x.voteindex + 1).toString()
   );
-  const { end } = await getSnapshotProposal(proposal);
+  const prop = await getSnapshotProposal(proposal);
   const votes = await getSnapshotVotes(proposal);
+  if (!prop) return newData;
+  const { end } = prop;
   const totalVoter = votes.length;
 
   // calculate bribed votes
