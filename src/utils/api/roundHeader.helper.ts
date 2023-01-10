@@ -29,6 +29,7 @@ export default async function getRoundHeader(
   const proposal = bribefile.snapshot;
   const votes = await getSnapshotVotes(proposal);
   const snapshot = await getSnapshotProposal(proposal);
+  if (!snapshot) return null;
   // voteindex string array of bribed votes only
   const bribedOffers = bribefile.bribedata.map((x) =>
     (x.voteindex + 1).toString()

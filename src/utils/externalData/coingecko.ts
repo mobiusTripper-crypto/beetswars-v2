@@ -30,3 +30,23 @@ export async function getCoingeckoCurrentPrice(token: string) {
   }
   return answer;
 }
+
+export async function getCoinGeckoHistoryOldMethod(token: string, at: number) {
+  const endTime = new Date(at * 1000)
+    .toLocaleDateString("de-DE")
+    .replace(/\./g, "-");
+  const url = `https://api.coingecko.com/api/v3/coins/${token}/history?date=${endTime}&localization=false`;
+
+  let answer = 0;
+  try {
+    const result = await fetch(url);
+    if (result.ok) {
+      const data = await result.json();
+      answer = Number(data["market_data"]["current_price"].usd);
+      console.log(answer);
+    }
+  } catch (error) {
+    return 0;
+  }
+  return answer;
+}

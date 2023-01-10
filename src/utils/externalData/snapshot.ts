@@ -1,48 +1,89 @@
 import { request, gql } from "graphql-request";
-// yarn add graphql graphql-request
+import {
+  SnapProposal,
+  SnapSplitVote,
+  SnapVote,
+  SnapVotePerPool,
+} from "types/snapshot.raw";
 
 const queryUrl = "https://hub.snapshot.org/graphql";
 
-export interface snapVote {
-  choice: {
-    [key: string]: number;
-  };
-  vp: number;
-  voter: string;
-}
-
-export async function getSnapshotVotes(proposal: string): Promise<snapVote[]> {
-  // Initialize empty array, "first" and "skip", loop
-  let allResults: snapVote[] = [];
-  const first = 1000;
-  let skip = 0;
-  let hasMore = true;
-  // loop until done
-  while (hasMore) {
-    const QUERY = gql`
-      query Votes {
+export async function getSnapshotVotes(proposal: string): Promise<SnapVote[]> {
+  // loop in chunks of 1000
+  try {
+    let allResults: SnapVote[] = [];
+    const first = 1000;
+    let skip = 0;
+    let hasMore = true;
+    while (hasMore) {
+      const QUERY = gql`
+    query Votes {
       votes(
         first: ${first}
         skip: ${skip}
         where: {
           proposal: "${proposal}"
         }
-      ) {
-        choice
-        vp
-        voter
+        ) {
+          choice
+          vp
+          voter
+        }
       }
+      `;
+      const result = await request(queryUrl, QUERY);
+      allResults = [...allResults, ...result.votes];
+      hasMore = result.votes.length === first;
+      skip += first;
     }
-    `;
-    const result = await request(queryUrl, QUERY);
-    allResults = [...allResults, ...result.votes];
-    hasMore = result.votes.length === first;
-    skip += first;
+    return allResults;
+  } catch (error) {
+    return [] as SnapVote[];
   }
-  return allResults;
 }
 
-export async function getSnapshotProposal(proposal: string) {
+// splits multiple choices to multiple lines single choice
+export async function getSnapshotSplitVotes(
+  proposal: string
+): Promise<SnapSplitVote[]> {
+  const votes = await getSnapshotVotes(proposal);
+  const splitVotes = [] as SnapSplitVote[];
+  votes.forEach(({ choice, vp, voter }) => {
+    const total = Object.values(choice).reduce((a, b) => a + b);
+    for (const [poolId, value] of Object.entries(choice)) {
+      const votes = (vp * value) / total;
+      splitVotes.push({ poolId, votes, voter });
+    }
+  });
+  return splitVotes;
+}
+
+export async function getSnapshotVotesPerPool(
+  proposal: string
+): Promise<SnapVotePerPool[]> {
+  const poolVotes: { [key: string]: number } = {};
+  const votes = await getSnapshotVotes(proposal);
+  votes.forEach(({ choice, vp }) => {
+    const total = Object.values(choice).reduce((a, b) => a + b);
+    for (const [key, value] of Object.entries(choice)) {
+      poolVotes[key] = (poolVotes[key] || 0) + (vp * value) / total;
+    }
+  });
+  const totalVotes = Math.round(
+    Object.values(poolVotes).reduce((a, b) => a + b)
+  );
+  const result = Object.entries(poolVotes).map((x) => {
+    const poolId = x[0];
+    const votes = x[1];
+    const percent = Number(((votes / totalVotes) * 100).toFixed(2));
+    return { poolId, votes, percent };
+  });
+  return result;
+}
+
+export async function getSnapshotProposal(
+  proposal: string
+): Promise<SnapProposal | null> {
   const QUERY = gql`
     query Proposal {
       proposal(id:"${proposal}") {
@@ -50,14 +91,14 @@ export async function getSnapshotProposal(proposal: string) {
         end
         state
         snapshot
+        choices
       }
     }
   `;
-  const data = await request(queryUrl, QUERY);
-  return data.proposal as {
-    start: number;
-    end: number;
-    state: string;
-    snapshot: string;
-  };
+  try {
+    const data = await request(queryUrl, QUERY);
+    return data.proposal as SnapProposal;
+  } catch (error) {
+    return null;
+  }
 }
