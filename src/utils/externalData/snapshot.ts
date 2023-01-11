@@ -75,7 +75,7 @@ export async function getSnapshotVotesPerPool(
   const result = Object.entries(poolVotes).map((x) => {
     const poolId = x[0];
     const votes = x[1];
-    const percent = Number(((votes / totalVotes) * 100).toFixed(2));
+    const percent = (votes / totalVotes) * 100;
     return { poolId, votes, percent };
   });
   return result;

@@ -43,7 +43,6 @@ export async function getCoinGeckoHistoryOldMethod(token: string, at: number) {
     if (result.ok) {
       const data = await result.json();
       answer = Number(data["market_data"]["current_price"].usd);
-      console.log(answer);
     }
   } catch (error) {
     return 0;
