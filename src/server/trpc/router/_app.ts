@@ -5,7 +5,6 @@ import { chartdataRouter } from "./chartdata";
 import { exampleRouter } from "./example";
 import { loginRouter } from "./loginId";
 import { statsRouter } from "./overallStats";
-import { headerRouter } from "./roundHeader";
 import { roundlistRouter } from "./roundlist";
 
 export const appRouter = router({
@@ -13,7 +12,6 @@ export const appRouter = router({
   chart: chartdataRouter,
   rounds: roundlistRouter,
   stats: statsRouter,
-  header: headerRouter,
   login: loginRouter,
   bribes: bribesRouter,
   bribedata: bribedataRouter,
