@@ -1,4 +1,5 @@
 import { router } from "../trpc";
+import { bribedataRouter } from "./bribedata";
 import { bribesRouter } from "./bribes";
 import { chartdataRouter } from "./chartdata";
 import { exampleRouter } from "./example";
@@ -13,6 +14,7 @@ export const appRouter = router({
   stats: statsRouter,
   login: loginRouter,
   bribes: bribesRouter,
+  bribedata: bribedataRouter,
 });
 
 // export type definition of API
