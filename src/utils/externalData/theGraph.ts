@@ -10,10 +10,14 @@ export async function getBeetsPerBlock(block: number): Promise<number> {
     }
   }
   `;
-  const { masterChefs } = (await request(queryUrl, query)) as {
-    masterChefs: { beetsPerBlock: number }[];
-  };
-  const value = masterChefs[0];
-  if (!value) return 0;
-  return value.beetsPerBlock / 10 ** 18;
+  try {
+    const { masterChefs } = (await request(queryUrl, query)) as {
+      masterChefs: { beetsPerBlock: number }[];
+    };
+    const value = masterChefs[0];
+    if (!value) return 0;
+    return value.beetsPerBlock / 10 ** 18;
+  } catch (error) {
+    return 0;
+  }
 }
