@@ -17,6 +17,7 @@ export async function getCoingeckoPrice(token: string, at: number) {
 }
 
 export async function getCoingeckoCurrentPrice(token: string) {
+  console.log("coingecko realtime");
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${token}&vs_currencies=usd`;
   let answer = 0;
   try {

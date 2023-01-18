@@ -20,7 +20,7 @@ export async function getEmissionForRound(
   const TWOWEEKS = 14 * 24 * 60 * 60; // seconds
   const ts1 = ROUND1 + (+round - 1) * TWOWEEKS; // from end of previous round
   const ts2 = ts1 + TWOWEEKS; // to end of given round
-  const now = Math.round(Date.now() / 1000);
+  const now = Math.round(Date.now() / 1000) - 60;
   let start = 0;
   let end = 0;
   let factor = 1; // to expand shorter timespan to full 14 days
@@ -51,19 +51,21 @@ export async function getEmissionForRound(
   const beets1 = await getBeetsPerBlock(block1);
   const beets2 = await getBeetsPerBlock(block2);
   const blockCount = block2 - block1;
+  console.log(`Block ${block1} - ${block2} with ${beets1} - ${beets2} BEETS`);
   // early return on error
   if (!beets1 || !beets2 || !blockCount) return null;
   let emission = blockCount * beets1 * factor;
   // if emission changed during epoch
   if (beets1 !== beets2) {
     const changeBlock = await findEmissionChangeBlock(block1, block2);
+    console.log("changeBlock: ", changeBlock);
     const part1 = (changeBlock - block1) * beets1;
     const part2 = (block2 - changeBlock) * beets2;
     emission = (part1 + part2) * factor;
   }
   const beetsPrice = await findBeetsPrice(round);
   const usdValue = emission * beetsPrice;
-  const voteEmission = emission * 0.872 * 0.3; // 30% of 87.2% of emissions
+  const voteEmission = Math.round(emission * 0.872 * 0.3); // 30% of 87.2% of emissions
   const percentUsdValue = (voteEmission * beetsPrice) / 100;
   return {
     round,
@@ -80,6 +82,7 @@ async function findEmissionChangeBlock(
   lowBlock: number,
   highBlock: number
 ): Promise<number> {
+  console.log("try to find change block");
   var beets1 = await getBeetsPerBlock(lowBlock);
   var beets2 = await getBeetsPerBlock(highBlock);
   var beets3 = 0;
@@ -93,6 +96,9 @@ async function findEmissionChangeBlock(
       highBlock = mid;
     }
     mid = Math.round((lowBlock + highBlock) / 2);
+    console.log(
+      `Low: ${lowBlock} - ${beets1}, High: ${highBlock} - ${beets2}, Next: ${mid} - ${beets3} BEETS`
+    );
   } while (lowBlock + 1 !== highBlock);
   return highBlock;
 }
