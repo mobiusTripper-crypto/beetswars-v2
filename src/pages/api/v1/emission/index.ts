@@ -13,7 +13,6 @@ export default async function handler(
   const roundStr = roundNum.toString().padStart(2, "0");
 
   const data = await getEmissionForRound(roundStr); // any high number
-  console.log(data);
   if (!data) return res.status(404).send("No object with given ID found");
   res.json(data);
 }
