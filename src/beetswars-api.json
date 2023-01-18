@@ -7,9 +7,6 @@
   },
   "servers": [
     {
-      "url": "https://beetswars-backend.cyclic.app/API/v1"
-    },
-    {
       "url": "https://v2.beetswars.live/api/v1"
     }
   ],
