@@ -6,6 +6,7 @@ import {
 import { getCoingeckoPrice } from "../externalData/coingecko";
 import { getTokenPrice } from "../externalData/beetsBack";
 import { readOneBribefile } from "utils/database/bribefile.db";
+import { getEmissionForRound } from "./bribeApr.helper";
 
 export async function getData(round: string) {
   const newData = {} as Chartdata;
@@ -94,6 +95,8 @@ export async function getData(round: string) {
     bribes[index] = bribeEntry;
   }
   const totalBribes = Math.round(bribes.reduce((sum, x) => sum + x.usd, 0));
+  const emissions = await getEmissionForRound(round);
+  const bribersRoi = emissions?.avgBribeRoiInPercent ?? 0;
 
   // fill data
   newData.totalVoter = totalVoter;
@@ -104,6 +107,7 @@ export async function getData(round: string) {
   newData.voteEnd = end;
   newData.priceBeets = priceBeets;
   newData.priceFbeets = priceFbeets;
+  newData.bribersRoi = bribersRoi;
 
   return newData;
 }

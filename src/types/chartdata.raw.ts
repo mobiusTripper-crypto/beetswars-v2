@@ -10,6 +10,7 @@ export const Chartdata = z.object({
   totalBriber: z.number(),
   priceBeets: z.number(),
   priceFbeets: z.number(),
+  bribersRoi: z.number().optional(),
 });
 
 export type Chartdata = z.infer<typeof Chartdata>;

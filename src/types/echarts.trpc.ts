@@ -12,6 +12,7 @@ export const Echarts = z.object({
   priceBeets: z.number().array(),
   endTime: z.string().array(),
   votingApr: z.number().array(),
+  bribersApr: z.number().array(),
 });
 
 export type Echarts = z.infer<typeof Echarts>;

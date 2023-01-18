@@ -49,3 +49,25 @@ export async function removeChartdata(round: string): Promise<boolean> {
   const { deletedCount } = await coll.deleteOne({ round: round });
   return deletedCount === 1;
 }
+
+export async function updateChartdata(round: string, roi: number) {
+  const client = await clientPromise;
+  const coll = client.db("beetswars").collection<Chartdata>("chartdata");
+  const item = await coll.findOne<Chartdata>(
+    { round: round },
+    { projection: { _id: 0 } }
+  );
+  if (!item) return null;
+  let { bribersRoi, ...other } = item;
+  bribersRoi = roi;
+  const newItem: Chartdata = { ...other, bribersRoi };
+  //write
+  const { value, ok } = await coll.findOneAndReplace(
+    { round: round },
+    newItem,
+    { upsert: true, returnDocument: "after" }
+  );
+  if (!ok || !value) return null;
+  const { _id, ...result } = value;
+  return result;
+}

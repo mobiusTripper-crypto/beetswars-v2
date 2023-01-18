@@ -27,6 +27,9 @@ export default async function getEchartData(): Promise<Echarts | null> {
   const votingApr = data.map((round) => {
     return (round.totalBribes / round.priceFbeets / round.bribedVotes) * 2600;
   });
+  const bribersApr = data.map((round) => {
+    return round.bribersRoi ?? 0;
+  });
   const result: Echarts = {
     rounds,
     bribedVotes,
@@ -39,6 +42,7 @@ export default async function getEchartData(): Promise<Echarts | null> {
     priceBeets,
     endTime,
     votingApr,
+    bribersApr,
   };
   return result;
 }
