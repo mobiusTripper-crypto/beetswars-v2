@@ -36,8 +36,8 @@ export const TopRow = () => {
 
   return (
     <>
-      <HStack justify="flex-end" p={4}>
-        <Box flex="1">
+      <HStack  p={4}  justifyContent="flex-end">
+        <Box>
           <Link href="/bribeform">
             <Text fontSize="1xl">
               bribeform
@@ -53,8 +53,6 @@ export const TopRow = () => {
             ))}
           </select>
         </Box>
-        <Box></Box>
-        <Box marginTop="5rem">
           <Link href="/chart">
             <Icon
               as={StatsIcon}
@@ -81,7 +79,6 @@ export const TopRow = () => {
           </Link>
           <CustomConnectButton />
           <ColorModeSwitcher />
-        </Box>
       </HStack>
     </>
   );

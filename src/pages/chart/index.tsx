@@ -11,7 +11,7 @@ const REFRESH_INTERVAL = 10000;
 const globalRefetchOptions = {
   refetchOnWindowFocus: false,
   refetchIntervalInBackground: false,
-  refetchInterval: (voteActive: any) =>
+  refetchInterval: (voteActive: boolean) =>
     voteActive === true ? REFRESH_INTERVAL : 0,
 };
 
@@ -20,7 +20,7 @@ const Chart1: NextPage = () => {
     trpc.chart.chartdata.useQuery(undefined, globalRefetchOptions).data
       ?.chartdata ?? "";
 
-  //console.log(chartData.rounds);
+  console.log(chartData);
 
   const { requestedRound, requestRound } = useGlobalContext();
 
@@ -34,6 +34,7 @@ const Chart1: NextPage = () => {
     color: [
       "magenta",
       "cyan",
+      "cornflowerblue",
       "orange",
       "red",
       "white",
@@ -97,7 +98,7 @@ const Chart1: NextPage = () => {
         height: "240",
         left: "15%",
         right: "15%",
-        top: "360",
+        top: "380",
       },
       {
         // index 2  bottom
@@ -105,7 +106,7 @@ const Chart1: NextPage = () => {
         height: "240",
         left: "15%",
         right: "15%",
-        top: "680",
+        top: "700",
       },
     ],
 
@@ -123,6 +124,16 @@ const Chart1: NextPage = () => {
       },
       {
         // bribes
+        type: "category",
+        boundaryGap: false,
+        axisLine: { onZero: true },
+        data: chartData.endTime,
+        gridIndex: 0,
+        show: false,
+        triggerEvent: true,
+      },
+      {
+        // bribeApr
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
@@ -222,6 +233,7 @@ const Chart1: NextPage = () => {
         position: "right",
         axisLabel: { color: "magenta", align: "left" },
         axisTick: { show: false },
+        offset: 1,
       },
       {
         name: "Total Incentives $",
@@ -231,6 +243,17 @@ const Chart1: NextPage = () => {
         axisLabel: { color: "cyan", align: "right" },
         gridIndex: 0,
         max: 1200000,
+      },
+      {
+        name: "Bribers Apr %",
+        nameTextStyle: { color: "cornflowerblue", fontSize: "0.9em" },
+        type: "value",
+        splitLine: { lineStyle: { type: "dotted", color: "#555555" } },
+        axisLabel: { color: "cornflowerblue", align: "left" },
+        gridIndex: 0,
+        position: "right",
+        nameLocation: "start",
+        offset: 23,
       },
       {
         name: "Avg $/1000 fB",
@@ -336,6 +359,19 @@ const Chart1: NextPage = () => {
         yAxisIndex: 1,
       },
       {
+        name: "Bribers Apr %",
+        type: "line",
+        symbolSize: 3,
+        showSymbol: false,
+        smooth: "true",
+        stack: "",
+        areaStyle: { opacity: opacity },
+        lineStyle: { color: "cornflowerblue", width: linewidth },
+        data: chartData.bribersApr,
+        xAxisIndex: 2,
+        yAxisIndex: 2,
+      },
+      {
         animation: false,
         name: "Avg $/1000 fB",
         type: "line",
@@ -346,8 +382,8 @@ const Chart1: NextPage = () => {
         areaStyle: { opacity: opacity },
         lineStyle: { color: "orange", width: linewidth },
         data: chartData.avgPer1000,
-        xAxisIndex: 2,
-        yAxisIndex: 2,
+        xAxisIndex: 3,
+        yAxisIndex: 3,
       },
       {
         animation: false,
@@ -360,8 +396,8 @@ const Chart1: NextPage = () => {
         areaStyle: { opacity: opacity },
         lineStyle: { color: "red", width: linewidth },
         data: chartData.priceBeets,
-        xAxisIndex: 3,
-        yAxisIndex: 3,
+        xAxisIndex: 4,
+        yAxisIndex: 4,
       },
       {
         animation: false,
@@ -374,8 +410,8 @@ const Chart1: NextPage = () => {
         areaStyle: { opacity: opacity },
         lineStyle: { color: "white", width: linewidth },
         data: chartData.votingApr,
-        xAxisIndex: 4,
-        yAxisIndex: 4,
+        xAxisIndex: 5,
+        yAxisIndex: 5,
       },
       {
         animation: false,
@@ -388,8 +424,8 @@ const Chart1: NextPage = () => {
         areaStyle: { opacity: opacity },
         lineStyle: { color: "yellow", width: linewidth },
         data: chartData.totalVoter,
-        xAxisIndex: 5,
-        yAxisIndex: 5,
+        xAxisIndex: 6,
+        yAxisIndex: 6,
       },
       {
         animation: false,
@@ -402,8 +438,8 @@ const Chart1: NextPage = () => {
         areaStyle: areastyle,
         lineStyle: { color: "lime", width: linewidth },
         data: chartData.totalVotes,
-        xAxisIndex: 6,
-        yAxisIndex: 6,
+        xAxisIndex: 7,
+        yAxisIndex: 7,
       },
       {
         animation: false,
@@ -416,8 +452,8 @@ const Chart1: NextPage = () => {
         areaStyle: { opacity: opacity },
         lineStyle: { color: "green", width: linewidth },
         data: chartData.bribedVotes,
-        xAxisIndex: 7,
-        yAxisIndex: 7,
+        xAxisIndex: 8,
+        yAxisIndex: 8,
       },
       {
         animation: false,
@@ -426,8 +462,8 @@ const Chart1: NextPage = () => {
         showSymbol: false,
         itemStyle: { opacity: 0.0 },
         data: chartData.bribedVotesRatio,
-        xAxisIndex: 8,
-        yAxisIndex: 8,
+        xAxisIndex: 9,
+        yAxisIndex: 9,
       },
     ],
   };
