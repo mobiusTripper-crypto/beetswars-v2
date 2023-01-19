@@ -18,17 +18,25 @@ export async function getTokenPrice(
       }
     }
   `;
-  const { tokenGetPriceChartData } = (await request(queryUrl, query)) as {
-    tokenGetPriceChartData: Chartdata[];
-  };
-  const result = tokenGetPriceChartData.reduce(
-    (max, current) => {
-      if (current.timestamp <= timestamp && current.timestamp > max.timestamp) {
-        return current;
-      }
-      return max;
-    },
-    { id: "", price: "", timestamp: 0 }
-  );
-  return +result.price;
+  try {
+    const { tokenGetPriceChartData } = (await request(queryUrl, query)) as {
+      tokenGetPriceChartData: Chartdata[];
+    };
+    const result = tokenGetPriceChartData.reduce(
+      (max, current) => {
+        if (
+          current.timestamp <= timestamp &&
+          current.timestamp > max.timestamp
+        ) {
+          return current;
+        }
+        return max;
+      },
+      { id: "", price: "", timestamp: 0 }
+    );
+    return +result.price;
+  } catch (error) {
+    console.error("Beetswars backend: ", error);
+    return 0;
+  }
 }

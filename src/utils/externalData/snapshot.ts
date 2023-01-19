@@ -38,6 +38,7 @@ export async function getSnapshotVotes(proposal: string): Promise<SnapVote[]> {
     }
     return allResults;
   } catch (error) {
+    console.error("failed getSnapshotVotes: ", error);
     return [] as SnapVote[];
   }
 }
@@ -99,6 +100,7 @@ export async function getSnapshotProposal(
     const data = await request(queryUrl, QUERY);
     return data.proposal as SnapProposal;
   } catch (error) {
+    console.error("failed getSnapshotProposal: ", error);
     return null;
   }
 }

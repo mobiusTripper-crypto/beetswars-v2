@@ -11,6 +11,7 @@ export async function readLoginList(): Promise<string[]> {
     const keylist = items.map((item) => item.key);
     return keylist;
   } catch (error) {
+    console.error("failed readLoginList", error);
     return [];
   }
 }
@@ -27,6 +28,7 @@ export async function addLogin(key: string): Promise<boolean> {
     );
     return !!ok && !!value;
   } catch (error) {
+    console.error("failed addLogin", error);
     return false;
   }
 }

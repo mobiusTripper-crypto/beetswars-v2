@@ -11,12 +11,14 @@ export async function getCoingeckoPrice(token: string, at: number) {
       answer = data.prices[0][1];
     }
   } catch (error) {
+    console.error("failed getCoingeckoPrice:", error);
     return 0;
   }
   return answer;
 }
 
 export async function getCoingeckoCurrentPrice(token: string) {
+  console.log("Coingecko - get current price for ", token);
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${token}&vs_currencies=usd`;
   let answer = 0;
   try {
@@ -26,6 +28,7 @@ export async function getCoingeckoCurrentPrice(token: string) {
       answer = Number(data[token].usd);
     }
   } catch (error) {
+    console.error("failed getCoingeckoCurrentPrice:", error);
     return 0;
   }
   return answer;
@@ -45,6 +48,7 @@ export async function getCoinGeckoHistoryOldMethod(token: string, at: number) {
       answer = Number(data["market_data"]["current_price"].usd);
     }
   } catch (error) {
+    console.error("failed getCoingeckoHistoryOldMethod:", error);
     return 0;
   }
   return answer;

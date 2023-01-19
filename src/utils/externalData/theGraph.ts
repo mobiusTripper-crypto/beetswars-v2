@@ -15,9 +15,13 @@ export async function getBeetsPerBlock(block: number): Promise<number> {
       masterChefs: { beetsPerBlock: number }[];
     };
     const value = masterChefs[0];
-    if (!value) return 0;
+    if (!value) {
+      console.error("failed query theGraph BeetsPerBlock");
+      return 0;
+    }
     return value.beetsPerBlock / 10 ** 18;
   } catch (error) {
+    console.error("failed query theGraph BeetsPerBlock", error);
     return 0;
   }
 }
