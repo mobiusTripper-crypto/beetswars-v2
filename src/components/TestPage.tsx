@@ -1,7 +1,7 @@
+import { Center, HStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { useGlobalContext } from "contexts/GlobalContext";
 import { type NextPage } from "next";
-import { Box, HStack, Text, Center } from "@chakra-ui/react";
-
 
 async function fetchChartData() {
   const res = await fetch("/api/v1/chartdata");
@@ -9,6 +9,8 @@ async function fetchChartData() {
 }
 
 export const TestPage: NextPage = () => {
+  const { requestedRound } = useGlobalContext();
+
   const {
     data: chartdata,
     status,
@@ -38,10 +40,11 @@ export const TestPage: NextPage = () => {
 
   return (
     <>
+      <div>{requestedRound}</div>
       {isFetching ? <div>Refreshing...</div> : null}
       <HStack justify="center">
         <div>
-          {chartdata.chartdata.map((chart: any, i: any) => (
+          {chartdata?.map((chart: any, i: any) => (
             <pre key={i}>
               {i} - {chart.round} : {chart.voteEnd}
             </pre>
