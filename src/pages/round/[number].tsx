@@ -1,4 +1,16 @@
 import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Wrap,
+  HStack,
+  VStack,
   SimpleGrid,
   Heading,
   Button,
@@ -61,48 +73,68 @@ export default function Round() {
           <pre>{bribedata?.version}</pre>
         </Box>
       </Center>
-      <Center>
-        {disp === "cards" ? (
-          <SimpleGrid
-            spacing="20px"
-            minChildWidth='190px' 
-            columns={[3, null, 4]}
-          >
+
+      {disp === "cards" ? (
+        <Center>
+          <Wrap justify="center" padding="23px" margin="23px" spacing="50px">
             {bribedata?.bribedata.map((bribe: any, i: number) => (
-              <Box key={i}>
-                <Card>
-                  <CardHeader>
+              <Box
+                key={i}
+                padding="23px"
+                border="1px"
+                margin="73px"
+                width="200px"
+                borderRadius="23px"
+              >
+                <Box>
+                  <Box>
                     <Heading size="md">{bribe.poolname}</Heading>
-                  </CardHeader>
-                  <CardBody>
+                  </Box>
+                  <Box>
                     <Text>
                       {bribe.rewarddescription}
                       <Text></Text>
                       {bribe.assumption}
                     </Text>
-                  </CardBody>
-                  <CardFooter>
+                  </Box>
+                  <Box>
                     <Button>
                       <Link href={bribe.poolurl}>Pool Link</Link>
                     </Button>
-                  </CardFooter>
-                </Card>
+                  </Box>
+                </Box>
               </Box>
             ))}
-          </SimpleGrid>
-        ) : (
-          <table>
-            {bribedata?.bribedata.map((bribe: any, i: number) => (
-              <tr key={i}>
-                <td > {bribe.voteindex}</td>
-                <td > {bribe.poolname}</td>
-                <td > {bribe.rewarddescription}</td>
-                <td > {bribe.url}</td>
-              </tr>
-            ))}
-          </table>
-        )}
-      </Center>
+          </Wrap>
+        </Center>
+      ) : (
+        <Center>
+          <TableContainer>
+            <Table variant="striped">
+              <Thead>
+                <Tr>
+                  <Th isNumeric>voteindex</Th>
+                  <Th>poolname</Th>
+                  <Th>description</Th>
+                  <Th>Link</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {bribedata?.bribedata.map((bribe: any, i: number) => (
+                  <Tr key={i}>
+                    <Td isNumeric> {bribe.voteindex}</Td>
+                    <Td>{bribe.poolname}</Td>
+                    <Td>{bribe.rewarddescription}</Td>
+                    <Td>
+                      <Link href={bribe.poolurl}>link</Link>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Center>
+      )}
     </>
   );
 }
