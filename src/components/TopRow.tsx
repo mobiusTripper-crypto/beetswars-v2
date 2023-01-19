@@ -81,7 +81,7 @@ export const TopRow = () => {
           </Link>
           <CustomConnectButton />
           <ColorModeSwitcher />
-        </HStack>
+        </Box>
       </HStack>
     </>
   );
