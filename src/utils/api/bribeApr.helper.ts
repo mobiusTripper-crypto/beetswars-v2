@@ -16,6 +16,7 @@ export interface EmissionData {
 export async function getEmissionForRound(
   round: string
 ): Promise<EmissionData | null> {
+  console.log("getEmissionForRound");
   // start at Wed Jan 12, 2022 - the start of round 1 payout (I guess)
   const ROUND1 = 1641988800; // timestamp of 12-01-2022 12:00 pm UTC as reference point
   const TWOWEEKS = 14 * 24 * 60 * 60; // seconds

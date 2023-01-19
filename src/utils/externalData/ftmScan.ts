@@ -6,7 +6,10 @@ export async function getBlockByTs(ts: number): Promise<number> {
     const b = await fetch(url);
     const res: { status: string; message: string; result: string } =
       await b.json();
-    if (!res || res.status !== "1") return 0;
+    if (!res || res.status !== "1") {
+      console.error("failed ftmscan getBlockByTs");
+      return 0;
+    }
     return +res.result;
   } catch (error) {
     return 0;

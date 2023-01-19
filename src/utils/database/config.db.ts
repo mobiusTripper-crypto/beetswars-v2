@@ -13,10 +13,15 @@ export async function findConfigEntry(key: string): Promise<string | null> {
 }
 
 export async function setConfigEntry(data: Config): Promise<boolean> {
-  const client = await clientPromise;
-  const coll = client.db("beetswars").collection<Config>("config");
-  const { ok } = await coll.findOneAndReplace({ name: data.name }, data, {
-    upsert: true,
-  });
-  return !!ok;
+  try {
+    const client = await clientPromise;
+    const coll = client.db("beetswars").collection<Config>("config");
+    const { ok } = await coll.findOneAndReplace({ name: data.name }, data, {
+      upsert: true,
+    });
+    return !!ok;
+  } catch (error) {
+    console.error("failed setConfigEntry", error);
+    return false;
+  }
 }
