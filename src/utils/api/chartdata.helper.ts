@@ -12,7 +12,7 @@ export default async function getEchartData(): Promise<Echarts | null> {
   const totalVotes = data.map((round) => round.totalVotes);
   const totalVoter = data.map((round) => round.totalVoter);
   const totalBribes = data.map((round) => {
-    return round.totalBribes === 0 ? "NaN" : round.totalBribes;
+    return round.totalBribes === 0 ? NaN : round.totalBribes;
   });
   const totalOffers = data.map((round) => round.totalBriber);
   const avgPer1000 = data.map((round) => {
@@ -27,8 +27,8 @@ export default async function getEchartData(): Promise<Echarts | null> {
   const votingApr = data.map((round) => {
     return (round.totalBribes / round.priceFbeets / round.bribedVotes) * 2600;
   });
-  const bribersApr = data.map((round) => {
-    return round.bribersRoi ?? 0;
+  const bribersRoi = data.map((round) => {
+    return !round.bribersRoi ? NaN : round.bribersRoi;
   });
   const result: Echarts = {
     rounds,
@@ -42,7 +42,7 @@ export default async function getEchartData(): Promise<Echarts | null> {
     priceBeets,
     endTime,
     votingApr,
-    bribersApr,
+    bribersRoi,
   };
   return result;
 }
