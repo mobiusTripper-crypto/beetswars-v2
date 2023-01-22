@@ -28,7 +28,7 @@ export default async function getEchartData(): Promise<Echarts | null> {
     return parseFloat(((round.totalBribes / round.priceFbeets / round.bribedVotes) * 2600).toFixed(2));
   });
   const bribersRoi = data.map((round) => {
-    return !round.bribersRoi ? NaN : round.bribersRoi.toFixed(2);
+    return !round.bribersRoi ? NaN : Number(round.bribersRoi.toFixed(2));
   });
   const result: Echarts = {
     rounds,
