@@ -23,8 +23,11 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useGlobalContext } from "contexts/GlobalContext";
+import { trpc } from "utils/trpc";
 
 async function fetchRoundData(url: string) {
   console.log(url);
@@ -33,27 +36,47 @@ async function fetchRoundData(url: string) {
 }
 
 export default function Round() {
+  const roundList = trpc.rounds.roundlist.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  }).data?.data ?? {
+    rounds: [],
+    latest: 0,
+  };
+
+  const { requestedRound, requestRound, display, setDisplay } =
+    useGlobalContext();
   const router = useRouter();
-  const { number, display } = router.query;
-  const Url = "/api/v1/bribedata/" + number;
+  const number = (router.query.number as string[]) || [];
 
-  console.log(router.query);
+  useEffect(() => {
+    // @ts-ignore
+    if (!roundList.rounds.includes(number[0])) {
+      requestRound(roundList.latest.toString());
+      router.push("/round/" + requestedRound, undefined, { shallow: true });
+    } else {
+      // @ts-ignore
+      requestRound(number[0]);
+    }
+  }, [roundList, number]);
 
-  var disp: string;
-  switch (display) {
-    case "table":
-      disp = "table";
-      break;
-    default:
-      disp = "cards";
+  const Url = "/api/v1/bribedata/" + requestedRound;
+
+  if (number[1]) {
+    switch (number[1]) {
+      case "table":
+        setDisplay("table");
+        break;
+      default:
+        setDisplay("cards");
+    }
   }
-  console.log(disp);
+
+  console.log(roundList.latest);
+  console.log(number[0], requestedRound);
 
   const { data: bribedata, isLoading } = useQuery(["bribedata", Url], () =>
     fetchRoundData(Url)
   );
-
-  console.log(bribedata);
 
   if (isLoading) {
     return <Center>Loading ... </Center>;
@@ -64,7 +87,7 @@ export default function Round() {
       <Center>
         <Box>
           <pre>
-            Round {number} -- <Link href={Url}>{Url}</Link>
+            Round {requestedRound} -- <Link href={Url}>{Url}</Link>
           </pre>
         </Box>
       </Center>
@@ -73,11 +96,10 @@ export default function Round() {
           <pre>{bribedata?.version}</pre>
         </Box>
       </Center>
-
-      {disp === "cards" ? (
+      {display === "cards" ? (
         <Center>
           <Wrap justify="center" padding="23px" margin="23px" spacing="50px">
-            {bribedata?.bribedata.map((bribe: any, i: number) => (
+            {bribedata?.bribedata?.map((bribe: any, i: number) => (
               <Box
                 key={i}
                 padding="23px"
@@ -91,11 +113,8 @@ export default function Round() {
                     <Heading size="md">{bribe.poolname}</Heading>
                   </Box>
                   <Box>
-                    <Text>
-                      {bribe.rewarddescription}
-                      <Text></Text>
-                      {bribe.assumption}
-                    </Text>
+                    <Text>{bribe.rewarddescription}</Text>
+                    <Text>{bribe.assumption}</Text>
                   </Box>
                   <Box>
                     <Button>

@@ -1,31 +1,26 @@
 import type { NextPage } from "next";
-import { trpc } from "../../utils/trpc";
+import type { Echarts } from "types/echarts.trpc";
+import { trpc } from "utils/trpc";
 import ReactECharts from "echarts-for-react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { HStack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
-const voteActive = true;
-const REFRESH_INTERVAL = 10000;
+const voteActive: boolean | undefined = true;
+const REFRESH_INTERVAL = (voteActive: boolean) =>
+  voteActive === true ? 60000 : 0;
 
-const globalRefetchOptions = {
+const RefetchOptions = {
   refetchOnWindowFocus: false,
   refetchIntervalInBackground: false,
-  refetchInterval: (voteActive: boolean) =>
-    voteActive === true ? REFRESH_INTERVAL : 0,
+  refetchInterval: 0,
 };
 
-const Chart1: NextPage = () => {
-  const chartData =
-    trpc.chart.chartdata.useQuery(undefined, globalRefetchOptions).data
-      ?.chartdata ?? "";
-
-  console.log(chartData);
-
+function Chart1() {
+  const chartData: Echarts | "" =
+    trpc.chart.chartdata.useQuery( undefined, RefetchOptions ).data?.chartdata ?? "";
   const { requestedRound, requestRound } = useGlobalContext();
-
   const router = useRouter();
-
   const linewidth = "2";
   const opacity = "0.04";
   const areastyle = { opacity: opacity };
@@ -87,7 +82,7 @@ const Chart1: NextPage = () => {
       {
         // index 0  top
         show: false,
-        height: "240",
+        height: "300",
         left: "15%",
         right: "15%",
         // top: "60",
@@ -95,18 +90,18 @@ const Chart1: NextPage = () => {
       {
         // index 1 middle
         show: false,
-        height: "240",
+        height: "300",
         left: "15%",
         right: "15%",
-        top: "380",
+        top: "430",
       },
       {
         // index 2  bottom
         show: false,
-        height: "240",
+        height: "300",
         left: "15%",
         right: "15%",
-        top: "700",
+        top: "810",
       },
     ],
 
@@ -116,7 +111,8 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        data: chartData.rounds,
+        // @ts-ignore
+        data: chartData.rounds as string[],
         gridIndex: 0,
         show: false,
         triggerEvent: true,
@@ -127,6 +123,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 0,
         show: false,
@@ -137,6 +134,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 0,
         show: false,
@@ -147,6 +145,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.rounds,
         gridIndex: 1,
         offset: 20,
@@ -158,6 +157,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 1,
         show: false,
@@ -180,6 +180,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.rounds,
         gridIndex: 2,
         show: true,
@@ -192,6 +193,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: true,
@@ -204,6 +206,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: false,
@@ -215,6 +218,7 @@ const Chart1: NextPage = () => {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
+        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: false,
@@ -228,7 +232,7 @@ const Chart1: NextPage = () => {
         name: "Offers",
         nameTextStyle: { color: "magenta", fontSize: "0.9em" },
         type: "value",
-        splitLine: { lineStyle: { type: "dotted", color: "#55555500" } }, //  #XXXXXX00 invisible
+        splitLine: { lineStyle: { type: "dotted", color: "#55555500" } },
         gridIndex: 0,
         position: "right",
         axisLabel: { color: "magenta", align: "left" },
@@ -339,6 +343,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "magenta", width: linewidth },
+        // @ts-ignore
         data: chartData.totalOffers,
         xAxisIndex: 0,
         yAxisIndex: 0,
@@ -354,6 +359,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "cyan", width: linewidth },
+        // @ts-ignore
         data: chartData.totalBribes,
         xAxisIndex: 1,
         yAxisIndex: 1,
@@ -367,7 +373,8 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "cornflowerblue", width: linewidth },
-        data: chartData.bribersApr,
+        // @ts-ignore
+        data: chartData.bribersRoi,
         xAxisIndex: 2,
         yAxisIndex: 2,
       },
@@ -381,6 +388,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "orange", width: linewidth },
+        // @ts-ignore
         data: chartData.avgPer1000,
         xAxisIndex: 3,
         yAxisIndex: 3,
@@ -395,6 +403,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "red", width: linewidth },
+        // @ts-ignore
         data: chartData.priceBeets,
         xAxisIndex: 4,
         yAxisIndex: 4,
@@ -409,6 +418,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "white", width: linewidth },
+        // @ts-ignore
         data: chartData.votingApr,
         xAxisIndex: 5,
         yAxisIndex: 5,
@@ -423,6 +433,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "yellow", width: linewidth },
+        // @ts-ignore
         data: chartData.totalVoter,
         xAxisIndex: 6,
         yAxisIndex: 6,
@@ -437,6 +448,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: areastyle,
         lineStyle: { color: "lime", width: linewidth },
+        // @ts-ignore
         data: chartData.totalVotes,
         xAxisIndex: 7,
         yAxisIndex: 7,
@@ -451,6 +463,7 @@ const Chart1: NextPage = () => {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "green", width: linewidth },
+        // @ts-ignore
         data: chartData.bribedVotes,
         xAxisIndex: 8,
         yAxisIndex: 8,
@@ -461,6 +474,7 @@ const Chart1: NextPage = () => {
         type: "bar",
         showSymbol: false,
         itemStyle: { opacity: 0.0 },
+        // @ts-ignore
         data: chartData.bribedVotesRatio,
         xAxisIndex: 9,
         yAxisIndex: 9,
@@ -500,19 +514,19 @@ const Chart1: NextPage = () => {
 
   return (
     <>
-      <Text variant="h4" align="center" marginBottom="20px">
+      <Text fontSize="3xl"  align="center" marginBottom="20px">
         Gauge Vote History
       </Text>
       <ReactECharts
         option={option}
         onEvents={onEvents}
-        style={{ height: 1000 }}
+        style={{ height: 1200 }}
       />
       <Text variant="body2" align="center">
         (clicking on data points loads historical pages)
       </Text>
     </>
   );
-};
+}
 
 export default Chart1;

@@ -1,11 +1,11 @@
+import { useEffect } from "react";
+import Router from 'next/router'
 
-const Latest = () => {
-  return (
-    <>
-      <div>Latest</div>
-    </>
-  );
-};
+export default function Redirect() {
 
-export default Latest;
+useEffect(() => {
+       Router.push('/round/latest')
+ });
+
+}
 

@@ -26,6 +26,7 @@ const MyApp = ({
   pageProps: { session, ...pageProps },
 }: AppProps<{ session: Session }>) => {
   const [requestedRound, requestRound] = useState<string>("latest");
+  const [display, setDisplay] = useState<string>("cards");
   const [gVersion, setGVersion] = useState<string>("");
 
   return (
@@ -34,6 +35,8 @@ const MyApp = ({
         value={{
           requestedRound,
           requestRound,
+          display,
+          setDisplay,
           gVersion,
           setGVersion,
         }}
