@@ -249,7 +249,7 @@ function Chart1() {
         max: 1200000,
       },
       {
-        name: "Bribers Apr %",
+        name: "Bribers Roi %",
         nameTextStyle: { color: "cornflowerblue", fontSize: "0.9em" },
         type: "value",
         splitLine: { lineStyle: { type: "dotted", color: "#555555" } },
@@ -365,7 +365,7 @@ function Chart1() {
         yAxisIndex: 1,
       },
       {
-        name: "Bribers Apr %",
+        name: "Bribers Roi %",
         type: "line",
         symbolSize: 3,
         showSymbol: false,
