@@ -6,13 +6,13 @@ export const Echarts = z.object({
   bribedVotesRatio: z.number().array(),
   totalVotes: z.number().array(),
   totalVoter: z.number().array(),
-  totalBribes: z.array(z.number().or(z.string())),
+  totalBribes: z.number().array(),
   totalOffers: z.number().array(),
   avgPer1000: z.number().array(),
   priceBeets: z.number().array(),
   endTime: z.string().array(),
   votingApr: z.number().array(),
-  bribersApr: z.number().array(),
+  bribersRoi: z.number().array(),
 });
 
 export type Echarts = z.infer<typeof Echarts>;
