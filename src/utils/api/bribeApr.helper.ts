@@ -53,7 +53,9 @@ export async function getEmissionForRound(
   const beets1 = await getBeetsPerBlock(block1);
   const beets2 = await getBeetsPerBlock(block2);
   const blockCount = block2 - block1;
-  // console.log(`Block ${block1} - ${block2} with ${beets1} - ${beets2} BEETS`);
+  console.log(
+    `Block ${block1} @ ${start} - ${block2} @ ${end} with ${beets1} - ${beets2} BEETS`
+  );
   // early return on error
   if (!beets1 || !beets2 || !blockCount) return null;
   let emission = blockCount * beets1 * factor;

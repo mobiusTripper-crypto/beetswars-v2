@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { Button, Grid, GridItem, HStack, Text, VStack } from "@chakra-ui/react";
+import { Button, Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
@@ -13,7 +13,13 @@ const BribeForm: NextPage = () => {
 
   if (session && status === "authenticated") {
     return (
-      <>
+      <Card>
+  <CardHeader>
+    <Heading size='md'>Edit Round {round}</Heading>
+  </CardHeader>
+
+  <CardBody>
+      
         <HStack>
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
@@ -31,7 +37,8 @@ const BribeForm: NextPage = () => {
               </>
             ))}
         </Grid>
-      </>
+        </CardBody>
+      </Card>
     );
   }
   return (
