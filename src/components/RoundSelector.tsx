@@ -9,7 +9,7 @@ export function RoundSelector({ handleChange = () => {} }: any): JSX.Element {
     refetchOnWindowFocus: false,
   }).data?.data ?? {
     rounds: [],
-    latest: 12,
+    latest: 0,
   };
 
   return (
