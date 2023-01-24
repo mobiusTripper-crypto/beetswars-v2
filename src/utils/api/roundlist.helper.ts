@@ -13,6 +13,6 @@ export default async function getRoundlist(): Promise<Roundlist> {
     );
     rounds = roundsUnsorted.sort((n1, n2) => (n1 > n2 ? -1 : 1));
   }
-  const latest = Number((await findConfigEntry("latest")) ?? 0);
+  const latest = (await findConfigEntry("latest")) ?? "";
   return { rounds, latest };
 }
