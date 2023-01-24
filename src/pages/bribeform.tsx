@@ -1,44 +1,123 @@
 import { type NextPage } from "next";
-import { Button, Card, CardBody, CardHeader, Grid, GridItem, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { Button, Card, CardBody, CardHeader, Flex, Grid, GridItem, Heading, HStack, Spacer, Text, useToast, VStack } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
+import { useGlobalContext } from "contexts/GlobalContext";
+
+
 
 const BribeForm: NextPage = () => {
+  const { requestedRound } =  useGlobalContext();
+  // const round = 28; //TODO: round selector -> global state??
+  const round = +requestedRound;
   const { data: session, status } = useSession();
-  const bribeList = trpc.bribes.list.useQuery().data?.bribeList; // array to compare
-
-  // // // do this on any event (button click, ...), must be authenticated to run this
-  // const newUser = ""; // example
-  // trpc.login.addUser.useMutation().mutate({ key: newUser });
+  const bribedata = trpc.bribedata.bribedata_raw.useQuery({round}).data?.bribefile;
+  
+  // this function shows toast message - just for testing button function
+  // TODO: remove after testing
+  const toast = useToast();
+  function showToast(action: string) {
+    toast({
+      title: 'Button clicked.',
+      description: action,
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    })
+  }
+  //////////////////////////////
 
   if (session && status === "authenticated") {
     return (
-      <Card>
-  <CardHeader>
-    <Heading size='md'>Edit Round {round}</Heading>
-  </CardHeader>
-
-  <CardBody>
-      
-        <HStack>
-          <Text>Signed in as {session?.user?.name}</Text>
-          <Button onClick={() => signOut()}>Sign out</Button>
-        </HStack>
-        <Grid gap={4} templateColumns="1fr 3fr 6fr">
-          <GridItem fontWeight="800">Index</GridItem>
-          <GridItem fontWeight="800">Pool Name</GridItem>
-          <GridItem fontWeight="800">Description</GridItem>
-          {!bribeList ||
-            bribeList.bribedata.map((bribe) => (
-              <>
-                <GridItem>{bribe.voteindex}</GridItem>
-                <GridItem>{bribe.poolname}</GridItem>
-                <GridItem>{bribe.rewarddescription}</GridItem>
-              </>
-            ))}
-        </Grid>
+      <>
+      <HStack m={6} justifyContent="flex-end">
+        <Text>Signed in as {session?.user?.name}</Text>
+        <Button onClick={() => signOut()}>Sign out</Button>
+      </HStack>
+      <Card m={6}>
+        <CardHeader>
+          <Flex>
+          <Heading size='md'>Edit Round {round}</Heading>
+          <Spacer />
+          <Button onClick={()=>showToast(`add new round`)}>add new round</Button>
+          </Flex>
+        </CardHeader>
+        <CardBody>
+          <Flex>
+          <Grid gap={4} templateColumns="1fr 3fr">
+            <GridItem fontWeight="800">Version</GridItem>
+            <GridItem>{bribedata?.version}</GridItem>
+            <GridItem fontWeight="800">Description</GridItem>
+            <GridItem>{bribedata?.description}</GridItem>
+            <GridItem fontWeight="800">Snapshot</GridItem>
+            <GridItem>{bribedata?.snapshot}</GridItem>
+          </Grid>
+          <Spacer />
+          <Button onClick={()=>showToast(`edit data for round: ${round}`)}>Edit round data</Button>
+          </Flex>
         </CardBody>
       </Card>
+
+      <Card m={6}>
+        <CardHeader>
+          <Flex>
+            <Heading size='md'>Tokens:</Heading>
+            <Spacer />
+            <Button onClick={()=>showToast(`add new token`)}>add new token</Button>
+          </Flex>
+        </CardHeader>
+        <CardBody>
+          <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
+            {!bribedata ||
+              bribedata?.tokendata.map((token) => (
+                <>
+                  <GridItem>{token.token}</GridItem>
+                  <GridItem>{token.coingeckoid}</GridItem>
+                  <GridItem>{token.tokenaddress}</GridItem>
+                  <GridItem>
+                    <Flex justifyContent="flex-end">
+                      <Spacer />
+                    <Button onClick={()=>showToast(`edit token ${token.token}`)}>Edit</Button>
+                    <Spacer />
+                    <Button onClick={()=>showToast(`delete token ${token.token}`)}>Delete</Button>
+                    </Flex>
+                  </GridItem>
+                </>
+              ))}
+          </Grid>
+        </CardBody>
+      </Card>
+
+      <Card m={6}>
+        <CardHeader>
+          <Flex>
+            <Heading size='md'>Offers:</Heading>
+            <Spacer />
+            <Button onClick={()=>showToast(`add new bribe`)}>add new offer</Button>
+          </Flex>
+        </CardHeader>
+        <CardBody>
+          <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
+            {!bribedata ||
+              bribedata.bribedata.map((bribe) => (
+                <>
+                  <GridItem>{bribe.voteindex}</GridItem>
+                  <GridItem>{bribe.poolname}</GridItem>
+                  <GridItem>{bribe.rewarddescription}</GridItem>
+                  <GridItem>
+                    <Flex justifyContent="flex-end">
+                      <Spacer />
+                    <Button onClick={()=>showToast(`edit bribe ${bribe.voteindex}`)}>Edit</Button>
+                    <Spacer />
+                    <Button onClick={()=>showToast(`delete bribe ${bribe.voteindex}`)}>Delete</Button>
+                    </Flex>
+                  </GridItem>
+                </>
+              ))}
+          </Grid>
+        </CardBody>
+      </Card>
+      </>
     );
   }
   return (
