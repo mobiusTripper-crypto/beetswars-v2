@@ -82,7 +82,7 @@ export async function updateChartdata(
       { projection: { _id: 0 } }
     );
     if (!item) return null;
-    let { bribersRoi, ...other } = item;
+    let { bribersRoi, ...other } = item; // eslint-disable-line prefer-const
     bribersRoi = roi;
     const newItem: Chartdata = { ...other, bribersRoi };
     //write

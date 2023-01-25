@@ -89,11 +89,11 @@ async function findEmissionChangeBlock(
   highBlock: number
 ): Promise<number> {
   // console.log("try to find change block");
-  var beets1 = await getBeetsPerBlock(lowBlock);
-  var beets2 = await getBeetsPerBlock(highBlock);
-  var beets3 = 0;
+  const beets1 = await getBeetsPerBlock(lowBlock);
+  const beets2 = await getBeetsPerBlock(highBlock);
+  let beets3 = 0;
   if (beets1 === beets2) return highBlock + 1; // return early if no change
-  var mid = Math.round((lowBlock + highBlock) / 2);
+  let mid = Math.round((lowBlock + highBlock) / 2);
   do {
     beets3 = await getBeetsPerBlock(mid);
     if (beets3 === beets1) {
