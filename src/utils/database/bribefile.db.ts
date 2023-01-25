@@ -34,9 +34,9 @@ export async function readAllBribefile(): Promise<Bribefile[] | null> {
   }
 }
 
-export async function readKeyListBribefile(): Promise<string[]> {
-  return [] as string[];
-}
+// export async function readKeyListBribefile(): Promise<string[]> {
+//   return [] as string[];
+// }
 
 export async function insertBribefile(
   payload: Bribefile,

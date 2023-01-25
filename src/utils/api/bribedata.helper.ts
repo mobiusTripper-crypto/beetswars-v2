@@ -16,7 +16,7 @@ function timeformat(seconds: number): string {
 }
 
 export default async function getBribeData(
-  round: number = 0
+  round = 0
 ): Promise<BribeData | null> {
   const roundnumber = round || Number(await findConfigEntry("latest"));
   const bribefile = await readOneBribefile(roundnumber);

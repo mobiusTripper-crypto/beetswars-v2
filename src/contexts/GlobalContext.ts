@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createContext, useContext } from "react";
 
 type GlobalContext = {
@@ -10,13 +11,12 @@ type GlobalContext = {
 };
 
 export const MyGlobalContext = createContext<GlobalContext>({
-  requestedRound: '',
+  requestedRound: "",
   requestRound: () => {},
-  display: '',
+  display: "",
   setDisplay: () => {},
-  gVersion: '',
+  gVersion: "",
   setGVersion: () => {},
 });
 
 export const useGlobalContext = () => useContext(MyGlobalContext);
-

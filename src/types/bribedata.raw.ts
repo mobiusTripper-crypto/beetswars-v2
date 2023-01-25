@@ -7,6 +7,7 @@ export const Tokendata = z.object({
   bptpoolid: z.string().optional(),
   isbpt: z.boolean().optional(),
   lastprice: z.number().optional(),
+  tokenId: z.number(),
 });
 export type Tokendata = z.infer<typeof Tokendata>;
 
@@ -15,6 +16,7 @@ export const Reward = z.object({
   token: z.string(),
   amount: z.number(),
   isfixed: z.boolean(),
+  rewardId: z.number(),
 });
 export type Reward = z.infer<typeof Reward>;
 
@@ -35,6 +37,7 @@ export const Bribedata = z.object({
   additionalrewards: Additionalrewards.array().optional(),
   reward: Reward.array(),
   payoutthreshold: z.number().optional(),
+  offerId: z.number(),
 });
 export type Bribedata = z.infer<typeof Bribedata>;
 

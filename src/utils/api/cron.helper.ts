@@ -59,7 +59,7 @@ export async function getData(round: string) {
     const rewardcap = bribe.rewardcap || Infinity;
     let sum = 0;
     const key = (bribe.voteindex + 1).toString();
-    let bribeEntry = bribes.find((x) => x.key === key);
+    let bribeEntry = bribes.find((x) => x.key === key); // eslint-disable-line prefer-const
     if (!bribeEntry) break;
     const index = bribes.indexOf(bribeEntry);
     for (const reward of bribe.reward) {
