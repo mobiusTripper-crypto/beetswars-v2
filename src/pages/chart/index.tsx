@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { NextPage } from "next";
 import type { Echarts } from "types/echarts.trpc";
 import { trpc } from "utils/trpc";
@@ -18,7 +19,7 @@ const RefetchOptions = {
 
 function Chart1() {
   const chartData: Echarts | "" =
-    trpc.chart.chartdata.useQuery( undefined, RefetchOptions ).data?.chartdata ?? "";
+    trpc.chart.chartdata.useQuery(undefined, RefetchOptions).data?.chartdata ?? "";
   const { requestedRound, requestRound } = useGlobalContext();
   const router = useRouter();
   const linewidth = "2";
@@ -514,7 +515,7 @@ function Chart1() {
 
   return (
     <>
-      <Text fontSize="3xl"  align="center" marginBottom="20px">
+      <Text fontSize="3xl" align="center" marginBottom="20px">
         Gauge Vote History
       </Text>
       <ReactECharts
