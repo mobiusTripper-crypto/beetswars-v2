@@ -1,4 +1,4 @@
-/* eslint-disable no-empty-function */
+/* eslint-disable */
 import { createContext, useContext } from "react";
 
 type GlobalContext = {

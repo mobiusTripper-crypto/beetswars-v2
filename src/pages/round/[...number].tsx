@@ -1,4 +1,4 @@
-/* eslint-disable ban-ts-comment */
+/* eslint-disable */
 
 import {
   Table,
