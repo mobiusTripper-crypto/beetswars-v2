@@ -1,3 +1,5 @@
+/* eslint-disable ban-ts-comment */
+
 import {
   Table,
   Thead,

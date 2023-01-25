@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import { createContext, useContext } from "react";
 
 type GlobalContext = {
@@ -11,11 +12,11 @@ type GlobalContext = {
 
 export const MyGlobalContext = createContext<GlobalContext>({
   requestedRound: "",
-  requestRound: () => {}, // eslint-disable-line no-empty-function
+  requestRound: () => {},
   display: "",
-  setDisplay: () => {}, // eslint-disable-line no-empty-function
+  setDisplay: () => {},
   gVersion: "",
-  setGVersion: () => {}, // eslint-disable-line no-empty-function
+  setGVersion: () => {},
 });
 
 export const useGlobalContext = () => useContext(MyGlobalContext);
