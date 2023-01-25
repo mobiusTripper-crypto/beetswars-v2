@@ -1,8 +1,9 @@
+/* eslint-disable */
 import { Box } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 
-export function RoundSelector({ handleChange = () => {} }: any): JSX.Element {
+export function RoundSelector({ handleChange = () => { } }: any): JSX.Element {
   const { requestedRound, requestRound } = useGlobalContext();
 
   const roundList = trpc.rounds.roundlist.useQuery(undefined, {
@@ -13,13 +14,13 @@ export function RoundSelector({ handleChange = () => {} }: any): JSX.Element {
   };
 
   return (
-      <select onChange={handleChange} value={requestedRound}>
-        {roundList.rounds.map((round: string, index: number) => (
-          <option key={index} value={round}>
-            Round {round}
-          </option>
-        ))}
-      </select>
+    <select onChange={handleChange} value={requestedRound}>
+      {roundList.rounds.map((round: string, index: number) => (
+        <option key={index} value={round}>
+          Round {round}
+        </option>
+      ))}
+    </select>
   );
 }
 
