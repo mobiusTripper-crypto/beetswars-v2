@@ -57,9 +57,6 @@ export default function Round() {
       // @ts-ignore
       requestRound(number[0]);
     }
-  }, [roundList, number]);
-
-  const Url = "/api/v1/bribedata/" + requestedRound;
 
   if (number[1]) {
     switch (number[1]) {
@@ -70,6 +67,9 @@ export default function Round() {
         setDisplay("cards");
     }
   }
+  }, [display, roundList, number]);
+
+  const Url = "/api/v1/bribedata/" + requestedRound;
 
   console.log(roundList.latest);
   console.log(number[0], requestedRound);

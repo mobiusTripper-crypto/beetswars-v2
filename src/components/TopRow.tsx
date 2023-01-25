@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { trpc } from "../utils/trpc";
+import { RoundSelector } from "components/RoundSelector";
 
 export const TopRow = () => {
   const { requestedRound, requestRound, display, setDisplay } =
@@ -16,41 +17,27 @@ export const TopRow = () => {
   const tableLink = "/round/" + requestedRound + "/table";
   const router = useRouter();
 
-  const roundList = trpc.rounds.roundlist.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  }).data?.data ?? {
-    rounds: [],
-    latest: 0,
-  };
-
   const iconProps = {
     size: "1.6rem",
     marginRight: "1rem",
   };
 
-  const handleChange = (e: any) => {
+  const changeRound = (e: any) => {
     console.log(e.target.value);
     requestRound(e.target.value);
-    const href = "/round/" + e.target.value;
-    router.push(href);
+    router.push("/round/" + e.target.value);
   };
 
   return (
     <>
       <HStack p={4} justifyContent="flex-end">
-        <Box>
+        <Box style={{ marginRight: "1rem" }}>
           <Link href="/bribeform">
             <Text fontSize="1xl">bribeform</Text>
           </Link>
         </Box>
-        <Box style={{ marginRight: "9px" }}>
-          <select onChange={handleChange} value={requestedRound}>
-            {roundList.rounds.map((bf: any, index: number) => (
-              <option key={index} value={bf}>
-                Round {bf}
-              </option>
-            ))}
-          </select>
+        <Box style={{ marginRight: "1rem" }}>
+          <RoundSelector handleChange={changeRound} />
         </Box>
         <Link href="/chart">
           <Icon
@@ -86,5 +73,3 @@ export const TopRow = () => {
 };
 
 export default TopRow;
-
-//      <p>{roundList.rounds.toString()}</p>
