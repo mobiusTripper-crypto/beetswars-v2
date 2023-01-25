@@ -3,22 +3,15 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": [
-    
-    "@typescript-eslint", "prettier"
-    
-  ],
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "plugins": ["@typescript-eslint", "prettier"],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
     "prettier/prettier": [
       1,
       {
         "printWidth": 100,
-        "endOfLine": "auto",
+        "endOfLine": "lf",
         "tabWidth": 2,
         "useTabs": false,
         "singleQuote": false,
