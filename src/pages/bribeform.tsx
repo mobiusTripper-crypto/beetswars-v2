@@ -3,12 +3,18 @@ import { Button, Card, CardBody, CardHeader, Flex, Grid, GridItem, Heading, HSta
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
+import RoundSelector from "components/RoundSelector";
 
 const BribeForm: NextPage = () => {
-  const { requestedRound } = useGlobalContext();
+  const { requestedRound, requestRound } = useGlobalContext();
   const round = +requestedRound;
   const { data: session, status } = useSession();
   const bribedata = trpc.bribedata.bribedata_raw.useQuery({ round }).data?.bribefile;
+
+  const changeRound = (e: any) => {
+    console.log(e.target.value);
+    requestRound(e.target.value);
+  };
 
   // this function shows toast message - just for testing button function
   // TODO: remove after testing
@@ -35,6 +41,8 @@ const BribeForm: NextPage = () => {
           <CardHeader>
             <Flex>
               <Heading size='md'>Edit Round {round}</Heading>
+              <Spacer />
+              <RoundSelector handleChange={changeRound} />
               <Spacer />
               <Button onClick={() => showToast(`add new round`)}>add new round</Button>
             </Flex>
@@ -68,15 +76,15 @@ const BribeForm: NextPage = () => {
               {!bribedata ||
                 bribedata?.tokendata.map((token) => (
                   <>
+                    <GridItem>{token.tokenId}</GridItem>
                     <GridItem>{token.token}</GridItem>
-                    <GridItem>{token.coingeckoid}</GridItem>
                     <GridItem>{token.tokenaddress}</GridItem>
                     <GridItem>
                       <Flex justifyContent="flex-end">
                         <Spacer />
-                        <Button onClick={() => showToast(`edit token ${token.token}`)}>Edit</Button>
+                        <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>Edit</Button>
                         <Spacer />
-                        <Button onClick={() => showToast(`delete token ${token.token}`)}>Delete</Button>
+                        <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>Delete</Button>
                       </Flex>
                     </GridItem>
                   </>
@@ -98,15 +106,15 @@ const BribeForm: NextPage = () => {
               {!bribedata ||
                 bribedata.bribedata.map((bribe) => (
                   <>
-                    <GridItem>{bribe.voteindex}</GridItem>
+                    <GridItem>{bribe.offerId}</GridItem>
                     <GridItem>{bribe.poolname}</GridItem>
                     <GridItem>{bribe.rewarddescription}</GridItem>
                     <GridItem>
                       <Flex justifyContent="flex-end">
                         <Spacer />
-                        <Button onClick={() => showToast(`edit bribe ${bribe.voteindex}`)}>Edit</Button>
+                        <Button onClick={() => showToast(`edit bribe ${bribe.offerId}`)}>Edit</Button>
                         <Spacer />
-                        <Button onClick={() => showToast(`delete bribe ${bribe.voteindex}`)}>Delete</Button>
+                        <Button onClick={() => showToast(`delete bribe ${bribe.offerId}`)}>Delete</Button>
                       </Flex>
                     </GridItem>
                   </>
