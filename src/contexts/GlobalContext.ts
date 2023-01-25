@@ -10,13 +10,12 @@ type GlobalContext = {
 };
 
 export const MyGlobalContext = createContext<GlobalContext>({
-  requestedRound: '',
+  requestedRound: "",
   requestRound: () => {},
-  display: '',
+  display: "",
   setDisplay: () => {},
-  gVersion: '',
+  gVersion: "",
   setGVersion: () => {},
-});
+}); // eslint-disable-line no-empty-function
 
 export const useGlobalContext = () => useContext(MyGlobalContext);
-
