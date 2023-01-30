@@ -67,7 +67,19 @@ export async function deleteToken(
   tokenId: number,
   round: number
 ): Promise<boolean> {
-  return false;
+  try {
+    const bribefile = await readOneBribefile(round);
+    if (!bribefile) return false;
+    const newTokens = bribefile.tokendata.filter(
+      (token) => token.tokenId !== tokenId
+    );
+    const newBribefile = { ...bribefile, tokendata: newTokens };
+    const result = await insertBribefile(newBribefile, round);
+    return !!result;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 export async function addEditOffer(
