@@ -9,7 +9,7 @@ const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
   const round = +requestedRound;
   const { data: session, status } = useSession();
-  const bribedata = trpc.bribedata.bribedata_raw.useQuery({ round }).data?.bribefile;
+  const bribedata = trpc.bribes.list_raw.useQuery({ round }).data?.bribefile;
 
   const changeRound = (e: any) => {
     console.log(e.target.value);

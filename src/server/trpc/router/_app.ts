@@ -13,8 +13,8 @@ export const appRouter = router({
   rounds: roundlistRouter,
   stats: statsRouter,
   login: loginRouter,
-  bribes: bribesRouter,
-  bribedata: bribedataRouter,
+  bribes_test: bribesRouter,
+  bribes: bribedataRouter,
 });
 
 // export type definition of API

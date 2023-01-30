@@ -14,23 +14,17 @@ export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
   }
 }
 
-export async function editToken(
-  payload: Tokendata,
-  round: number
-): Promise<Tokendata[] | null> {
+export async function editRound(payload: Bribefile): Promise<Bribefile | null> {
   try {
-    const newToken = Tokendata.parse(payload);
-    const bribefile = await readOneBribefile(round);
-    if (!bribefile) return null;
-    const { tokendata, ...rest } = bribefile;
-    if (tokendata.length === 0) return null;
-    const tokenArray = tokendata.map((item) => {
-      return item.tokenId === newToken.tokenId ? newToken : item;
-    });
-    const newPayload = { ...rest, tokendata: tokenArray };
-    const result = await insertBribefile(newPayload, round);
-    if (!result?.tokendata) return null;
-    return result.tokendata;
+    Bribefile.parse(payload);
+    const round = payload.round;
+    const oldBribefile = await readOneBribefile(round);
+    if (!oldBribefile) return null;
+    // do not touch omitted parameters:
+    const newBribefile = { ...oldBribefile, ...payload };
+    const result = await insertBribefile(newBribefile, round);
+    if (!result) return null;
+    return result;
   } catch (error) {
     console.error(error);
     return null;
@@ -56,6 +50,29 @@ export async function addToken(
     bribefile.tokendata.push(newToken);
     const result = await insertBribefile(bribefile, round);
     if (!result) return null;
+    return result.tokendata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function editToken(
+  payload: Tokendata,
+  round: number
+): Promise<Tokendata[] | null> {
+  try {
+    const newToken = Tokendata.parse(payload);
+    const bribefile = await readOneBribefile(round);
+    if (!bribefile) return null;
+    const { tokendata, ...rest } = bribefile;
+    if (tokendata.length === 0) return null;
+    const tokenArray = tokendata.map((item) => {
+      return item.tokenId === newToken.tokenId ? newToken : item;
+    });
+    const newPayload = { ...rest, tokendata: tokenArray };
+    const result = await insertBribefile(newPayload, round);
+    if (!result?.tokendata) return null;
     return result.tokendata;
   } catch (error) {
     console.error(error);
