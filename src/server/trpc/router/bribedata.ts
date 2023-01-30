@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { type Session } from "next-auth";
-import { Bribedata, Bribefile, Tokendata } from "types/bribedata.raw";
+import { Bribedata, Bribefile, Reward, Tokendata } from "types/bribedata.raw";
 import getBribeData from "utils/api/bribedata.helper";
 import {
   addOffer,
@@ -11,6 +11,9 @@ import {
   editOffer,
   editRound,
   editToken,
+  addReward,
+  editReward,
+  deleteReward,
 } from "utils/api/editBribedata";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { z } from "zod";
@@ -28,6 +31,9 @@ import { router, publicProcedure } from "../trpc";
 // - addOffer: create a new entry of a bribe offer for given round
 // - editOffer: edit bribedata for given round and offer id
 // - deleteOffer: delete bribedata for given round and offer id
+// - addReward: create a new reward entry into a bribe offer for given round
+// - editReward: edit reward data for given round and offer id
+// - deleteReward: delete reward for given round, offer and reward id, except of last
 
 export const bribedataRouter = router({
   list: publicProcedure
@@ -122,6 +128,38 @@ export const bribedataRouter = router({
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
       const result = await deleteOffer(input.offerId, input.round);
+      return result;
+    }),
+  addReward: publicProcedure
+    .input(z.object({ payload: Reward, round: z.number(), offer: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const session = ctx as Session;
+      if (!session.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      const result = await addReward(input.payload, input.round, input.offer);
+      return result;
+    }),
+  editReward: publicProcedure
+    .input(z.object({ payload: Reward, round: z.number(), offer: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const session = ctx as Session;
+      if (!session.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      const result = await editReward(input.payload, input.round, input.offer);
+      return result;
+    }),
+  deleteReward: publicProcedure
+    .input(
+      z.object({ round: z.number(), offer: z.number(), reward: z.number() })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const session = ctx as Session;
+      if (!session.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      const result = await deleteReward(input.round, input.offer, input.reward);
       return result;
     }),
 });

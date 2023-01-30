@@ -1,4 +1,4 @@
-import { Bribedata, Bribefile, Tokendata } from "types/bribedata.raw";
+import { Bribedata, Bribefile, Reward, Tokendata } from "types/bribedata.raw";
 import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
 
 export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
@@ -7,6 +7,7 @@ export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
     const round = payload.round;
     const result = await insertBribefile(payload, round);
     if (!result) return null;
+    console.log("add round");
     return result;
   } catch (error) {
     console.error(error);
@@ -17,13 +18,14 @@ export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
 export async function editRound(payload: Bribefile): Promise<Bribefile | null> {
   try {
     Bribefile.parse(payload);
+    const { tokendata, bribedata, ...rest } = payload;
     const round = payload.round;
     const oldBribefile = await readOneBribefile(round);
     if (!oldBribefile) return null;
-    // do not touch omitted parameters:
-    const newBribefile = { ...oldBribefile, ...payload };
+    const newBribefile = { ...oldBribefile, ...rest };
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
+    console.log("edit round");
     return result;
   } catch (error) {
     console.error(error);
@@ -50,6 +52,7 @@ export async function addToken(
     bribefile.tokendata.push(newToken);
     const result = await insertBribefile(bribefile, round);
     if (!result) return null;
+    console.log("add token");
     return result.tokendata;
   } catch (error) {
     console.error(error);
@@ -73,6 +76,7 @@ export async function editToken(
     const newPayload = { ...rest, tokendata: tokenArray };
     const result = await insertBribefile(newPayload, round);
     if (!result?.tokendata) return null;
+    console.log("edit token");
     return result.tokendata;
   } catch (error) {
     console.error(error);
@@ -92,6 +96,7 @@ export async function deleteToken(
     );
     const newBribefile = { ...bribefile, tokendata: newTokens };
     const result = await insertBribefile(newBribefile, round);
+    console.log("delete token");
     return !!result;
   } catch (error) {
     console.error(error);
@@ -118,6 +123,7 @@ export async function addOffer(
     bribefile.bribedata.push(newOffer);
     const result = await insertBribefile(bribefile, round);
     if (!result) return null;
+    console.log("add offer");
     return result.bribedata;
   } catch (error) {
     console.error(error);
@@ -141,6 +147,7 @@ export async function editOffer(
     const newPayload = { ...rest, bribedata: bribeArray };
     const result = await insertBribefile(newPayload, round);
     if (!result?.bribedata) return null;
+    console.log("edit offer");
     return result.bribedata;
   } catch (error) {
     console.error(error);
@@ -160,6 +167,96 @@ export async function deleteOffer(
     );
     const newBribefile = { ...bribefile, bribedata: newOffers };
     const result = await insertBribefile(newBribefile, round);
+    console.log("delete offer");
+    return !!result;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function addReward(
+  payload: Reward,
+  round: number,
+  offer: number
+): Promise<Bribedata[] | null> {
+  try {
+    const newReward = Reward.parse(payload);
+    const bribefile = await readOneBribefile(round);
+    if (!bribefile) return null;
+    const { bribedata, ...rest } = bribefile;
+    const bribe = bribedata.find((item) => item.offerId === offer);
+    if (!bribe) return null;
+    if (bribe.reward.length === 0) {
+      payload.rewardId = 1;
+    } else {
+      payload.rewardId =
+        bribe.reward.reduce((prev, current) => {
+          return prev.rewardId > current.rewardId ? prev : current;
+        }).rewardId + 1;
+    }
+    bribe.reward.push(payload);
+    const newBribedata = bribedata.map((item) =>
+      item.offerId === offer ? bribe : item
+    );
+    const newBribefile = { ...rest, bribedata: newBribedata };
+    const result = await insertBribefile(newBribefile, round);
+    if (!result) return null;
+    console.log("add reward");
+    return result.bribedata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function editReward(
+  payload: Reward,
+  round: number,
+  offer: number
+): Promise<Bribedata[] | null> {
+  try {
+    const newReward = Reward.parse(payload);
+    const bribefile = await readOneBribefile(round);
+    if (!bribefile) return null;
+    const { bribedata, ...rest } = bribefile;
+    const bribe = bribedata.find((item) => item.offerId === offer);
+    if (!bribe) return null;
+    bribe.reward = bribe.reward.map((item) =>
+      item.rewardId === payload.rewardId ? payload : item
+    );
+    const newBribedata = bribedata.map((item) =>
+      item.offerId === offer ? bribe : item
+    );
+    const newBribefile = { ...rest, bribedata: newBribedata };
+    const result = await insertBribefile(newBribefile, round);
+    if (!result) return null;
+    console.log("edit reward");
+    return result.bribedata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function deleteReward(
+  round: number,
+  offer: number,
+  reward: number
+): Promise<boolean> {
+  try {
+    const bribefile = await readOneBribefile(round);
+    if (!bribefile) return false;
+    const { bribedata, ...rest } = bribefile;
+    const bribe = bribedata.find((item) => item.offerId === offer);
+    if (!bribe || bribe.reward.length < 2) return false;
+    bribe.reward = bribe.reward.filter((item) => item.rewardId !== reward);
+    const newBribedata = bribedata.map((item) =>
+      item.offerId === offer ? bribe : item
+    );
+    const newBribefile = { ...rest, bribedata: newBribedata };
+    const result = await insertBribefile(newBribefile, round);
+    console.log("delete reward");
     return !!result;
   } catch (error) {
     console.error(error);

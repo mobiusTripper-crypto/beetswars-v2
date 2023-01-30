@@ -7,7 +7,7 @@ import RoundSelector from "components/RoundSelector";
 
 const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
-  const round = +requestedRound;
+  const round = +requestedRound || 0;
   const { data: session, status } = useSession();
   const bribedata = trpc.bribes.list_raw.useQuery({ round }).data?.bribefile;
 
