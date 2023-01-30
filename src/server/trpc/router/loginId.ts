@@ -2,7 +2,6 @@ import { TRPCError } from "@trpc/server";
 import { type Session } from "next-auth";
 import { addLogin, readLoginList } from "utils/database/loginID.db";
 import { z } from "zod";
-
 import { router, publicProcedure } from "../trpc";
 
 export const loginRouter = router({

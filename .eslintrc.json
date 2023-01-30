@@ -18,7 +18,8 @@
         "singleQuote": false,
         "semi": true,
         "arrowParens": "avoid",
-        "singleAttributePerLine": true
+        "singleAttributePerLine": true,
+        "no-multiple-empty-lines": false
       }
     ]
   }
