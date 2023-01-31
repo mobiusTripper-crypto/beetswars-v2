@@ -1,5 +1,5 @@
-import { Bribedata, Tokendata } from "types/bribedata.raw";
-import { SingleOffer } from "types/bribelist.trpc";
+import type { Bribedata, Tokendata } from "types/bribedata.raw";
+import type { SingleOffer } from "types/bribelist.trpc";
 import { getCoinGeckoHistoryOldMethod } from "utils/externalData/coingecko";
 import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
 
@@ -25,11 +25,11 @@ export async function calculateSingleOffer(
     };
 
   // votes, percent
-  const { votes, percent } = snapshotVotesPerPool.find(
-    (x) => x.poolId === choice.toString()
-  ) || { votes: 0, percent: 0 };
-  const minpercent =
-    bribe.payoutthreshold && bribe.payoutthreshold < 0 ? 0 : 0.15;
+  const { votes, percent } = snapshotVotesPerPool.find(x => x.poolId === choice.toString()) || {
+    votes: 0,
+    percent: 0,
+  };
+  const minpercent = bribe.payoutthreshold && bribe.payoutthreshold < 0 ? 0 : 0.15;
   if (percent < minpercent)
     return {
       usdPer1000Vp: 0,
@@ -47,7 +47,7 @@ export async function calculateSingleOffer(
   for (const reward of rewards) {
     let usdValue = 1;
     if (!reward.isfixed) {
-      const tokendata = tokenlist.find((x) => x.token === reward.token);
+      const tokendata = tokenlist.find(x => x.token === reward.token);
       if (!tokendata) {
         usdValue = 0;
       } else if (tokendata.lastprice) usdValue = tokendata.lastprice;
@@ -63,10 +63,8 @@ export async function calculateSingleOffer(
       case "percent":
         // thresholds
         let threshold = bribe.percentagethreshold ?? 0;
-        if (bribe.payoutthreshold && bribe.payoutthreshold > 0)
-          threshold = bribe.payoutthreshold;
-        if (percent > threshold)
-          rewardAmount += usdValue * (percent - threshold);
+        if (bribe.payoutthreshold && bribe.payoutthreshold > 0) threshold = bribe.payoutthreshold;
+        if (percent > threshold) rewardAmount += usdValue * (percent - threshold);
         label = "Percent Amount";
         break;
       case "pervote":
@@ -78,8 +76,7 @@ export async function calculateSingleOffer(
   if (rewards.length > 1) label = "Overall Amount";
 
   //check rewardcap
-  if (bribe.rewardcap && rewardAmount > bribe.rewardcap)
-    rewardAmount = bribe.rewardcap;
+  if (bribe.rewardcap && rewardAmount > bribe.rewardcap) rewardAmount = bribe.rewardcap;
 
   // usdPerVp, UsdPer1000Vp
   const usdPerVp = Number((rewardAmount / votes).toFixed(7));

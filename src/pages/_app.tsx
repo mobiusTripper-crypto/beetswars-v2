@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
-import type { AppType } from "next/app";
+// import type { AppType } from "next/app";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -49,9 +49,7 @@ const MyApp = ({
               theme={darkTheme()}
             >
               <ChakraProvider theme={theme}>
-                <ColorModeScript
-                  initialColorMode={theme.config.initialColorMode}
-                />
+                <ColorModeScript initialColorMode={theme.config.initialColorMode} />
                 <TopRow />
                 <Header />
                 <Component {...pageProps} />

@@ -1,10 +1,7 @@
-import { BribeData, BribeOffer } from "types/bribelist.trpc";
+import type { BribeData, BribeOffer } from "types/bribelist.trpc";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
-import {
-  getSnapshotProposal,
-  getSnapshotVotes,
-} from "utils/externalData/snapshot";
+import { getSnapshotProposal, getSnapshotVotes } from "utils/externalData/snapshot";
 import { calculateSingleOffer } from "./calculateBribe";
 
 function timeformat(seconds: number): string {
@@ -15,9 +12,7 @@ function timeformat(seconds: number): string {
   return `${days} d ${hours % 24} h ${minutes % 60} m`;
 }
 
-export default async function getBribeData(
-  round = 0
-): Promise<BribeData | null> {
+export default async function getBribeData(round = 0): Promise<BribeData | null> {
   const roundnumber = round || Number(await findConfigEntry("latest"));
   const bribefile = await readOneBribefile(roundnumber);
   if (!bribefile) return null;
@@ -37,13 +32,8 @@ export default async function getBribeData(
   const totalVoter = votes.length;
 
   const bribelist = await Promise.all(
-    bribefile.bribedata.map(async (bribe) => {
-      const offer = await calculateSingleOffer(
-        bribe,
-        bribefile.tokendata,
-        snapshot.end,
-        proposal
-      );
+    bribefile.bribedata.map(async bribe => {
+      const offer = await calculateSingleOffer(bribe, bribefile.tokendata, snapshot.end, proposal);
       const bribeOffer: BribeOffer = {
         voteindex: bribe.voteindex,
         poolname: bribe.poolname,
@@ -57,21 +47,14 @@ export default async function getBribeData(
   );
 
   const bribedVotes = bribelist.reduce((sum, bribe) => sum + bribe.votes, 0);
-  const totalBribes = bribelist.reduce(
-    (sum, bribe) => sum + bribe.rewardAmount,
-    0
-  );
-  const avgPer1000 = !bribedVotes
-    ? 0
-    : Number(((totalBribes / bribedVotes) * 1000).toFixed(2));
+  const totalBribes = bribelist.reduce((sum, bribe) => sum + bribe.rewardAmount, 0);
+  const avgPer1000 = !bribedVotes ? 0 : Number(((totalBribes / bribedVotes) * 1000).toFixed(2));
 
   // calculate bribed voters
-  const bribedOffers = bribefile.bribedata.map((x) =>
-    (x.voteindex + 1).toString()
-  );
+  const bribedOffers = bribefile.bribedata.map(x => (x.voteindex + 1).toString());
   const bribedVoters = [] as string[];
-  votes.forEach((vote) => {
-    for (const [key, value] of Object.entries(vote.choice)) {
+  votes.forEach(vote => {
+    for (const [key] of Object.entries(vote.choice)) {
       if (bribedOffers.includes(key) && !bribedVoters.includes(vote.voter))
         bribedVoters.push(vote.voter);
     }

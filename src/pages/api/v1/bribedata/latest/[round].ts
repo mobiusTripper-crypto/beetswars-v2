@@ -1,11 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { Config } from "types/config.raw";
+import type { NextApiRequest, NextApiResponse } from "next";
+import type { Config } from "types/config.raw";
 import { setConfigEntry } from "utils/database/config.db";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(501).send("not implemented");
   // get round from path
   const {

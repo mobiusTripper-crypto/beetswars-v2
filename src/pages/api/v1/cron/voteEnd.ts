@@ -1,12 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { getData } from "utils/api/cron.helper";
-import { insertChartdata, readOneChartdata } from "utils/database/chartdata.db";
+import { insertChartdata } from "utils/database/chartdata.db";
+// import { insertChartdata, readOneChartdata } from "utils/database/chartdata.db";
 import { findConfigEntry } from "utils/database/config.db";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const round = await findConfigEntry("latest");
   if (!round) return;
   const newRound = await getData(round);

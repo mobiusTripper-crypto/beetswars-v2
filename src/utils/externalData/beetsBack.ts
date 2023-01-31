@@ -1,9 +1,6 @@
 import { request, gql } from "graphql-request";
 
-export async function getTokenPrice(
-  timestamp: number,
-  address: string
-): Promise<number> {
+export async function getTokenPrice(timestamp: number, address: string): Promise<number> {
   type Chartdata = { id: string; price: string; timestamp: number };
   const queryUrl = "https://backend-v2.beets-ftm-node.com/graphql";
   const query = gql`
@@ -24,10 +21,7 @@ export async function getTokenPrice(
     };
     const result = tokenGetPriceChartData.reduce(
       (max, current) => {
-        if (
-          current.timestamp <= timestamp &&
-          current.timestamp > max.timestamp
-        ) {
+        if (current.timestamp <= timestamp && current.timestamp > max.timestamp) {
           return current;
         }
         return max;

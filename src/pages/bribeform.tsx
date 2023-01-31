@@ -1,5 +1,19 @@
 import { type NextPage } from "next";
-import { Button, Card, CardBody, CardHeader, Flex, Grid, GridItem, Heading, HStack, Spacer, Text, useToast, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  Spacer,
+  Text,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
@@ -11,7 +25,7 @@ const BribeForm: NextPage = () => {
   const { data: session, status } = useSession();
   const bribedata = trpc.bribes.list_raw.useQuery({ round }).data?.bribefile;
 
-  const changeRound = (e: any) => {
+  const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
     requestRound(e.target.value);
   };
@@ -21,26 +35,29 @@ const BribeForm: NextPage = () => {
   const toast = useToast();
   function showToast(action: string) {
     toast({
-      title: 'Button clicked.',
+      title: "Button clicked.",
       description: action,
-      status: 'success',
+      status: "success",
       duration: 5000,
       isClosable: true,
-    })
+    });
   }
   //////////////////////////////
 
   if (session && status === "authenticated") {
     return (
       <>
-        <HStack m={6} justifyContent="flex-end">
+        <HStack
+          m={6}
+          justifyContent="flex-end"
+        >
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
         <Card m={6}>
           <CardHeader>
             <Flex>
-              <Heading size='md'>Edit Round {round}</Heading>
+              <Heading size="md">Edit Round {round}</Heading>
               <Spacer />
               <RoundSelector handleChange={changeRound} />
               <Spacer />
@@ -49,7 +66,10 @@ const BribeForm: NextPage = () => {
           </CardHeader>
           <CardBody>
             <Flex>
-              <Grid gap={4} templateColumns="1fr 3fr">
+              <Grid
+                gap={4}
+                templateColumns="1fr 3fr"
+              >
                 <GridItem fontWeight="800">Version</GridItem>
                 <GridItem>{bribedata?.version}</GridItem>
                 <GridItem fontWeight="800">Description</GridItem>
@@ -58,7 +78,9 @@ const BribeForm: NextPage = () => {
                 <GridItem>{bribedata?.snapshot}</GridItem>
               </Grid>
               <Spacer />
-              <Button onClick={() => showToast(`edit data for round: ${round}`)}>Edit round data</Button>
+              <Button onClick={() => showToast(`edit data for round: ${round}`)}>
+                Edit round data
+              </Button>
             </Flex>
           </CardBody>
         </Card>
@@ -66,15 +88,18 @@ const BribeForm: NextPage = () => {
         <Card m={6}>
           <CardHeader>
             <Flex>
-              <Heading size='md'>Tokens:</Heading>
+              <Heading size="md">Tokens:</Heading>
               <Spacer />
               <Button onClick={() => showToast(`add new token`)}>add new token</Button>
             </Flex>
           </CardHeader>
           <CardBody>
-            <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
+            <Grid
+              gap={4}
+              templateColumns="1fr 3fr 3fr 1fr"
+            >
               {!bribedata ||
-                bribedata?.tokendata.map((token) => (
+                bribedata?.tokendata.map(token => (
                   <>
                     <GridItem>{token.tokenId}</GridItem>
                     <GridItem>{token.token}</GridItem>
@@ -82,9 +107,13 @@ const BribeForm: NextPage = () => {
                     <GridItem>
                       <Flex justifyContent="flex-end">
                         <Spacer />
-                        <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>Edit</Button>
+                        <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>
+                          Edit
+                        </Button>
                         <Spacer />
-                        <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>Delete</Button>
+                        <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>
+                          Delete
+                        </Button>
                       </Flex>
                     </GridItem>
                   </>
@@ -96,15 +125,18 @@ const BribeForm: NextPage = () => {
         <Card m={6}>
           <CardHeader>
             <Flex>
-              <Heading size='md'>Offers:</Heading>
+              <Heading size="md">Offers:</Heading>
               <Spacer />
               <Button onClick={() => showToast(`add new bribe`)}>add new offer</Button>
             </Flex>
           </CardHeader>
           <CardBody>
-            <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
+            <Grid
+              gap={4}
+              templateColumns="1fr 3fr 3fr 1fr"
+            >
               {!bribedata ||
-                bribedata.bribedata.map((bribe) => (
+                bribedata.bribedata.map(bribe => (
                   <>
                     <GridItem>{bribe.offerId}</GridItem>
                     <GridItem>{bribe.poolname}</GridItem>
@@ -112,9 +144,13 @@ const BribeForm: NextPage = () => {
                     <GridItem>
                       <Flex justifyContent="flex-end">
                         <Spacer />
-                        <Button onClick={() => showToast(`edit bribe ${bribe.offerId}`)}>Edit</Button>
+                        <Button onClick={() => showToast(`edit bribe ${bribe.offerId}`)}>
+                          Edit
+                        </Button>
                         <Spacer />
-                        <Button onClick={() => showToast(`delete bribe ${bribe.offerId}`)}>Delete</Button>
+                        <Button onClick={() => showToast(`delete bribe ${bribe.offerId}`)}>
+                          Delete
+                        </Button>
                       </Flex>
                     </GridItem>
                   </>

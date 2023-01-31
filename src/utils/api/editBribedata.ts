@@ -18,6 +18,7 @@ export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
 export async function editRound(payload: Bribefile): Promise<Bribefile | null> {
   try {
     Bribefile.parse(payload);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { tokendata, bribedata, ...rest } = payload;
     const round = payload.round;
     const oldBribefile = await readOneBribefile(round);
@@ -33,10 +34,7 @@ export async function editRound(payload: Bribefile): Promise<Bribefile | null> {
   }
 }
 
-export async function addToken(
-  payload: Tokendata,
-  round: number
-): Promise<Tokendata[] | null> {
+export async function addToken(payload: Tokendata, round: number): Promise<Tokendata[] | null> {
   try {
     const newToken = Tokendata.parse(payload);
     const bribefile = await readOneBribefile(round);
@@ -60,17 +58,14 @@ export async function addToken(
   }
 }
 
-export async function editToken(
-  payload: Tokendata,
-  round: number
-): Promise<Tokendata[] | null> {
+export async function editToken(payload: Tokendata, round: number): Promise<Tokendata[] | null> {
   try {
     const newToken = Tokendata.parse(payload);
     const bribefile = await readOneBribefile(round);
     if (!bribefile) return null;
     const { tokendata, ...rest } = bribefile;
     if (tokendata.length === 0) return null;
-    const tokenArray = tokendata.map((item) => {
+    const tokenArray = tokendata.map(item => {
       return item.tokenId === newToken.tokenId ? newToken : item;
     });
     const newPayload = { ...rest, tokendata: tokenArray };
@@ -84,16 +79,11 @@ export async function editToken(
   }
 }
 
-export async function deleteToken(
-  tokenId: number,
-  round: number
-): Promise<boolean> {
+export async function deleteToken(tokenId: number, round: number): Promise<boolean> {
   try {
     const bribefile = await readOneBribefile(round);
     if (!bribefile) return false;
-    const newTokens = bribefile.tokendata.filter(
-      (token) => token.tokenId !== tokenId
-    );
+    const newTokens = bribefile.tokendata.filter(token => token.tokenId !== tokenId);
     const newBribefile = { ...bribefile, tokendata: newTokens };
     const result = await insertBribefile(newBribefile, round);
     console.log("delete token");
@@ -104,10 +94,7 @@ export async function deleteToken(
   }
 }
 
-export async function addOffer(
-  payload: Bribedata,
-  round: number
-): Promise<Bribedata[] | null> {
+export async function addOffer(payload: Bribedata, round: number): Promise<Bribedata[] | null> {
   try {
     const newOffer = Bribedata.parse(payload);
     const bribefile = await readOneBribefile(round);
@@ -131,17 +118,14 @@ export async function addOffer(
   }
 }
 
-export async function editOffer(
-  payload: Bribedata,
-  round: number
-): Promise<Bribedata[] | null> {
+export async function editOffer(payload: Bribedata, round: number): Promise<Bribedata[] | null> {
   try {
     const newOffer = Bribedata.parse(payload);
     const bribefile = await readOneBribefile(round);
     if (!bribefile) return null;
     const { bribedata, ...rest } = bribefile;
     if (bribedata.length === 0) return null;
-    const bribeArray = bribedata.map((item) => {
+    const bribeArray = bribedata.map(item => {
       return item.offerId === newOffer.offerId ? newOffer : item;
     });
     const newPayload = { ...rest, bribedata: bribeArray };
@@ -155,16 +139,11 @@ export async function editOffer(
   }
 }
 
-export async function deleteOffer(
-  offerId: number,
-  round: number
-): Promise<boolean> {
+export async function deleteOffer(offerId: number, round: number): Promise<boolean> {
   try {
     const bribefile = await readOneBribefile(round);
     if (!bribefile) return false;
-    const newOffers = bribefile.bribedata.filter(
-      (offer) => offer.offerId !== offerId
-    );
+    const newOffers = bribefile.bribedata.filter(offer => offer.offerId !== offerId);
     const newBribefile = { ...bribefile, bribedata: newOffers };
     const result = await insertBribefile(newBribefile, round);
     console.log("delete offer");
@@ -185,20 +164,18 @@ export async function addReward(
     const bribefile = await readOneBribefile(round);
     if (!bribefile) return null;
     const { bribedata, ...rest } = bribefile;
-    const bribe = bribedata.find((item) => item.offerId === offer);
+    const bribe = bribedata.find(item => item.offerId === offer);
     if (!bribe) return null;
     if (bribe.reward.length === 0) {
-      payload.rewardId = 1;
+      newReward.rewardId = 1;
     } else {
-      payload.rewardId =
+      newReward.rewardId =
         bribe.reward.reduce((prev, current) => {
           return prev.rewardId > current.rewardId ? prev : current;
         }).rewardId + 1;
     }
-    bribe.reward.push(payload);
-    const newBribedata = bribedata.map((item) =>
-      item.offerId === offer ? bribe : item
-    );
+    bribe.reward.push(newReward);
+    const newBribedata = bribedata.map(item => (item.offerId === offer ? bribe : item));
     const newBribefile = { ...rest, bribedata: newBribedata };
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
@@ -220,14 +197,12 @@ export async function editReward(
     const bribefile = await readOneBribefile(round);
     if (!bribefile) return null;
     const { bribedata, ...rest } = bribefile;
-    const bribe = bribedata.find((item) => item.offerId === offer);
+    const bribe = bribedata.find(item => item.offerId === offer);
     if (!bribe) return null;
-    bribe.reward = bribe.reward.map((item) =>
-      item.rewardId === payload.rewardId ? payload : item
+    bribe.reward = bribe.reward.map(item =>
+      item.rewardId === newReward.rewardId ? newReward : item
     );
-    const newBribedata = bribedata.map((item) =>
-      item.offerId === offer ? bribe : item
-    );
+    const newBribedata = bribedata.map(item => (item.offerId === offer ? bribe : item));
     const newBribefile = { ...rest, bribedata: newBribedata };
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
@@ -239,21 +214,15 @@ export async function editReward(
   }
 }
 
-export async function deleteReward(
-  round: number,
-  offer: number,
-  reward: number
-): Promise<boolean> {
+export async function deleteReward(round: number, offer: number, reward: number): Promise<boolean> {
   try {
     const bribefile = await readOneBribefile(round);
     if (!bribefile) return false;
     const { bribedata, ...rest } = bribefile;
-    const bribe = bribedata.find((item) => item.offerId === offer);
+    const bribe = bribedata.find(item => item.offerId === offer);
     if (!bribe || bribe.reward.length < 2) return false;
-    bribe.reward = bribe.reward.filter((item) => item.rewardId !== reward);
-    const newBribedata = bribedata.map((item) =>
-      item.offerId === offer ? bribe : item
-    );
+    bribe.reward = bribe.reward.filter(item => item.rewardId !== reward);
+    const newBribedata = bribedata.map(item => (item.offerId === offer ? bribe : item));
     const newBribefile = { ...rest, bribedata: newBribedata };
     const result = await insertBribefile(newBribefile, round);
     console.log("delete reward");

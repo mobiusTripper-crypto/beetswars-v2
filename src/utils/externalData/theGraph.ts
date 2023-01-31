@@ -1,8 +1,7 @@
 import { request, gql } from "graphql-request";
 
 export async function getBeetsPerBlock(block: number): Promise<number> {
-  const queryUrl =
-    "https://api.thegraph.com/subgraphs/name/beethovenxfi/masterchefv2";
+  const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/masterchefv2";
   const query = gql`
   query {
     masterChefs(first: 1, block:{number: ${block}}) {

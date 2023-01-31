@@ -1,5 +1,9 @@
 /* eslint-disable */
 
+// TODO: switch API v1 to TRPC
+// TODO: remove unused vars
+// TODO: handle router params type errors
+
 import {
   Table,
   Thead,
@@ -60,15 +64,15 @@ export default function Round() {
       requestRound(number[0]);
     }
 
-  if (number[1]) {
-    switch (number[1]) {
-      case "table":
-        setDisplay("table");
-        break;
-      default:
-        setDisplay("cards");
+    if (number[1]) {
+      switch (number[1]) {
+        case "table":
+          setDisplay("table");
+          break;
+        default:
+          setDisplay("cards");
+      }
     }
-  }
   }, [display, roundList, number]);
 
   const Url = "/api/v1/bribedata/" + requestedRound;

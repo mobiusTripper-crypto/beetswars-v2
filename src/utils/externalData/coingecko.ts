@@ -35,9 +35,7 @@ export async function getCoingeckoCurrentPrice(token: string) {
 }
 
 export async function getCoinGeckoHistoryOldMethod(token: string, at: number) {
-  const endTime = new Date(at * 1000)
-    .toLocaleDateString("de-DE")
-    .replace(/\./g, "-");
+  const endTime = new Date(at * 1000).toLocaleDateString("de-DE").replace(/\./g, "-");
   const url = `https://api.coingecko.com/api/v3/coins/${token}/history?date=${endTime}&localization=false`;
 
   let answer = 0;

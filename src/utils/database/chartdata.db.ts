@@ -1,18 +1,13 @@
 import clientPromise from "./mongodb";
-import { Chartdata } from "../../types/chartdata.raw";
+import type { Chartdata } from "../../types/chartdata.raw";
 
-type WithId<T> = T & { _id: string };
+// type WithId<T> = T & { _id: string };
 
-export async function readOneChartdata(
-  round: string
-): Promise<Chartdata | null> {
+export async function readOneChartdata(round: string): Promise<Chartdata | null> {
   try {
     const client = await clientPromise;
     const coll = client.db("beetswars").collection<Chartdata>("chartdata");
-    const item = await coll.findOne<Chartdata>(
-      { round: round },
-      { projection: { _id: 0 } }
-    );
+    const item = await coll.findOne<Chartdata>({ round: round }, { projection: { _id: 0 } });
     if (!item) return null;
     return item;
   } catch (error) {
@@ -44,12 +39,12 @@ export async function insertChartdata(
   try {
     const client = await clientPromise;
     const coll = client.db("beetswars").collection<Chartdata>("chartdata");
-    const { value, ok } = await coll.findOneAndReplace(
-      { round: round },
-      payload,
-      { upsert: true, returnDocument: "after" }
-    );
+    const { value, ok } = await coll.findOneAndReplace({ round: round }, payload, {
+      upsert: true,
+      returnDocument: "after",
+    });
     if (!ok || !value) return null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...result } = value;
     return result;
   } catch (error) {
@@ -70,28 +65,22 @@ export async function removeChartdata(round: string): Promise<boolean> {
   }
 }
 
-export async function updateChartdata(
-  round: string,
-  roi: number
-): Promise<Chartdata | null> {
+export async function updateChartdata(round: string, roi: number): Promise<Chartdata | null> {
   try {
     const client = await clientPromise;
     const coll = client.db("beetswars").collection<Chartdata>("chartdata");
-    const item = await coll.findOne<Chartdata>(
-      { round: round },
-      { projection: { _id: 0 } }
-    );
+    const item = await coll.findOne<Chartdata>({ round: round }, { projection: { _id: 0 } });
     if (!item) return null;
     let { bribersRoi, ...other } = item; // eslint-disable-line prefer-const
     bribersRoi = roi;
     const newItem: Chartdata = { ...other, bribersRoi };
     //write
-    const { value, ok } = await coll.findOneAndReplace(
-      { round: round },
-      newItem,
-      { upsert: true, returnDocument: "after" }
-    );
+    const { value, ok } = await coll.findOneAndReplace({ round: round }, newItem, {
+      upsert: true,
+      returnDocument: "after",
+    });
     if (!ok || !value) return null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...result } = value;
     return result;
   } catch (error) {

@@ -1,8 +1,4 @@
-import {
-  extendTheme,
-  type ThemeConfig,
-  type ChakraTheme,
-} from "@chakra-ui/react";
+import { extendTheme, type ThemeConfig, type ChakraTheme } from "@chakra-ui/react";
 import "@fontsource/raleway";
 
 export const siteTheme: Partial<ChakraTheme> = {

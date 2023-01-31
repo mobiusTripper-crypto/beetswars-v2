@@ -1,10 +1,19 @@
-/* eslint-disable */
-import { Box } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 
-export function RoundSelector({ handleChange = () => { } }: any): JSX.Element {
-  const { requestedRound, requestRound } = useGlobalContext();
+// definition to avoid "any"
+interface RoundSelectorProps {
+  handleChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+// default fallback function to avoid empty function
+const defaultHandleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  console.error("handleChange not provided on ", event.type);
+};
+
+export function RoundSelector({ handleChange = defaultHandleChange }: RoundSelectorProps): JSX.Element {
+  const { requestedRound } = useGlobalContext();
+  // const { requestedRound, requestRound } = useGlobalContext();
 
   const roundList = trpc.rounds.roundlist.useQuery(undefined, {
     refetchOnWindowFocus: false,

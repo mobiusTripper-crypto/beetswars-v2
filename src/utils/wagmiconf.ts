@@ -1,4 +1,9 @@
-import { Chain, configureChains, createClient } from "wagmi";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+// TODO: remove unused vars if not needed
+
+import type { Chain } from "wagmi";
+import { configureChains, createClient } from "wagmi";
 
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";

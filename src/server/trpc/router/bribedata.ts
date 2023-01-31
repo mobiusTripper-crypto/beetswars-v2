@@ -50,26 +50,22 @@ export const bribedataRouter = router({
         bribefile: await readOneBribefile(input?.round ?? 0),
       };
     }),
-  addRound: publicProcedure
-    .input(Bribefile)
-    .mutation(async ({ input, ctx }) => {
-      const session = ctx as Session;
-      if (!session.user) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-      const result = await addRound(input);
-      return result;
-    }),
-  editRound: publicProcedure
-    .input(Bribefile)
-    .mutation(async ({ input, ctx }) => {
-      const session = ctx as Session;
-      if (!session.user) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-      const result = await editRound(input);
-      return result;
-    }),
+  addRound: publicProcedure.input(Bribefile).mutation(async ({ input, ctx }) => {
+    const session = ctx as Session;
+    if (!session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    const result = await addRound(input);
+    return result;
+  }),
+  editRound: publicProcedure.input(Bribefile).mutation(async ({ input, ctx }) => {
+    const session = ctx as Session;
+    if (!session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    const result = await editRound(input);
+    return result;
+  }),
   addToken: publicProcedure
     .input(z.object({ payload: Tokendata, round: z.number() }))
     .mutation(async ({ input, ctx }) => {
@@ -151,9 +147,7 @@ export const bribedataRouter = router({
       return result;
     }),
   deleteReward: publicProcedure
-    .input(
-      z.object({ round: z.number(), offer: z.number(), reward: z.number() })
-    )
+    .input(z.object({ round: z.number(), offer: z.number(), reward: z.number() }))
     .mutation(async ({ input, ctx }) => {
       const session = ctx as Session;
       if (!session.user) {
