@@ -1,8 +1,5 @@
-import { Chartdata } from "../../types/chartdata.raw";
-import {
-  getSnapshotProposal,
-  getSnapshotVotes,
-} from "../externalData/snapshot";
+import type { Chartdata } from "../../types/chartdata.raw";
+import { getSnapshotProposal, getSnapshotVotes } from "../externalData/snapshot";
 import { getCoingeckoPrice } from "../externalData/coingecko";
 import { getTokenPrice } from "../externalData/beetsBack";
 import { readOneBribefile } from "utils/database/bribefile.db";
@@ -16,9 +13,7 @@ export async function getData(round: string) {
   const bribefile = await readOneBribefile(+round);
   if (!bribefile) return newData; //empty
   const proposal = bribefile.snapshot;
-  const bribedOffers = bribefile.bribedata.map((x) =>
-    (x.voteindex + 1).toString()
-  );
+  const bribedOffers = bribefile.bribedata.map(x => (x.voteindex + 1).toString());
   const prop = await getSnapshotProposal(proposal);
   const votes = await getSnapshotVotes(proposal);
   if (!prop) return newData;
@@ -33,22 +28,15 @@ export async function getData(round: string) {
       poolVotes[key] = (poolVotes[key] || 0) + (vp * value) / total;
     }
   });
-  const totalVotes = Math.round(
-    Object.values(poolVotes).reduce((a, b) => a + b)
-  );
-  const bribedVotes = Math.round(
-    bribedOffers.reduce((sum, x) => sum + (poolVotes[x] || 0), 0)
-  );
+  const totalVotes = Math.round(Object.values(poolVotes).reduce((a, b) => a + b));
+  const bribedVotes = Math.round(bribedOffers.reduce((sum, x) => sum + (poolVotes[x] || 0), 0));
 
   // calculate prices
   const priceBeets = await getCoingeckoPrice("beethoven-x", end);
-  const priceFbeets = await getTokenPrice(
-    end,
-    "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1"
-  );
+  const priceFbeets = await getTokenPrice(end, "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1");
 
   // calculate total bribes
-  const bribes = bribedOffers.map((x) => {
+  const bribes = bribedOffers.map(x => {
     const key = x;
     const votes = poolVotes[x] || 0;
     const percent = (votes * 100) / totalVotes;
@@ -59,7 +47,7 @@ export async function getData(round: string) {
     const rewardcap = bribe.rewardcap || Infinity;
     let sum = 0;
     const key = (bribe.voteindex + 1).toString();
-    let bribeEntry = bribes.find((x) => x.key === key); // eslint-disable-line prefer-const
+    let bribeEntry = bribes.find(x => x.key === key); // eslint-disable-line prefer-const
     if (!bribeEntry) break;
     const index = bribes.indexOf(bribeEntry);
     for (const reward of bribe.reward) {
@@ -69,7 +57,7 @@ export async function getData(round: string) {
           amount *= priceBeets;
         } else {
           const tokenaddress = bribefile.tokendata.find(
-            (x) => x.token === reward.token
+            x => x.token === reward.token
           )?.tokenaddress;
           amount *= tokenaddress ? await getTokenPrice(end, tokenaddress) : 0;
         }

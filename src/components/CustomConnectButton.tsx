@@ -3,7 +3,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
 export const CustomConnectButton = () => {
-  const account = useAccount();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const account = useAccount(); // never used, as there is another "account" variable in parameter list
   return (
     <ConnectButton.Custom>
       {({
@@ -12,7 +13,7 @@ export const CustomConnectButton = () => {
         openAccountModal,
         openChainModal,
         openConnectModal,
-        authenticationStatus,
+        // authenticationStatus, //unused?
         mounted,
       }) => {
         const ready = mounted;
@@ -32,7 +33,10 @@ export const CustomConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <Button onClick={openConnectModal} type="button">
+                  <Button
+                    onClick={openConnectModal}
+                    type="button"
+                  >
                     Connect Wallet
                   </Button>
                 );
@@ -40,14 +44,20 @@ export const CustomConnectButton = () => {
 
               if (chain.unsupported) {
                 return (
-                  <Button onClick={openChainModal} type="button">
+                  <Button
+                    onClick={openChainModal}
+                    type="button"
+                  >
                     Wrong network
                   </Button>
                 );
               }
               return (
                 <div>
-                  <Button onClick={openAccountModal} type="button">
+                  <Button
+                    onClick={openAccountModal}
+                    type="button"
+                  >
                     {account.displayName}
                   </Button>
                 </div>

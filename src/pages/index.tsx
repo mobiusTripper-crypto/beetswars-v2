@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
-import { Header } from "components/Header";
-import { TopRow } from "components/TopRow";
+// import { Header } from "components/Header";
+// import { TopRow } from "components/TopRow";
 import { ErrorBoundary } from "react-error-boundary";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -18,6 +18,7 @@ const Home: NextPage = () => {
     } else {
       router.push("/round/" + requestedRound);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -31,7 +32,8 @@ const Home: NextPage = () => {
 
 export default Home;
 
-function ErrorFallback({ error }: { error: any }) {
+// function ErrorFallback({ error }: { error: any }) {
+function ErrorFallback({ error }: { error: Error }) {
   return (
     <div role="alert">
       <p>Something went wrong:</p>

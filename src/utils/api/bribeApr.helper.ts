@@ -13,9 +13,7 @@ export interface EmissionData {
   avgBribeRoiInPercent: number;
 }
 
-export async function getEmissionForRound(
-  round: string
-): Promise<EmissionData | null> {
+export async function getEmissionForRound(round: string): Promise<EmissionData | null> {
   console.log("getEmissionForRound");
   // start at Wed Jan 12, 2022 - the start of round 1 payout (I guess)
   const ROUND1 = 1641988800; // timestamp of 12-01-2022 12:00 pm UTC as reference point
@@ -53,9 +51,7 @@ export async function getEmissionForRound(
   const beets1 = await getBeetsPerBlock(block1);
   const beets2 = await getBeetsPerBlock(block2);
   const blockCount = block2 - block1;
-  console.log(
-    `Block ${block1} @ ${start} - ${block2} @ ${end} with ${beets1} - ${beets2} BEETS`
-  );
+  console.log(`Block ${block1} @ ${start} - ${block2} @ ${end} with ${beets1} - ${beets2} BEETS`);
   // early return on error
   if (!beets1 || !beets2 || !blockCount) return null;
   let emission = blockCount * beets1 * factor;
@@ -84,10 +80,7 @@ export async function getEmissionForRound(
 }
 
 // find block by continuous halving
-async function findEmissionChangeBlock(
-  lowBlock: number,
-  highBlock: number
-): Promise<number> {
+async function findEmissionChangeBlock(lowBlock: number, highBlock: number): Promise<number> {
   // console.log("try to find change block");
   const beets1 = await getBeetsPerBlock(lowBlock);
   const beets2 = await getBeetsPerBlock(highBlock);
@@ -121,8 +114,7 @@ async function findBeetsPrice(round: string): Promise<number> {
 async function findRoi(round: string, voteEmissionUsd: number) {
   const chartdata = await readOneChartdata(round);
   if (!chartdata) return 0;
-  const bribedEmissions =
-    (chartdata.bribedVotes / chartdata.totalVotes) * voteEmissionUsd;
+  const bribedEmissions = (chartdata.bribedVotes / chartdata.totalVotes) * voteEmissionUsd;
   const bribeRoiPercent = (bribedEmissions / chartdata.totalBribes) * 100;
   return bribeRoiPercent;
 }

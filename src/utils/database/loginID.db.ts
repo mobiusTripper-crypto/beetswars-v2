@@ -8,7 +8,7 @@ export async function readLoginList(): Promise<string[]> {
     const coll = client.db("beetswars").collection<Login>("login");
     const items = await coll.find<Login>({}).toArray(); // find all
     if (!items || items.length === 0) return [];
-    const keylist = items.map((item) => item.key);
+    const keylist = items.map(item => item.key);
     return keylist;
   } catch (error) {
     console.error("failed readLoginList", error);

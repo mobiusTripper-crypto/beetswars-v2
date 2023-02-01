@@ -1,15 +1,16 @@
-/* eslint-disable */
-import type { NextPage } from "next";
+// import type { NextPage } from "next";
 import type { Echarts } from "types/echarts.trpc";
 import { trpc } from "utils/trpc";
 import ReactECharts from "echarts-for-react";
 import { useGlobalContext } from "contexts/GlobalContext";
-import { HStack, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
+// import { HStack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
-const voteActive: boolean | undefined = true;
-const REFRESH_INTERVAL = (voteActive: boolean) =>
-  voteActive === true ? 60000 : 0;
+// //commented out, because never used ...
+// const voteActive: boolean | undefined = true;
+// const REFRESH_INTERVAL = (voteActive: boolean) =>
+//   voteActive === true ? 60000 : 0;
 
 const RefetchOptions = {
   refetchOnWindowFocus: false,
@@ -17,10 +18,26 @@ const RefetchOptions = {
   refetchInterval: 0,
 };
 
+const emptyEcharts: Echarts = {
+  totalVotes: [],
+  bribedVotes: [],
+  totalBribes: [],
+  totalVoter: [],
+  priceBeets: [],
+  bribersRoi: [],
+  rounds: [],
+  bribedVotesRatio: [],
+  totalOffers: [],
+  avgPer1000: [],
+  endTime: [],
+  votingApr: [],
+}
+
 function Chart1() {
-  const chartData: Echarts | "" =
-    trpc.chart.chartdata.useQuery(undefined, RefetchOptions).data?.chartdata ?? "";
-  const { requestedRound, requestRound } = useGlobalContext();
+  const chartData: Echarts =
+    trpc.chart.chartdata.useQuery(undefined, RefetchOptions).data?.chartdata ?? emptyEcharts;
+  const { requestRound } = useGlobalContext();
+  // const { requestedRound, requestRound } = useGlobalContext();
   const router = useRouter();
   const linewidth = "2";
   const opacity = "0.04";
@@ -58,12 +75,14 @@ function Chart1() {
       trigger: "axis",
       padding: 7,
       backgroundColor: "#FFFFFFEE",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (args: any) => {
         //console.log(args);
         let tooltip = `<p align='center'><b>${args[0].axisValue} - 
                         ${args[1].axisValue}</b></p>
                           <table> `;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         args.forEach((item: any) => {
           tooltip += `<tr><td>${item.marker}</td><td> ${item.seriesName}:</td><td align='right'> 
             ${item.value}</td></tr>`;
@@ -112,8 +131,7 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
-        data: chartData.rounds as string[],
+        data: chartData.rounds,
         gridIndex: 0,
         show: false,
         triggerEvent: true,
@@ -124,7 +142,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 0,
         show: false,
@@ -135,7 +152,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 0,
         show: false,
@@ -146,7 +162,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.rounds,
         gridIndex: 1,
         offset: 20,
@@ -158,7 +173,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 1,
         show: false,
@@ -181,7 +195,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.rounds,
         gridIndex: 2,
         show: true,
@@ -194,7 +207,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: true,
@@ -207,7 +219,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: false,
@@ -219,7 +230,6 @@ function Chart1() {
         type: "category",
         boundaryGap: false,
         axisLine: { onZero: true },
-        // @ts-ignore
         data: chartData.endTime,
         gridIndex: 2,
         show: false,
@@ -344,7 +354,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "magenta", width: linewidth },
-        // @ts-ignore
         data: chartData.totalOffers,
         xAxisIndex: 0,
         yAxisIndex: 0,
@@ -360,7 +369,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "cyan", width: linewidth },
-        // @ts-ignore
         data: chartData.totalBribes,
         xAxisIndex: 1,
         yAxisIndex: 1,
@@ -374,7 +382,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "cornflowerblue", width: linewidth },
-        // @ts-ignore
         data: chartData.bribersRoi,
         xAxisIndex: 2,
         yAxisIndex: 2,
@@ -389,7 +396,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "orange", width: linewidth },
-        // @ts-ignore
         data: chartData.avgPer1000,
         xAxisIndex: 3,
         yAxisIndex: 3,
@@ -404,7 +410,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "red", width: linewidth },
-        // @ts-ignore
         data: chartData.priceBeets,
         xAxisIndex: 4,
         yAxisIndex: 4,
@@ -419,7 +424,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "white", width: linewidth },
-        // @ts-ignore
         data: chartData.votingApr,
         xAxisIndex: 5,
         yAxisIndex: 5,
@@ -434,7 +438,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "yellow", width: linewidth },
-        // @ts-ignore
         data: chartData.totalVoter,
         xAxisIndex: 6,
         yAxisIndex: 6,
@@ -449,7 +452,6 @@ function Chart1() {
         stack: "",
         areaStyle: areastyle,
         lineStyle: { color: "lime", width: linewidth },
-        // @ts-ignore
         data: chartData.totalVotes,
         xAxisIndex: 7,
         yAxisIndex: 7,
@@ -464,7 +466,6 @@ function Chart1() {
         stack: "",
         areaStyle: { opacity: opacity },
         lineStyle: { color: "green", width: linewidth },
-        // @ts-ignore
         data: chartData.bribedVotes,
         xAxisIndex: 8,
         yAxisIndex: 8,
@@ -475,7 +476,6 @@ function Chart1() {
         type: "bar",
         showSymbol: false,
         itemStyle: { opacity: 0.0 },
-        // @ts-ignore
         data: chartData.bribedVotesRatio,
         xAxisIndex: 9,
         yAxisIndex: 9,
@@ -483,6 +483,7 @@ function Chart1() {
     ],
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChartClick = (params: any) => {
     const offset = 1;
 

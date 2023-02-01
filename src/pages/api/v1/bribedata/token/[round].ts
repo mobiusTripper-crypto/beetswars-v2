@@ -1,13 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { Tokendata } from "types/bribedata.raw";
 import { readApiKeyList } from "utils/database/apikeys.db";
 import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
 import { ZodError } from "zod";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // get round from path
   const {
     query: { round },
@@ -33,7 +30,7 @@ export default async function handler(
   const oldData = await readOneBribefile(+round);
   if (!oldData) return res.status(404).send("No entry found to add data");
   const { tokendata, ...rest } = oldData;
-  const newTokendata = tokendata.filter((x) => x.token !== payload.token);
+  const newTokendata = tokendata.filter(x => x.token !== payload.token);
   newTokendata.push(payload);
   const newRound = { ...rest, tokendata: newTokendata };
   const result = await insertBribefile(newRound, +round);

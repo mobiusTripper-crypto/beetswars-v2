@@ -1,11 +1,20 @@
 import { type NextPage } from "next";
-import { Box, Button, Card, CardBody, CardHeader, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
 
 const Admin: NextPage = () => {
-
   const addUser = trpc.login.addUser.useMutation();
   const [username, setUsername] = useState("");
 
@@ -14,20 +23,27 @@ const Admin: NextPage = () => {
   if (session && status === "authenticated") {
     return (
       <>
-        <HStack m={6} justifyContent="flex-end">
+        <HStack
+          m={6}
+          justifyContent="flex-end"
+        >
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
 
         <Card m={6}>
           <CardHeader>
-            <Heading size='md'>Add user</Heading>
+            <Heading size="md">Add user</Heading>
           </CardHeader>
           <CardBody>
             <Box>
               <HStack gap={4}>
                 <Text>Insert Github Username for admin user to add:</Text>
-                <input type="text" value={username} onChange={event => setUsername(event.target.value)} />
+                <input
+                  type="text"
+                  value={username}
+                  onChange={event => setUsername(event.target.value)}
+                />
                 <Button onClick={() => addUser.mutate({ key: username })}>Add user</Button>
               </HStack>
             </Box>
@@ -36,7 +52,7 @@ const Admin: NextPage = () => {
 
         <Card m={6}>
           <CardHeader>
-            <Heading size='md'>Add API key</Heading>
+            <Heading size="md">Add API key</Heading>
           </CardHeader>
           <CardBody>
             <Box>
@@ -46,7 +62,6 @@ const Admin: NextPage = () => {
             </Box>
           </CardBody>
         </Card>
-
       </>
     );
   }

@@ -1,10 +1,5 @@
 import { request, gql } from "graphql-request";
-import {
-  SnapProposal,
-  SnapSplitVote,
-  SnapVote,
-  SnapVotePerPool,
-} from "types/snapshot.raw";
+import type { SnapProposal, SnapSplitVote, SnapVote, SnapVotePerPool } from "types/snapshot.raw";
 
 const queryUrl = "https://hub.snapshot.org/graphql";
 
@@ -44,9 +39,7 @@ export async function getSnapshotVotes(proposal: string): Promise<SnapVote[]> {
 }
 
 // splits multiple choices to multiple lines single choice
-export async function getSnapshotSplitVotes(
-  proposal: string
-): Promise<SnapSplitVote[]> {
+export async function getSnapshotSplitVotes(proposal: string): Promise<SnapSplitVote[]> {
   const votes = await getSnapshotVotes(proposal);
   const splitVotes = [] as SnapSplitVote[];
   votes.forEach(({ choice, vp, voter }) => {
@@ -59,9 +52,7 @@ export async function getSnapshotSplitVotes(
   return splitVotes;
 }
 
-export async function getSnapshotVotesPerPool(
-  proposal: string
-): Promise<SnapVotePerPool[]> {
+export async function getSnapshotVotesPerPool(proposal: string): Promise<SnapVotePerPool[]> {
   const poolVotes: { [key: string]: number } = {};
   const votes = await getSnapshotVotes(proposal);
   votes.forEach(({ choice, vp }) => {
@@ -70,10 +61,8 @@ export async function getSnapshotVotesPerPool(
       poolVotes[key] = (poolVotes[key] || 0) + (vp * value) / total;
     }
   });
-  const totalVotes = Math.round(
-    Object.values(poolVotes).reduce((a, b) => a + b)
-  );
-  const result = Object.entries(poolVotes).map((x) => {
+  const totalVotes = Math.round(Object.values(poolVotes).reduce((a, b) => a + b));
+  const result = Object.entries(poolVotes).map(x => {
     const poolId = x[0];
     const votes = x[1];
     const percent = (votes / totalVotes) * 100;
@@ -82,9 +71,7 @@ export async function getSnapshotVotesPerPool(
   return result;
 }
 
-export async function getSnapshotProposal(
-  proposal: string
-): Promise<SnapProposal | null> {
+export async function getSnapshotProposal(proposal: string): Promise<SnapProposal | null> {
   const QUERY = gql`
     query Proposal {
       proposal(id:"${proposal}") {

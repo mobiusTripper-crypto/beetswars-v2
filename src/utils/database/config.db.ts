@@ -1,13 +1,10 @@
 import clientPromise from "./mongodb";
-import { Config } from "types/config.raw";
+import type { Config } from "types/config.raw";
 
 export async function findConfigEntry(key: string): Promise<string | null> {
   const client = await clientPromise;
   const coll = client.db("beetswars").collection<Config>("config");
-  const item = await coll.findOne<Config>(
-    { name: key },
-    { projection: { _id: 0 } }
-  );
+  const item = await coll.findOne<Config>({ name: key }, { projection: { _id: 0 } });
   if (!item) return null;
   return item.data;
 }

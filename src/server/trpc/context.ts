@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react";
 /**
  * Replace this with an object if you want to pass things to createContextInner
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type CreateContextOptions = Record<string, never>;
 
 /** Use this helper for:
@@ -22,6 +23,7 @@ type CreateContextOptions = Record<string, never>;
  **/
 export const createContext = async (opts: CreateNextContextOptions) => {
   const session = await getSession({ req: opts.req });
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return session!;
 };
 

@@ -1,11 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { getEmissionForRound } from "utils/api/bribeApr.helper";
 import { findConfigEntry } from "utils/database/config.db";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") return res.status(501).send("not implemented");
   // get round
   const {

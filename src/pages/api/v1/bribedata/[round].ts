@@ -1,17 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { Bribefile } from "types/bribedata.raw";
 import { readApiKeyList } from "utils/database/apikeys.db";
-import {
-  insertBribefile,
-  readOneBribefile,
-  removeBribefile,
-} from "utils/database/bribefile.db";
+import { insertBribefile, readOneBribefile, removeBribefile } from "utils/database/bribefile.db";
 import { ZodError } from "zod";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // get round from path
   const {
     query: { round },
