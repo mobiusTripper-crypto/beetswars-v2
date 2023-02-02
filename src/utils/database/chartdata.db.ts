@@ -1,12 +1,13 @@
 import clientPromise from "./mongodb";
 import type { Chartdata } from "../../types/chartdata.raw";
 
+const dbName = process.env.DB_NAME;
 // type WithId<T> = T & { _id: string };
 
 export async function readOneChartdata(round: string): Promise<Chartdata | null> {
   try {
     const client = await clientPromise;
-    const coll = client.db("beetswars").collection<Chartdata>("chartdata");
+    const coll = client.db(dbName).collection<Chartdata>("chartdata");
     const item = await coll.findOne<Chartdata>({ round: round }, { projection: { _id: 0 } });
     if (!item) return null;
     return item;
@@ -19,7 +20,7 @@ export async function readOneChartdata(round: string): Promise<Chartdata | null>
 export async function readAllChartdata(): Promise<Chartdata[] | null> {
   try {
     const client = await clientPromise;
-    const coll = client.db("beetswars").collection<Chartdata>("chartdata");
+    const coll = client.db(dbName).collection<Chartdata>("chartdata");
     const items = await coll
       .find<Chartdata>({}, { projection: { _id: 0 } })
       .sort({ voteEnd: 1 })
@@ -38,7 +39,7 @@ export async function insertChartdata(
 ): Promise<Chartdata | null> {
   try {
     const client = await clientPromise;
-    const coll = client.db("beetswars").collection<Chartdata>("chartdata");
+    const coll = client.db(dbName).collection<Chartdata>("chartdata");
     const { value, ok } = await coll.findOneAndReplace({ round: round }, payload, {
       upsert: true,
       returnDocument: "after",
@@ -56,7 +57,7 @@ export async function insertChartdata(
 export async function removeChartdata(round: string): Promise<boolean> {
   try {
     const client = await clientPromise;
-    const coll = client.db("beetswars").collection<Chartdata>("chartdata");
+    const coll = client.db(dbName).collection<Chartdata>("chartdata");
     const { deletedCount } = await coll.deleteOne({ round: round });
     return deletedCount === 1;
   } catch (error) {
@@ -68,7 +69,7 @@ export async function removeChartdata(round: string): Promise<boolean> {
 export async function updateChartdata(round: string, roi: number): Promise<Chartdata | null> {
   try {
     const client = await clientPromise;
-    const coll = client.db("beetswars").collection<Chartdata>("chartdata");
+    const coll = client.db(dbName).collection<Chartdata>("chartdata");
     const item = await coll.findOne<Chartdata>({ round: round }, { projection: { _id: 0 } });
     if (!item) return null;
     let { bribersRoi, ...other } = item; // eslint-disable-line prefer-const
