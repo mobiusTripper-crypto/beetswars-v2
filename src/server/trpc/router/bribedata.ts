@@ -66,7 +66,7 @@ export const bribedataRouter = router({
     if (!session.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
-    const result = await editRound(input);
+    const result: Bribefile | null = await editRound(input);
     return result;
   }),
   addToken: publicProcedure
@@ -106,7 +106,7 @@ export const bribedataRouter = router({
       if (!session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      const result = await addOffer(input.payload, input.round);
+      const result: Bribedata[] | null = await addOffer(input.payload, input.round);
       return result;
     }),
   editOffer: publicProcedure

@@ -2,10 +2,12 @@ import clientPromise from "./mongodb";
 
 type Login = { key: string };
 
+const dbName = process.env.DB_NAME;
+
 export async function readLoginList(): Promise<string[]> {
   try {
     const client = await clientPromise;
-    const coll = client.db("beetswars").collection<Login>("login");
+    const coll = client.db(dbName).collection<Login>("login");
     const items = await coll.find<Login>({}).toArray(); // find all
     if (!items || items.length === 0) return [];
     const keylist = items.map(item => item.key);
@@ -20,7 +22,7 @@ export async function readLoginList(): Promise<string[]> {
 export async function addLogin(key: string): Promise<boolean> {
   try {
     const client = await clientPromise;
-    const coll = client.db("beetswars").collection<Login>("login");
+    const coll = client.db(dbName).collection<Login>("login");
     const { value, ok } = await coll.findOneAndReplace(
       { key }, // find
       { key }, // replace with
