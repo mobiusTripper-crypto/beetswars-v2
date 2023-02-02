@@ -26,8 +26,10 @@ const Admin: NextPage = () => {
   const addReward = trpc.bribes.addReward.useMutation();
   const editReward = trpc.bribes.editReward.useMutation();
   const deleteReward = trpc.bribes.deleteReward.useMutation();
+  const getSuggestion = trpc.bribes.getSuggestion.useMutation();
 
   const round = 99;
+  const snapshot = "0xae9c3b86ea25fe5635b0ba6de94985fa946d87631c2ac24fc4309923750c05ef";
 
   const bribefile = {
     version: "99.1.1",
@@ -138,6 +140,9 @@ const Admin: NextPage = () => {
                 </Button>
                 <Button onClick={() => deleteOffer.mutate({ round, offerId: 1 })}>
                   Delete offer
+                </Button>
+                <Button onClick={() => getSuggestion.mutate({ snapshot, round: 29 })}>
+                  get Suggestions
                 </Button>
               </HStack>
             </Box>

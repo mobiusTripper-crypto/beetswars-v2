@@ -1,4 +1,6 @@
 import { Bribedata, Bribefile, Reward, Tokendata } from "types/bribedata.raw";
+import type { Suggestion } from "types/offerSuggestions.trpc";
+import { getSnapshotProposal } from "../externalData/snapshot";
 import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
 
 export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
@@ -231,4 +233,18 @@ export async function deleteReward(round: number, offer: number, reward: number)
     console.error(error);
     return false;
   }
+}
+
+export async function suggestData(snapshot: string, round: number): Promise<Suggestion[]> {
+  const snapData = await getSnapshotProposal(snapshot);
+  if (!snapData) return [];
+  const lastRound = await readOneBribefile(round - 1);
+  const result = snapData.choices.map(poolName => {
+    // for every vote possibility check for previous data
+    const previousData = lastRound?.bribedata.find(bribe => bribe.poolname === poolName) || null;
+    const voteIndex = snapData.choices.indexOf(poolName);
+    if (!previousData) return { round, poolName, voteIndex } as Suggestion;
+    return { round, poolName, voteIndex, previousData } as Suggestion;
+  });
+  return result;
 }
