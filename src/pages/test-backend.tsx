@@ -28,6 +28,8 @@ const Admin: NextPage = () => {
   const deleteReward = trpc.bribes.deleteReward.useMutation();
   const getSuggestion = trpc.bribes.getSuggestion.useMutation();
 
+  const bribeCalculated = trpc.bribes.list.useQuery({ round: 29 }).data?.bribefile;
+
   const round = 99;
   const snapshot = "0xae9c3b86ea25fe5635b0ba6de94985fa946d87631c2ac24fc4309923750c05ef";
 
@@ -168,6 +170,11 @@ const Admin: NextPage = () => {
               </HStack>
             </Box>
           </CardBody>
+        </Card>
+        <Card m={6}>
+          <Box m={4}>
+            {JSON.stringify(bribeCalculated)}
+          </Box>
         </Card>
       </>
     );
