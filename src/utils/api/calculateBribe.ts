@@ -1,6 +1,7 @@
 import type { Bribedata, Tokendata } from "types/bribedata.raw";
 import type { SingleOffer } from "types/bribelist.trpc";
 import { getCoinGeckoHistoryOldMethod } from "utils/externalData/coingecko";
+import { getRpcPrice } from "utils/externalData/liveRpcPrice";
 import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
 
 export async function calculateSingleOffer(
@@ -42,6 +43,7 @@ export async function calculateSingleOffer(
     };
 
   // rewardAmount
+  const voteClosed = voteEnd <= Math.floor(Date.now() / 1000);
   let rewardAmount = 0;
   let label = "";
   for (const reward of rewards) {
@@ -49,9 +51,22 @@ export async function calculateSingleOffer(
     if (!reward.isfixed) {
       const tokendata = tokenlist.find(x => x.token === reward.token);
       if (!tokendata) {
+        // console.log(`Tokendata for ${reward.token} not found`);
         usdValue = 0;
-      } else if (tokendata.lastprice) usdValue = tokendata.lastprice;
-      else usdValue = await getCoinGeckoHistoryOldMethod(reward.token, voteEnd);
+      } else if (tokendata.lastprice) {
+        // console.log(`lastprice: ${tokendata.lastprice}`);
+        usdValue = tokendata.lastprice;
+      } else if (voteClosed) {
+        usdValue = await getCoinGeckoHistoryOldMethod(reward.token, voteEnd);
+        // console.log(`CG price: ${usdValue}`);
+      } else {
+        if (!tokendata.tokenaddress) {
+          usdValue = 0;
+        } else {
+          usdValue = await getRpcPrice(tokendata.tokenaddress);
+          // console.log(`RPC price: ${usdValue}`);
+        }
+      }
     }
     usdValue *= reward.amount;
 

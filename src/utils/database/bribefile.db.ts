@@ -4,7 +4,6 @@ import type { Bribefile } from "types/bribedata.raw";
 const dbName = process.env.DB_NAME;
 
 export async function readOneBribefile(round: number): Promise<Bribefile | null> {
-  console.log(dbName);
   try {
     const client = await clientPromise;
     const coll = client.db(dbName).collection<Bribefile>("bribedata");
