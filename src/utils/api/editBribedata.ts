@@ -2,11 +2,13 @@ import { Bribedata, Bribefile, Reward, Tokendata } from "types/bribedata.raw";
 import type { Suggestion } from "types/offerSuggestions.trpc";
 import { getSnapshotProposal } from "../externalData/snapshot";
 import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
+import { incPatch, setMajor, setMinor } from "./semVer.helper";
 
 export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
   try {
     Bribefile.parse(payload);
     const round = payload.round;
+    payload.version = setMajor(round);
     const result = await insertBribefile(payload, round);
     if (!result) return null;
     console.log("add round");
@@ -25,6 +27,7 @@ export async function editRound(payload: Bribefile): Promise<Bribefile | null> {
     const round = payload.round;
     const oldBribefile = await readOneBribefile(round);
     if (!oldBribefile) return null;
+    rest.version = incPatch(oldBribefile.version);
     const newBribefile = { ...oldBribefile, ...rest };
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
@@ -50,6 +53,7 @@ export async function addToken(payload: Tokendata, round: number): Promise<Token
         }).tokenId + 1;
     }
     bribefile.tokendata.push(newToken);
+    bribefile.version = incPatch(bribefile.version);
     const result = await insertBribefile(bribefile, round);
     if (!result) return null;
     console.log("add token");
@@ -70,6 +74,7 @@ export async function editToken(payload: Tokendata, round: number): Promise<Toke
     const tokenArray = tokendata.map(item => {
       return item.tokenId === newToken.tokenId ? newToken : item;
     });
+    rest.version = incPatch(bribefile.version);
     const newPayload = { ...rest, tokendata: tokenArray };
     const result = await insertBribefile(newPayload, round);
     if (!result?.tokendata) return null;
@@ -87,6 +92,7 @@ export async function deleteToken(tokenId: number, round: number): Promise<boole
     if (!bribefile) return false;
     const newTokens = bribefile.tokendata.filter(token => token.tokenId !== tokenId);
     const newBribefile = { ...bribefile, tokendata: newTokens };
+    newBribefile.version = incPatch(bribefile.version);
     const result = await insertBribefile(newBribefile, round);
     console.log("delete token");
     return !!result;
@@ -110,6 +116,7 @@ export async function addOffer(payload: Bribedata, round: number): Promise<Bribe
         }).offerId + 1;
     }
     bribefile.bribedata.push(newOffer);
+    bribefile.version = setMinor(bribefile.bribedata.length, bribefile.version);
     const result = await insertBribefile(bribefile, round);
     if (!result) return null;
     console.log("add offer");
@@ -130,6 +137,7 @@ export async function editOffer(payload: Bribedata, round: number): Promise<Brib
     const bribeArray = bribedata.map(item => {
       return item.offerId === newOffer.offerId ? newOffer : item;
     });
+    rest.version = incPatch(bribefile.version);
     const newPayload = { ...rest, bribedata: bribeArray };
     const result = await insertBribefile(newPayload, round);
     if (!result?.bribedata) return null;
@@ -147,6 +155,7 @@ export async function deleteOffer(offerId: number, round: number): Promise<boole
     if (!bribefile) return false;
     const newOffers = bribefile.bribedata.filter(offer => offer.offerId !== offerId);
     const newBribefile = { ...bribefile, bribedata: newOffers };
+    newBribefile.version = incPatch(setMinor(newOffers.length, bribefile.version));
     const result = await insertBribefile(newBribefile, round);
     console.log("delete offer");
     return !!result;
@@ -178,6 +187,7 @@ export async function addReward(
     }
     bribe.reward.push(newReward);
     const newBribedata = bribedata.map(item => (item.offerId === offer ? bribe : item));
+    rest.version = incPatch(bribefile.version);
     const newBribefile = { ...rest, bribedata: newBribedata };
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
@@ -206,6 +216,7 @@ export async function editReward(
     );
     const newBribedata = bribedata.map(item => (item.offerId === offer ? bribe : item));
     const newBribefile = { ...rest, bribedata: newBribedata };
+    rest.version = incPatch(bribefile.version);
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
     console.log("edit reward");
@@ -225,6 +236,7 @@ export async function deleteReward(round: number, offer: number, reward: number)
     if (!bribe || bribe.reward.length < 2) return false;
     bribe.reward = bribe.reward.filter(item => item.rewardId !== reward);
     const newBribedata = bribedata.map(item => (item.offerId === offer ? bribe : item));
+    rest.version = incPatch(bribefile.version);
     const newBribefile = { ...rest, bribedata: newBribedata };
     const result = await insertBribefile(newBribefile, round);
     console.log("delete reward");
