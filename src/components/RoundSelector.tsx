@@ -1,5 +1,6 @@
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
+import { Select } from "@chakra-ui/react";
 
 // definition to avoid "any"
 interface RoundSelectorProps {
@@ -22,14 +23,24 @@ export function RoundSelector({ handleChange = defaultHandleChange }: RoundSelec
     latest: 0,
   };
 
+  // // TODO: Use this new endpoint to get {rounds: number[], latest: number}
+  ////////////////////////////////////////////////////////////////////////////
+  // const roundList = trpc.rounds.list.useQuery(undefined, {
+  //   refetchOnWindowFocus: false,
+  // }).data?.data ?? {
+  //   rounds: [] as number[],
+  //   latest: 0,
+  // };
+
   return (
-    <select onChange={handleChange} value={requestedRound}>
+    // TODO: select or Select ?
+    <Select onChange={handleChange} value={requestedRound}>
       {roundList.rounds.map((round: string, index: number) => (
         <option key={index} value={round}>
           Round {round}
         </option>
       ))}
-    </select>
+    </Select>
   );
 }
 
