@@ -12,22 +12,14 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Wrap,
-  HStack,
-  VStack,
-  SimpleGrid,
   Heading,
-  Button,
   Text,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Box,
   Center,
   Divider,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import Link from "next/link";
@@ -48,6 +40,8 @@ export default function Round() {
   const number = (router.query.number as string[]) || [];
   const roundAsNumber = parseInt(requestedRound);
   const bribeData = trpc.bribes.list.useQuery({ round: roundAsNumber }).data?.bribefile;
+
+  const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
 
   useEffect(() => {
     // @ts-ignore
@@ -82,20 +76,20 @@ export default function Round() {
           <Text fontSize="4xl">{bribeData?.header.roundName}</Text>
         </Center>
         <Center>
-          <Text>
+          <Text fontSize="1.4rem">
             Vote Start: {bribeData?.header.voteStart} - Vote End: {bribeData?.header.voteEnd} -{" "}
             {bribeData?.header.timeRemaining}
           </Text>
         </Center>
         <Center>
-          <Text>
+          <Text fontSize="1.4rem">
             Votes Total: {bribeData?.header.totalVotes.toLocaleString("en-us")} - on incentivized
             Pools: {bribeData?.header.bribedVotes.toLocaleString("en-us")} - Total Voter:{" "}
             {bribeData?.header.totalVoter} - Bribed Voter: {bribeData?.header.bribedVoter}
           </Text>
         </Center>
         <Center>
-          <Text>
+          <Text fontSize="1.4rem">
             Total Incentives: {bribeData?.header.totalBribes.toLocaleString("en-us")} - avg/1kfB:{" "}
             {bribeData?.header.avgPer1000}{" "}
           </Text>
@@ -111,29 +105,39 @@ export default function Round() {
                 padding="23px"
                 border="1px"
                 margin="73px"
-                width="260px"
+                width="280px"
                 borderRadius="23px"
+                backgroundColor={bgCard}
               >
                 <Box>
                   <Box>
                     <Link href={bribe.poolurl}>
-                      <Heading size="md">{bribe.poolname}</Heading>
+                      <Heading size="lg">{bribe.poolname}</Heading>
                     </Link>
                   </Box>
+                  <Divider height="1px" bg="red" margin="9px 0px 9px 0px" />
                   <Box>
-                    <Text>{bribe.rewarddescription}</Text>
-                    <Text>{bribe.assumption}</Text>
+                    <Text fontSize="1.2rem">{bribe.rewarddescription}</Text>
+                    <Text as="i" fontSize="1.1rem">
+                      {bribe.assumption}
+                    </Text>
                   </Box>
-                  <Divider height="2px" bg="red" margin="9px" />
+                  <Divider height="1px" bg="red" margin="9px 0px 9px 0px" />
                   <Box>
                     <Text>{bribe.label}:</Text>
-                    <Text as="b">${bribe.rewardAmount.toLocaleString("en-us")}</Text>
+                    <Text as="b" fontSize="1.2rem">
+                      ${bribe.rewardAmount.toLocaleString("en-us")}
+                    </Text>
                     <Text>Vote Total:</Text>
-                    <Text as="b">
+                    <Text as="b" fontSize="1.2rem">
                       {bribe.percent} % - [{bribe.votes.toLocaleString("en-us")}]
                     </Text>
-                    <Text>$ / 1000 fBeets:</Text>
-                    <Text as="b">{bribe.usdPer1000Vp.toLocaleString("en-us")}</Text>
+                    <Text>$/1000fBeets:</Text>
+                    <Center>
+                      <Text as="b" fontSize="1.4rem">
+                        {bribe.usdPer1000Vp.toLocaleString("en-us")}
+                      </Text>
+                    </Center>
                   </Box>
                 </Box>
               </Box>
