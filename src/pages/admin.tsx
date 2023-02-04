@@ -16,7 +16,10 @@ import { useState } from "react";
 
 const Admin: NextPage = () => {
   const addUser = trpc.login.addUser.useMutation();
+  const addApikey = trpc.login.addApikey.useMutation();
+
   const [username, setUsername] = useState("");
+  const [apikey, setApikey] = useState("");
 
   const { data: session, status } = useSession();
 
@@ -56,9 +59,15 @@ const Admin: NextPage = () => {
           </CardHeader>
           <CardBody>
             <Box>
-              <Text>Insert random string to add:</Text>
-              <Text>TODO: ##create function to add new API key##</Text>
-              <Button>Add API key</Button>
+              <HStack gap={4}>
+                <Text>Insert random string to add (minimum 12 characters):</Text>
+                <input
+                  type="text"
+                  value={apikey}
+                  onChange={event => setApikey(event.target.value)}
+                />
+                <Button disabled={apikey.length < 12} onClick={() => addApikey.mutate({ key: apikey })}>Add API key</Button>
+              </HStack>
             </Box>
           </CardBody>
         </Card>
