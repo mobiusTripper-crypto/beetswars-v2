@@ -7,6 +7,7 @@ import {
   CardHeader,
   Heading,
   HStack,
+  Input,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -42,7 +43,7 @@ const Admin: NextPage = () => {
             <Box>
               <HStack gap={4}>
                 <Text>Insert Github Username for admin user to add:</Text>
-                <input
+                <Input width='auto'
                   type="text"
                   value={username}
                   onChange={event => setUsername(event.target.value)}
@@ -61,7 +62,7 @@ const Admin: NextPage = () => {
             <Box>
               <HStack gap={4}>
                 <Text>Insert random string to add (minimum 12 characters):</Text>
-                <input
+                <Input width='auto'
                   type="text"
                   value={apikey}
                   onChange={event => setApikey(event.target.value)}

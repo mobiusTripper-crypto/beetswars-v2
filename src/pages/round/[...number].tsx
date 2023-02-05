@@ -1,20 +1,16 @@
-/* eslint-disable */
-
 // DONE: switch API v1 to TRPC
-// TODO: remove unused vars
-// TODO: handle router params type errors
+// DONE: remove unused vars
+// TODO: redo route parameter handling
 
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
   TableContainer,
   Wrap,
-  Heading,
   Text,
   Box,
   Center,
@@ -31,33 +27,20 @@ import { useRouter } from "next/router";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { trpc } from "utils/trpc";
 import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
+import type { BribeOffer } from "types/bribelist.trpc";
 
 export default function Round() {
-  const roundList = trpc.rounds.roundlist.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  }).data?.data ?? {
-    rounds: [],
-    latest: 0,
-  };
-
-  const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
-  const router = useRouter();
-  const number = (router.query.number as string[]) || [];
-  const roundAsNumber = parseInt(requestedRound);
-  const bribeData = trpc.bribes.list.useQuery({ round: roundAsNumber }).data?.bribefile;
-
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
+  const router = useRouter();
+  const number = router.query.number || "";
+  // const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
+  const { requestedRound, display, setDisplay } = useGlobalContext();
+  const bribeData = trpc.bribes.list.useQuery({ round: requestedRound }, { enabled: !!number }).data
+    ?.bribefile;
+
+  console.log(router.query, number[0]);
 
   useEffect(() => {
-    // @ts-ignore
-    if (!roundList.rounds.includes(number[0])) {
-      requestRound(roundList.latest.toString());
-      router.push("/round/" + requestedRound, undefined, { shallow: true });
-    } else {
-      // @ts-ignore
-      requestRound(number[0]);
-    }
-
     if (number[1]) {
       switch (number[1]) {
         case "table":
@@ -67,12 +50,8 @@ export default function Round() {
           setDisplay("cards");
       }
     }
-  }, [display, roundList, number]);
-
-  console.log(roundList.latest);
-  console.log(number[0], requestedRound);
-  console.log(bribeData?.header);
-  console.log(bribeData?.bribelist);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [number]);
 
   return (
     <>
@@ -104,56 +83,58 @@ export default function Round() {
       {display === "cards" ? (
         <Center>
           <Wrap justify="center" spacing={10} mt={10}>
-            {bribeData?.bribelist?.map((bribe: any, i: number) => (
-              <Box
-                key={i}
-                p={5}
-                border="1px"
-                width="300px"
-                borderRadius={20}
-                backgroundColor={bgCard}
-              >
-                <Box>
-                  {/* <Box> */}
-                  <Link href={bribe.poolurl} isExternal>
-                    <Button
-                      whiteSpace="normal"
-                      height="auto"
-                      blockSize="auto"
-                      variant="unstyled"
-                      size="lg"
-                      rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
-                    >
-                      {bribe.poolname}
-                    </Button>
-                  </Link>
-                  <Divider height="1px" bg="red" my={3} />
+            {bribeData?.bribelist?.map(
+              (bribe: BribeOffer, i: number): JSX.Element => (
+                <Box
+                  key={i}
+                  p={5}
+                  border="1px"
+                  width="300px"
+                  borderRadius={20}
+                  backgroundColor={bgCard}
+                >
                   <Box>
-                    <Text fontSize="sm">{bribe.rewarddescription}</Text>
-                    <Text as="i" fontSize="xs">
-                      {bribe.assumption}
-                    </Text>
-                  </Box>
-                  <Divider height="1px" bg="red" my={3} />
-                  <VStack align="left">
-                    <HStack>
-                      <Text>{bribe.label}:</Text>
-                      <Text as="b">${bribe.rewardAmount.toLocaleString("en-us")}</Text>
-                    </HStack>
-                    <HStack>
-                      <Text>Vote Total:</Text>
-                      <Text as="b">
-                        {bribe.percent} % - [{bribe.votes.toLocaleString("en-us")}]
+                    {/* <Box> */}
+                    <Link href={bribe.poolurl} isExternal>
+                      <Button
+                        whiteSpace="normal"
+                        height="auto"
+                        blockSize="auto"
+                        variant="unstyled"
+                        size="lg"
+                        rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
+                      >
+                        {bribe.poolname}
+                      </Button>
+                    </Link>
+                    <Divider height="1px" bg="red" my={3} />
+                    <Box>
+                      <Text fontSize="sm">{bribe.rewarddescription}</Text>
+                      <Text as="i" fontSize="xs">
+                        {bribe.assumption}
                       </Text>
-                    </HStack>
-                    <HStack>
-                      <Text>$/1000fBeets:</Text>
-                      <Text as="b">{bribe.usdPer1000Vp.toFixed(2)}</Text>
-                    </HStack>
-                  </VStack>
+                    </Box>
+                    <Divider height="1px" bg="red" my={3} />
+                    <VStack align="left">
+                      <HStack>
+                        <Text>{bribe.label}:</Text>
+                        <Text as="b">${bribe.rewardAmount.toLocaleString("en-us")}</Text>
+                      </HStack>
+                      <HStack>
+                        <Text>Vote Total:</Text>
+                        <Text as="b">
+                          {bribe.percent} % - [{bribe.votes.toLocaleString("en-us")}]
+                        </Text>
+                      </HStack>
+                      <HStack>
+                        <Text>$/1000fBeets:</Text>
+                        <Text as="b">{bribe.usdPer1000Vp.toFixed(2)}</Text>
+                      </HStack>
+                    </VStack>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              )
+            )}
           </Wrap>
         </Center>
       ) : (
@@ -169,16 +150,18 @@ export default function Round() {
                 </Tr>
               </Thead>
               <Tbody>
-                {bribeData?.bribelist.map((bribe: any, i: number) => (
-                  <Tr key={i}>
-                    <Td isNumeric> {bribe.voteindex}</Td>
-                    <Td>{bribe.poolname}</Td>
-                    <Td>{bribe.rewarddescription}</Td>
-                    <Td>
-                      <Link href={bribe.poolurl}>link</Link>
-                    </Td>
-                  </Tr>
-                ))}
+                {bribeData?.bribelist.map(
+                  (bribe: BribeOffer, i: number): JSX.Element => (
+                    <Tr key={i}>
+                      <Td isNumeric> {bribe.voteindex}</Td>
+                      <Td>{bribe.poolname}</Td>
+                      <Td>{bribe.rewarddescription}</Td>
+                      <Td>
+                        <Link href={bribe.poolurl}>link</Link>
+                      </Td>
+                    </Tr>
+                  )
+                )}
               </Tbody>
             </Table>
           </TableContainer>

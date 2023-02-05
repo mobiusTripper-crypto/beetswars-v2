@@ -1,5 +1,6 @@
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
+import { Select } from "@chakra-ui/react";
 
 // definition to avoid "any"
 interface RoundSelectorProps {
@@ -11,25 +12,26 @@ const defaultHandleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
   console.error("handleChange not provided on ", event.type);
 };
 
-export function RoundSelector({ handleChange = defaultHandleChange }: RoundSelectorProps): JSX.Element {
+export function RoundSelector({
+  handleChange = defaultHandleChange,
+}: RoundSelectorProps): JSX.Element {
   const { requestedRound } = useGlobalContext();
-  // const { requestedRound, requestRound } = useGlobalContext();
 
-  const roundList = trpc.rounds.roundlist.useQuery(undefined, {
+  const roundList = trpc.rounds.list.useQuery(undefined, {
     refetchOnWindowFocus: false,
   }).data?.data ?? {
-    rounds: [],
+    rounds: [] as number[],
     latest: 0,
   };
 
   return (
-    <select onChange={handleChange} value={requestedRound}>
-      {roundList.rounds.map((round: string, index: number) => (
+    <Select onChange={handleChange} value={requestedRound}>
+      {roundList.rounds.map((round: number, index: number) => (
         <option key={index} value={round}>
           Round {round}
         </option>
       ))}
-    </select>
+    </Select>
   );
 }
 
