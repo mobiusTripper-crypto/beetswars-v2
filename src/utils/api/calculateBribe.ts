@@ -57,7 +57,11 @@ export async function calculateSingleOffer(
         // console.log(`lastprice: ${tokendata.lastprice}`);
         usdValue = tokendata.lastprice;
       } else if (voteClosed) {
-        usdValue = await getCoinGeckoHistoryOldMethod(reward.token, voteEnd);
+        if (!tokendata.coingeckoid) {
+          usdValue = 0;
+        } else {
+          usdValue = await getCoinGeckoHistoryOldMethod(tokendata.coingeckoid, voteEnd);
+        }
         // console.log(`CG price: ${usdValue}`);
       } else {
         if (!tokendata.tokenaddress) {

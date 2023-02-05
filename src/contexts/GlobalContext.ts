@@ -5,8 +5,8 @@
 import { createContext, useContext } from "react";
 
 type GlobalContext = {
-  requestedRound: string;
-  requestRound: (c: string) => void;
+  requestedRound: number;
+  requestRound: (c: number) => void;
   display: string;
   setDisplay: (c: string) => void;
   gVersion: string;
@@ -14,7 +14,7 @@ type GlobalContext = {
 };
 
 export const MyGlobalContext = createContext<GlobalContext>({
-  requestedRound: "",
+  requestedRound: 0,
   requestRound: () => {},
   display: "",
   setDisplay: () => {},

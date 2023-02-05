@@ -25,7 +25,7 @@ const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps<{ session: Session }>) => {
-  const [requestedRound, requestRound] = useState<string>("latest");
+  const [requestedRound, requestRound] = useState<number>(0);
   const [display, setDisplay] = useState<string>("cards");
   const [gVersion, setGVersion] = useState<string>("");
 
