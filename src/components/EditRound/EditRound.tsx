@@ -1,7 +1,6 @@
 import {
   Button,
   FormControl,
-  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -33,7 +32,7 @@ export function EditRoundModal(props: modalProps) {
   const [round, setRound] = useState("");
   const bribedata = trpc.bribes.list_raw.useQuery({ round: roundNumber }).data?.bribefile;
 
-  const someFunc = () => {
+  const openModal = () => {
     if (!isNew) {
       setDescription(bribedata?.description || "");
       setSnapshotID(bribedata?.snapshot || "");
@@ -63,7 +62,7 @@ export function EditRoundModal(props: modalProps) {
 
   return (
     <>
-      <Button onClick={someFunc}>{isNew ? "Add New Round" : "Edit Round"}</Button>
+      <Button onClick={openModal}>{isNew ? "Add New Round" : "Edit Round"}</Button>
 
       <Modal closeOnOverlayClick={false} blockScrollOnMount isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
