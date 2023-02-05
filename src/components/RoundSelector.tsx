@@ -24,15 +24,6 @@ export function RoundSelector({
     latest: 0,
   };
 
-  // // TODO: Use this new endpoint to get {rounds: number[], latest: number}
-  ////////////////////////////////////////////////////////////////////////////
-  // const roundList = trpc.rounds.list.useQuery(undefined, {
-  //   refetchOnWindowFocus: false,
-  // }).data?.data ?? {
-  //   rounds: [] as number[],
-  //   latest: 0,
-  // };
-
   return (
     <Select onChange={handleChange} value={requestedRound}>
       {roundList.rounds.map((round: number, index: number) => (
