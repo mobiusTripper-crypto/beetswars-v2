@@ -18,6 +18,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import RoundSelector from "components/RoundSelector";
+import { EditRoundModal } from "components/EditRound/EditRound";
 
 const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
@@ -28,6 +29,12 @@ const BribeForm: NextPage = () => {
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
     requestRound(e.target.value);
+  };
+
+  //This doesn't actually work for new or edit ....
+  const refreshRound = (round: string) => {
+    console.log("refresh", round);
+    requestRound(round);
   };
 
   // this function shows toast message - just for testing button function
@@ -47,41 +54,34 @@ const BribeForm: NextPage = () => {
   if (session && status === "authenticated") {
     return (
       <>
-        <HStack
-          m={6}
-          justifyContent="flex-end"
-        >
+        <HStack m={6} justifyContent="flex-end">
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
         <Card m={6}>
           <CardHeader>
-            <Flex>
+            <HStack spacing={4} justify="space-between">
               <Heading size="md">Edit Round {round}</Heading>
-              <Spacer />
               <RoundSelector handleChange={changeRound} />
-              <Spacer />
-              <Button onClick={() => showToast(`add new round`)}>add new round</Button>
-            </Flex>
+              <EditRoundModal isNew refresh={refreshRound} />
+            </HStack>
           </CardHeader>
           <CardBody>
-            <Flex>
-              <Grid
-                gap={4}
-                templateColumns="1fr 3fr"
-              >
+            <HStack justify="space-between">
+              <Grid gap={4} templateColumns="1fr 3fr">
                 <GridItem fontWeight="800">Version</GridItem>
                 <GridItem>{bribedata?.version}</GridItem>
                 <GridItem fontWeight="800">Description</GridItem>
                 <GridItem>{bribedata?.description}</GridItem>
                 <GridItem fontWeight="800">Snapshot</GridItem>
-                <GridItem>{bribedata?.snapshot}</GridItem>
+                <GridItem>
+                  <Text noOfLines={1} maxW="300px">
+                    {bribedata?.snapshot}
+                  </Text>
+                </GridItem>
               </Grid>
-              <Spacer />
-              <Button onClick={() => showToast(`edit data for round: ${round}`)}>
-                Edit round data
-              </Button>
-            </Flex>
+              <EditRoundModal roundNumber={round} isNew={false} refresh={refreshRound} />
+            </HStack>
           </CardBody>
         </Card>
 
@@ -94,10 +94,7 @@ const BribeForm: NextPage = () => {
             </Flex>
           </CardHeader>
           <CardBody>
-            <Grid
-              gap={4}
-              templateColumns="1fr 3fr 3fr 1fr"
-            >
+            <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
               {!bribedata ||
                 bribedata?.tokendata.map(token => (
                   <>
@@ -131,10 +128,7 @@ const BribeForm: NextPage = () => {
             </Flex>
           </CardHeader>
           <CardBody>
-            <Grid
-              gap={4}
-              templateColumns="1fr 3fr 3fr 1fr"
-            >
+            <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
               {!bribedata ||
                 bribedata.bribedata.map(bribe => (
                   <>
