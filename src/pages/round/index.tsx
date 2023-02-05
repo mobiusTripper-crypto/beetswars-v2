@@ -3,6 +3,6 @@ import Router from "next/router";
 
 export default function Redirect() {
   useEffect(() => {
-    Router.push("/round/latest");
+    Router.push("/round/0");
   });
 }

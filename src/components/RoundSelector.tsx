@@ -12,30 +12,21 @@ const defaultHandleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
   console.error("handleChange not provided on ", event.type);
 };
 
-export function RoundSelector({ handleChange = defaultHandleChange }: RoundSelectorProps): JSX.Element {
+export function RoundSelector({
+  handleChange = defaultHandleChange,
+}: RoundSelectorProps): JSX.Element {
   const { requestedRound } = useGlobalContext();
-  // const { requestedRound, requestRound } = useGlobalContext();
 
-  const roundList = trpc.rounds.roundlist.useQuery(undefined, {
+  const roundList = trpc.rounds.list.useQuery(undefined, {
     refetchOnWindowFocus: false,
   }).data?.data ?? {
-    rounds: [],
+    rounds: [] as number[],
     latest: 0,
   };
 
-  // // TODO: Use this new endpoint to get {rounds: number[], latest: number}
-  ////////////////////////////////////////////////////////////////////////////
-  // const roundList = trpc.rounds.list.useQuery(undefined, {
-  //   refetchOnWindowFocus: false,
-  // }).data?.data ?? {
-  //   rounds: [] as number[],
-  //   latest: 0,
-  // };
-
   return (
-    // TODO: select or Select ?
     <Select onChange={handleChange} value={requestedRound}>
-      {roundList.rounds.map((round: string, index: number) => (
+      {roundList.rounds.map((round: number, index: number) => (
         <option key={index} value={round}>
           Round {round}
         </option>
