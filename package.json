@@ -12,7 +12,6 @@
     "@chakra-ui/react": "^2.4.4",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@fontsource/raleway": "^4.5.11",
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@tanstack/react-query": "^4.16.0",
     "@trpc/client": "^10.0.0",
@@ -55,5 +54,8 @@
   },
   "ct3aMetadata": {
     "initVersion": "6.11.4"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^4.5.15"
   }
 }
