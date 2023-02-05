@@ -36,7 +36,7 @@ import { router, publicProcedure } from "../trpc";
 // - editReward: edit reward data for given round and offer id
 // - deleteReward: delete reward for given round, offer and reward id, except of last
 // Helper for form data:
-// - getSuggestion: retrieve a list of vote options, add previous round data if available
+// - suggest: retrieve a list of vote options, add previous round data if available
 
 export const bribedataRouter = router({
   list: publicProcedure
@@ -159,14 +159,21 @@ export const bribedataRouter = router({
       const result = await deleteReward(input.round, input.offer, input.reward);
       return result;
     }),
-  getSuggestion: publicProcedure
+  // getSuggestion: publicProcedure
+  //   .input(z.object({ snapshot: z.string(), round: z.number() }))
+  //   .mutation(async ({ input, ctx }) => {
+  //     const session = ctx as Session;
+  //     if (!session.user) {
+  //       throw new TRPCError({ code: "UNAUTHORIZED" });
+  //     }
+  //     const result = await suggestData(input.snapshot, input.round);
+  //     return result;
+  //   }),
+  suggest: publicProcedure
     .input(z.object({ snapshot: z.string(), round: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const session = ctx as Session;
-      if (!session.user) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-      const result = await suggestData(input.snapshot, input.round);
-      return result;
+    .query(async ({ input }) => {
+      return {
+        votelist: await suggestData(input.snapshot, input.round),
+      };
     }),
 });
