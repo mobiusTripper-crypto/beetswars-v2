@@ -31,6 +31,7 @@ const BribeForm: NextPage = () => {
     requestRound(e.target.value);
   };
 
+  //This doesn't actually work for new or edit ....
   const refreshRound = (round: string) => {
     console.log("refresh", round);
     requestRound(round);

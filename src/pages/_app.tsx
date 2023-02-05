@@ -16,8 +16,8 @@ import { TopRow } from "components/TopRow";
 import { SessionProvider } from "next-auth/react";
 import { MyGlobalContext } from "contexts/GlobalContext";
 //add additional font weights here in needed
-import "@fontsource/raleway/400.css";
-import "@fontsource/raleway/800.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/800.css";
 
 const queryClient = new QueryClient();
 
@@ -43,11 +43,7 @@ const MyApp = ({
       >
         <QueryClientProvider client={queryClient}>
           <WagmiConfig client={client}>
-            <RainbowKitProvider
-              chains={chains}
-              modalSize="compact"
-              theme={darkTheme()}
-            >
+            <RainbowKitProvider chains={chains} modalSize="compact" theme={darkTheme()}>
               <ChakraProvider theme={theme}>
                 <ColorModeScript initialColorMode={theme.config.initialColorMode} />
                 <TopRow />

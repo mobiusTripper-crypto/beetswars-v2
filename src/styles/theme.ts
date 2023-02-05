@@ -1,7 +1,7 @@
 import { extendTheme, type ThemeConfig, type ChakraTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import type { StyleFunctionProps } from "@chakra-ui/styled-system";
-import "@fontsource/raleway";
+import "@fontsource/inter";
 
 export const siteTheme: Partial<ChakraTheme> = {
   styles: {
@@ -13,8 +13,8 @@ export const siteTheme: Partial<ChakraTheme> = {
     }),
   },
   fonts: {
-    heading: "Raleway, sans-serif",
-    body: "Raleway, sans-serif",
+    heading: "Inter, sans-serif",
+    body: "Inter, sans-serif",
   },
 };
 
