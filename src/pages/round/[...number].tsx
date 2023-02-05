@@ -20,12 +20,17 @@ import {
   Center,
   Divider,
   useColorModeValue,
+  HStack,
+  Icon,
+  Button,
+  Link,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { trpc } from "utils/trpc";
+import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 
 export default function Round() {
   const roundList = trpc.rounds.roundlist.useQuery(undefined, {
@@ -98,47 +103,54 @@ export default function Round() {
 
       {display === "cards" ? (
         <Center>
-          <Wrap justify="center" padding="23px" margin="23px" spacing="50px">
+          <Wrap justify="center" spacing={10} mt={10}>
             {bribeData?.bribelist?.map((bribe: any, i: number) => (
               <Box
                 key={i}
-                padding="23px"
+                p={5}
                 border="1px"
-                margin="73px"
-                width="280px"
-                borderRadius="23px"
+                width="300px"
+                borderRadius={20}
                 backgroundColor={bgCard}
               >
                 <Box>
+                  {/* <Box> */}
+                  <Link href={bribe.poolurl} isExternal>
+                    <Button
+                      whiteSpace="normal"
+                      height="auto"
+                      blockSize="auto"
+                      variant="unstyled"
+                      size="lg"
+                      rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
+                    >
+                      {bribe.poolname}
+                    </Button>
+                  </Link>
+                  <Divider height="1px" bg="red" my={3} />
                   <Box>
-                    <Link href={bribe.poolurl}>
-                      <Heading size="lg">{bribe.poolname}</Heading>
-                    </Link>
-                  </Box>
-                  <Divider height="1px" bg="red" margin="9px 0px 9px 0px" />
-                  <Box>
-                    <Text fontSize="1.2rem">{bribe.rewarddescription}</Text>
-                    <Text as="i" fontSize="1.1rem">
+                    <Text fontSize="sm">{bribe.rewarddescription}</Text>
+                    <Text as="i" fontSize="xs">
                       {bribe.assumption}
                     </Text>
                   </Box>
-                  <Divider height="1px" bg="red" margin="9px 0px 9px 0px" />
-                  <Box>
-                    <Text>{bribe.label}:</Text>
-                    <Text as="b" fontSize="1.2rem">
-                      ${bribe.rewardAmount.toLocaleString("en-us")}
-                    </Text>
-                    <Text>Vote Total:</Text>
-                    <Text as="b" fontSize="1.2rem">
-                      {bribe.percent} % - [{bribe.votes.toLocaleString("en-us")}]
-                    </Text>
-                    <Text>$/1000fBeets:</Text>
-                    <Center>
-                      <Text as="b" fontSize="1.4rem">
-                        {bribe.usdPer1000Vp.toLocaleString("en-us")}
+                  <Divider height="1px" bg="red" my={3} />
+                  <VStack align="left">
+                    <HStack>
+                      <Text>{bribe.label}:</Text>
+                      <Text as="b">${bribe.rewardAmount.toLocaleString("en-us")}</Text>
+                    </HStack>
+                    <HStack>
+                      <Text>Vote Total:</Text>
+                      <Text as="b">
+                        {bribe.percent} % - [{bribe.votes.toLocaleString("en-us")}]
                       </Text>
-                    </Center>
-                  </Box>
+                    </HStack>
+                    <HStack>
+                      <Text>$/1000fBeets:</Text>
+                      <Text as="b">{bribe.usdPer1000Vp.toFixed(2)}</Text>
+                    </HStack>
+                  </VStack>
                 </Box>
               </Box>
             ))}
