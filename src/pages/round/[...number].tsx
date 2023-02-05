@@ -1,6 +1,6 @@
 // DONE: switch API v1 to TRPC
-// TODO: remove unused vars
-// TODO: handle router params type errors
+// DONE: remove unused vars
+// TODO: redo route parameter handling
 
 import {
   Table,
@@ -11,7 +11,6 @@ import {
   Td,
   TableContainer,
   Wrap,
-  Heading,
   Text,
   Box,
   Center,

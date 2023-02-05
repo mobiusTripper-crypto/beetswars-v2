@@ -30,13 +30,13 @@ const BribeForm: NextPage = () => {
 
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
-    requestRound(e.target.value);
+    requestRound(parseInt(e.target.value));
   };
 
   //This doesn't actually work for new or edit ....
   const refreshRound = (round: string) => {
     console.log("refresh", round);
-    requestRound(round);
+    requestRound(parseInt(round));
   };
 
   // this function shows toast message - just for testing button function
