@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import {
+  Box,
   Button,
   Card,
   CardBody,
@@ -19,6 +20,7 @@ import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import RoundSelector from "components/RoundSelector";
 import { EditRoundModal } from "components/EditRound/EditRound";
+import { DeleteConfrimModal } from "components/DeleteConfirmModal";
 
 const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
@@ -128,28 +130,20 @@ const BribeForm: NextPage = () => {
             </Flex>
           </CardHeader>
           <CardBody>
-            <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
-              {!bribedata ||
-                bribedata.bribedata.map(bribe => (
-                  <>
-                    <GridItem>{bribe.offerId}</GridItem>
-                    <GridItem>{bribe.poolname}</GridItem>
-                    <GridItem>{bribe.rewarddescription}</GridItem>
-                    <GridItem>
-                      <Flex justifyContent="flex-end">
-                        <Spacer />
-                        <Button onClick={() => showToast(`edit bribe ${bribe.offerId}`)}>
-                          Edit
-                        </Button>
-                        <Spacer />
-                        <Button onClick={() => showToast(`delete bribe ${bribe.offerId}`)}>
-                          Delete
-                        </Button>
-                      </Flex>
-                    </GridItem>
-                  </>
-                ))}
-            </Grid>
+            {!bribedata ||
+              bribedata.bribedata.map((bribe, index) => (
+                <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr" key={index} my={2}>
+                  <GridItem>{bribe.offerId}</GridItem>
+                  <GridItem>{bribe.poolname}</GridItem>
+                  <GridItem>{bribe.rewarddescription}</GridItem>
+                  <GridItem>
+                    <HStack spacing={3}>
+                      <Button onClick={() => showToast(`edit bribe ${bribe.offerId}`)}>Edit</Button>
+                      <DeleteConfrimModal round={round} offerId={bribe.offerId} />
+                    </HStack>
+                  </GridItem>
+                </Grid>
+              ))}
           </CardBody>
         </Card>
       </>
