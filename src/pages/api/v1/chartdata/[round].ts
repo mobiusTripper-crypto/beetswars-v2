@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Chartdata } from "types/chartdata.raw";
 import { readApiKeyList } from "utils/database/apikeys.db";
-import { insertChartdata, readOneChartdata, removeChartdata } from "utils/database/chartdata.db";
+import { insertChartdata, readOneChartdataV1, removeChartdata } from "utils/database/chartdata.db";
+// import { insertChartdata, readOneChartdata, removeChartdata } from "utils/database/chartdata.db";
 import { ZodError } from "zod";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -18,7 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // handle different methods
   switch (req.method) {
     case "GET":
-      const data = await readOneChartdata(round);
+      // const data = await readOneChartdata(round);
+      const data = await readOneChartdataV1(round);
       if (!data) {
         res.status(404).send("No object with given ID found");
         break;
