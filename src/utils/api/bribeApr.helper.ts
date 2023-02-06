@@ -64,6 +64,7 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
     emission = (part1 + part2) * factor;
   }
   const beetsPrice = await findBeetsPrice(round);
+  // console.log("beets price ", beetsPrice);
   const usdValue = emission * beetsPrice;
   const voteEmissionPercent = round < 29 ? 0.3 : 0.5;
   const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
@@ -106,7 +107,10 @@ async function findEmissionChangeBlock(lowBlock: number, highBlock: number): Pro
 // find BEETS price from database or from live source
 async function findBeetsPrice(round: number): Promise<number> {
   const chartdata = await readOneChartdata(round);
-  if (!!chartdata) return chartdata.priceBeets;
+  if (!!chartdata) {
+    // console.log(chartdata);
+    return chartdata.priceBeets;
+  }
   const cg = await getCoingeckoCurrentPrice("beethoven-x");
   return cg;
 }

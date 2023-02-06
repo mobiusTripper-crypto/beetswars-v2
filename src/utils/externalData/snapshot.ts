@@ -80,6 +80,11 @@ export async function getSnapshotProposal(proposal: string): Promise<SnapProposa
         state
         snapshot
         choices
+        strategies {
+          name
+          network
+          params
+        }
       }
     }
   `;

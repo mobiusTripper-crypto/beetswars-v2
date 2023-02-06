@@ -18,10 +18,17 @@ export interface SnapSplitVote {
   voter: string; // evm address
 }
 
+export interface SpaceStrategy {
+  name: string;
+  network: string;
+  params: Record<string, unknown>;
+}
+
 export interface SnapProposal {
   start: number; // unix timestamp
   end: number; // unix timestamp
   state: string; // "pending"|"active"|"closed"
   snapshot: string; // ftm block number as string
   choices: string[]; // list of pools
+  strategies: SpaceStrategy; // JSON object of all strategies
 }

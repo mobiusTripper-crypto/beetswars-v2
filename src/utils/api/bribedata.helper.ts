@@ -74,5 +74,7 @@ export default async function getBribeData(round = 0): Promise<BribeData | null>
     avgPer1000,
   };
 
-  return { header, bribelist };
+  const strategies = snapshot.strategies;
+
+  return { header, bribelist, strategies };
 }
