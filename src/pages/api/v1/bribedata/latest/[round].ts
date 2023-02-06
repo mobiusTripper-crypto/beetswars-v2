@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } = req;
   if (typeof round !== "string") return res.status(422).send("Parameter error");
   // write to db
-  const entry: Config = { name: "latest", data: round };
+  const entry: Config = { name: "latest", data: Number(round) };
   const result = await setConfigEntry(entry);
   if (!result) return res.status(500).send("could not write to database");
   res.status(201).send("key set successfully");

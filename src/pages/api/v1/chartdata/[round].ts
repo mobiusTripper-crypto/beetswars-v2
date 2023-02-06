@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Chartdata } from "types/chartdata.raw";
+import { Chartdata2 } from "types/chartdata.raw";
 import { readApiKeyList } from "utils/database/apikeys.db";
-import { insertChartdata, readOneChartdata, removeChartdata } from "utils/database/chartdata.db";
+import { insertChartdata, readOneChartdataV1, removeChartdata } from "utils/database/chartdata.db";
+// import { insertChartdata, readOneChartdata, removeChartdata } from "utils/database/chartdata.db";
 import { ZodError } from "zod";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -18,7 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // handle different methods
   switch (req.method) {
     case "GET":
-      const data = await readOneChartdata(round);
+      // const data = await readOneChartdata(round);
+      const data = await readOneChartdataV1(round);
       if (!data) {
         res.status(404).send("No object with given ID found");
         break;
@@ -30,16 +32,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(403).send("not allowed");
         break;
       }
-      let payload: Chartdata;
+      let payload: Chartdata2;
       try {
-        payload = Chartdata.parse(req.body);
+        payload = Chartdata2.parse(req.body);
       } catch (error) {
         if (error instanceof ZodError) {
           return res.status(422).send(error);
         }
         return res.status(400).send(error);
       }
-      const result = await insertChartdata(payload, round);
+      const result = await insertChartdata(payload, +round);
       if (!result) {
         res.status(500).send("Error inserting Chartdata");
         break;
@@ -51,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(403).send("not allowed");
         break;
       }
-      const success = await removeChartdata(round);
+      const success = await removeChartdata(+round);
       if (!success) {
         res.status(500).send("could not delete");
         break;

@@ -11,7 +11,8 @@ export default async function getRoundlist(): Promise<Roundlist> {
     const roundsUnsorted = data.map(item => item.round.toString().padStart(2, "0"));
     rounds = roundsUnsorted.sort((n1, n2) => (n1 > n2 ? -1 : 1));
   }
-  const latest = (await findConfigEntry("latest")) ?? "";
+  const latestEntry = (await findConfigEntry("latest")) ?? "00";
+  const latest = latestEntry.toString().padStart(2, "0");
   return { rounds, latest };
 }
 

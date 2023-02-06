@@ -4,7 +4,7 @@ import { getBlockByTs } from "utils/externalData/ftmScan";
 import { getBeetsPerBlock } from "utils/externalData/theGraph";
 
 export interface EmissionData {
-  round: string;
+  round: number;
   emission: number;
   beetsPrice: number;
   usdValue: number;
@@ -13,12 +13,12 @@ export interface EmissionData {
   avgBribeRoiInPercent: number;
 }
 
-export async function getEmissionForRound(round: string): Promise<EmissionData | null> {
+export async function getEmissionForRound(round: number): Promise<EmissionData | null> {
   console.log("getEmissionForRound");
   // start at Wed Jan 12, 2022 - the start of round 1 payout (I guess)
   const ROUND1 = 1641988800; // timestamp of 12-01-2022 12:00 pm UTC as reference point
   const TWOWEEKS = 14 * 24 * 60 * 60; // seconds
-  const ts1 = ROUND1 + (+round - 1) * TWOWEEKS; // from end of previous round
+  const ts1 = ROUND1 + (round - 1) * TWOWEEKS; // from end of previous round
   const ts2 = ts1 + TWOWEEKS; // to end of given round
   const now = Math.round(Date.now() / 1000) - 60; // one minute back to give a buffer to data providers
   let start = 0;
@@ -42,10 +42,8 @@ export async function getEmissionForRound(round: string): Promise<EmissionData |
   // C) emission has not yet started (ts1 > date.now) take emissions of last 1 day * 14
   else {
     console.log("future");
-    // start = now - 24 * 60 * 60; //one day back
-    // end = now;
-    start = 1675530000;
-    end = 1675616400;
+    start = now - 24 * 60 * 60; //one day back
+    end = now;
     factor = 14;
   }
   const block1 = await getBlockByTs(start);
@@ -68,8 +66,7 @@ export async function getEmissionForRound(round: string): Promise<EmissionData |
   const beetsPrice = await findBeetsPrice(round);
   // console.log("beets price ", beetsPrice);
   const usdValue = emission * beetsPrice;
-  const voteEmissionPercent = +round < 29 ? 0.3 : 0.5;
-  // console.log("percent ", voteEmissionPercent);
+  const voteEmissionPercent = round < 29 ? 0.3 : 0.5;
   const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
   const percentUsdValue = (voteEmission * beetsPrice) / 100;
   const avgBribeRoiInPercent = await findRoi(round, voteEmission * beetsPrice);
@@ -108,7 +105,7 @@ async function findEmissionChangeBlock(lowBlock: number, highBlock: number): Pro
 }
 
 // find BEETS price from database or from live source
-async function findBeetsPrice(round: string): Promise<number> {
+async function findBeetsPrice(round: number): Promise<number> {
   const chartdata = await readOneChartdata(round);
   if (!!chartdata) {
     // console.log(chartdata);
@@ -119,7 +116,7 @@ async function findBeetsPrice(round: string): Promise<number> {
 }
 
 // find ROI from chartdata
-async function findRoi(round: string, voteEmissionUsd: number) {
+async function findRoi(round: number, voteEmissionUsd: number) {
   const chartdata = await readOneChartdata(round);
   if (!chartdata) return 0;
   const bribedEmissions = (chartdata.bribedVotes / chartdata.totalVotes) * voteEmissionUsd;
