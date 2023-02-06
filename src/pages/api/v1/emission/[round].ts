@@ -13,9 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const latest = await findConfigEntry("latest");
     roundNum = !latest ? 99 : +latest + 1;
   }
-  const roundStr = roundNum.toString().padStart(2, "0");
+  // const roundStr = roundNum.toString().padStart(2, "0");
   // get data
-  const data = await getEmissionForRound(roundStr);
+  const data = await getEmissionForRound(roundNum);
   if (!data) return res.status(404).send("No object with given ID found");
   res.json(data);
 }

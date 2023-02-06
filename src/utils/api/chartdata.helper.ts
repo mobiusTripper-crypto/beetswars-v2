@@ -26,7 +26,7 @@ export default async function getEchartData(): Promise<Echarts | null> {
   });
   const votingApr = data.map(round => {
     return parseFloat(
-      ((round.totalBribes / round.priceFbeets / round.bribedVotes) * 2600).toFixed(2)
+      ((round.totalBribes / round.priceFbeets / round.bribedVotes) * 26 * 100).toFixed(2)
     );
   });
   const bribersRoi = data.map(round => {

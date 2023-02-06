@@ -1,6 +1,5 @@
 import { type NextPage } from "next";
 import {
-  Box,
   Button,
   Card,
   CardBody,

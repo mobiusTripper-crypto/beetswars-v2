@@ -1,1 +1,1 @@
-export type Config = { name: string; data: string };
+export type Config = { name: string; data: string | number };
