@@ -176,4 +176,11 @@ export const bribedataRouter = router({
         votelist: await suggestData(input.snapshot, input.round),
       };
     }),
+  suggest: publicProcedure
+    .input(z.object({ snapshot: z.string(), round: z.number() }))
+    .query(async ({ input }) => {
+      return {
+        votelist: await suggestData(input.snapshot, input.round),
+      };
+    }),
 });
