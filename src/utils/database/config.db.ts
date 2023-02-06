@@ -3,7 +3,7 @@ import type { Config } from "types/config.raw";
 
 const dbName = process.env.DB_NAME;
 
-export async function findConfigEntry(key: string): Promise<string | null> {
+export async function findConfigEntry(key: string): Promise<string | number | null> {
   const client = await clientPromise;
   const coll = client.db(dbName).collection<Config>("config");
   const item = await coll.findOne<Config>({ name: key }, { projection: { _id: 0 } });

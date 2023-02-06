@@ -21,8 +21,8 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
 // This tRPC endpoint gives back bribedata for one round in 2 possible formats:
-// - bribedata: All values are calculated and ready for display
-// - bribedata_raw: pure JSON format, as saved in database
+// - list: All values are calculated and ready for display
+// - list_raw: pure JSON format, as saved in database
 // And it provides several functions to mutate bribe data:
 // - addRound: create a new database document with basic round data
 // - editRound: edit basic round data for given round id

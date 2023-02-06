@@ -4,7 +4,7 @@ import { getBlockByTs } from "utils/externalData/ftmScan";
 import { getBeetsPerBlock } from "utils/externalData/theGraph";
 
 export interface EmissionData {
-  round: string;
+  round: number;
   emission: number;
   beetsPrice: number;
   usdValue: number;
@@ -13,12 +13,12 @@ export interface EmissionData {
   avgBribeRoiInPercent: number;
 }
 
-export async function getEmissionForRound(round: string): Promise<EmissionData | null> {
+export async function getEmissionForRound(round: number): Promise<EmissionData | null> {
   console.log("getEmissionForRound");
   // start at Wed Jan 12, 2022 - the start of round 1 payout (I guess)
   const ROUND1 = 1641988800; // timestamp of 12-01-2022 12:00 pm UTC as reference point
   const TWOWEEKS = 14 * 24 * 60 * 60; // seconds
-  const ts1 = ROUND1 + (+round - 1) * TWOWEEKS; // from end of previous round
+  const ts1 = ROUND1 + (round - 1) * TWOWEEKS; // from end of previous round
   const ts2 = ts1 + TWOWEEKS; // to end of given round
   const now = Math.round(Date.now() / 1000) - 60; // one minute back to give a buffer to data providers
   let start = 0;
@@ -65,7 +65,8 @@ export async function getEmissionForRound(round: string): Promise<EmissionData |
   }
   const beetsPrice = await findBeetsPrice(round);
   const usdValue = emission * beetsPrice;
-  const voteEmission = Math.round(emission * 0.872 * 0.3); // 30% of 87.2% of emissions
+  const voteEmissionPercent = round < 29 ? 0.3 : 0.5;
+  const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
   const percentUsdValue = (voteEmission * beetsPrice) / 100;
   const avgBribeRoiInPercent = await findRoi(round, voteEmission * beetsPrice);
   return {
@@ -103,7 +104,7 @@ async function findEmissionChangeBlock(lowBlock: number, highBlock: number): Pro
 }
 
 // find BEETS price from database or from live source
-async function findBeetsPrice(round: string): Promise<number> {
+async function findBeetsPrice(round: number): Promise<number> {
   const chartdata = await readOneChartdata(round);
   if (!!chartdata) return chartdata.priceBeets;
   const cg = await getCoingeckoCurrentPrice("beethoven-x");
@@ -111,7 +112,7 @@ async function findBeetsPrice(round: string): Promise<number> {
 }
 
 // find ROI from chartdata
-async function findRoi(round: string, voteEmissionUsd: number) {
+async function findRoi(round: number, voteEmissionUsd: number) {
   const chartdata = await readOneChartdata(round);
   if (!chartdata) return 0;
   const bribedEmissions = (chartdata.bribedVotes / chartdata.totalVotes) * voteEmissionUsd;

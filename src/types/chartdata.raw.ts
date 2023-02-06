@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const Chartdata = z.object({
+export const ChartdataV1 = z.object({
   round: z.string(),
   voteEnd: z.number(),
   totalVotes: z.number(),
@@ -13,7 +13,7 @@ export const Chartdata = z.object({
   bribersRoi: z.number().optional(),
 });
 
-export type Chartdata = z.infer<typeof Chartdata>;
+export type ChartdataV1 = z.infer<typeof ChartdataV1>;
 
 export const Chartdata2 = z.object({
   round: z.string().or(z.number()),
