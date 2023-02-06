@@ -4,19 +4,20 @@ import { CustomConnectButton } from "components/CustomConnectButton";
 import { useGlobalContext } from "contexts/GlobalContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
-// import { useEffect } from "react";
 import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
-// import { trpc } from "../utils/trpc";
 import { RoundSelector } from "components/RoundSelector";
 import React from "react";
+import { useGetVp } from "hooks/useGetVp";
 
 export const TopRow = () => {
   const { requestedRound, requestRound, display } = useGlobalContext();
-  // const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
   const cardLink = "/round/" + requestedRound + "/cards";
   const tableLink = "/round/" + requestedRound + "/table";
   const router = useRouter();
+
+  const votingPower: number = useGetVp();
+  console.log("TR vp:", votingPower);
 
   const iconProps = {
     size: "1.6rem",
@@ -32,10 +33,14 @@ export const TopRow = () => {
 
   return (
     <>
-      <HStack
-        p={4}
-        justifyContent="flex-end"
-      >
+      <HStack p={4} justifyContent="flex-end">
+        <Box style={{ marginRight: "1rem" }}>
+          <Link href="/bribeform">
+            <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
+              VP: {votingPower?.toFixed(0)}
+            </Text>
+          </Link>
+        </Box>
         <Box style={{ marginRight: "1rem" }}>
           <Link href="/bribeform">
             <Text fontSize="1xl">bribeform</Text>

@@ -1,19 +1,43 @@
 import snapshot from "@snapshot-labs/snapshot.js";
 import { useQuery } from "@tanstack/react-query";
+import { useAccount } from "wagmi";
+import { trpc } from "utils/trpc";
+import { useGlobalContext } from "contexts/GlobalContext";
 
-export const useGetVp = (proposal: string | undefined, address: string | undefined) =>
+const votingActive = false;
+
+export const useGetVp = () => {
+  const { requestedRound } = useGlobalContext();
+  const bribeData = trpc.bribes.list.useQuery(
+    { round: requestedRound },
+    {
+      refetchOnWindowFocus: votingActive,
+      refetchInterval: votingActive ? 60000 : 0,
+      staleTime: votingActive ? 60000 : Infinity,
+      enabled: !!requestedRound,
+    }
+  ).data?.bribefile;
+  const proposal = bribeData?.header.proposal;
+  const account = useAccount();
+  const { data: vp } = useQqueryVp(proposal, account.address);
+  if (vp) {
+    return vp;
+  }
+  return 0;
+};
+
+const useQqueryVp = (proposal: string | undefined, address: string | undefined) =>
   useQuery({
     queryKey: ["votingPower", proposal, address],
-    queryFn: () => fetchVotingPower(proposal, address),
+    queryFn: () => getVotingPower(proposal, address),
     refetchInterval: 0,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
     cacheTime: Infinity,
     staleTime: Infinity,
-    enabled: !!proposal,
   });
 
-async function fetchVotingPower(proposal: string | undefined, address: string | undefined) {
+async function getVotingPower(proposal: string | undefined, address: string | undefined) {
   console.log("prop:", proposal);
   console.log("addr:", address);
 
@@ -33,9 +57,8 @@ async function fetchVotingPower(proposal: string | undefined, address: string | 
     );
     console.log(votingPower);
     return votingPower.vp;
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 const strategies = [
