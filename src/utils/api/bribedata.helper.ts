@@ -27,6 +27,7 @@ export default async function getBribeData(round = 0): Promise<BribeData | null>
   const voteStart = new Date(snapshot.start * 1000).toUTCString();
   const voteEnd = new Date(snapshot.end * 1000).toUTCString();
   const timeRemaining = timeformat(snapshot.end - Date.now() / 1000);
+  const voteState = snapshot.state;
 
   const totalVotes = Math.round(votes.reduce((sum, vote) => sum + vote.vp, 0));
   const totalVoter = votes.length;
@@ -72,6 +73,8 @@ export default async function getBribeData(round = 0): Promise<BribeData | null>
     bribedVoter,
     totalBribes,
     avgPer1000,
+    proposal,
+    voteState,
   };
 
   const strategies = snapshot.strategies;

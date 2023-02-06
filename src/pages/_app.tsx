@@ -4,6 +4,7 @@ import type { Session } from "next-auth";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { WagmiConfig } from "wagmi";
 import { client, chains } from "utils/wagmiconf";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -52,6 +53,7 @@ const MyApp = ({
               </ChakraProvider>
             </RainbowKitProvider>
           </WagmiConfig>
+          <ReactQueryDevtools />
         </QueryClientProvider>
       </MyGlobalContext.Provider>
     </SessionProvider>

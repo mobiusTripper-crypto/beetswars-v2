@@ -28,17 +28,28 @@ import { useGlobalContext } from "contexts/GlobalContext";
 import { trpc } from "utils/trpc";
 import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 import type { BribeOffer } from "types/bribelist.trpc";
+import { useGetVp } from "hooks/useGetVp";
+import { useAccount } from "wagmi";
+
+const votingActive = false;
 
 export default function Round() {
+  const account = useAccount();
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
-  // const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
   const { requestedRound, display, setDisplay } = useGlobalContext();
-  const bribeData = trpc.bribes.list.useQuery({ round: requestedRound }, { enabled: !!number }).data
-    ?.bribefile;
+  const bribeData = trpc.bribes.list.useQuery(
+    { round: requestedRound },
+    {
+      refetchOnWindowFocus: votingActive,
+      refetchInterval: votingActive ? 60000 : 0,
+      staleTime: votingActive ? 60000 : Infinity,
+    }
+  ).data?.bribefile;
 
-  console.log(router.query, number[0]);
+  const votingPower: number = useGetVp();
+  console.log("DP vp:", votingPower, account.address, account.isConnected, account.status);
 
   useEffect(() => {
     if (number[1]) {
@@ -78,8 +89,12 @@ export default function Round() {
             {bribeData?.header.avgPer1000}{" "}
           </Text>
         </Center>
+        <Center>
+          <Text>
+            {account.address} VP: {votingPower}
+          </Text>
+        </Center>
       </Box>
-
       {display === "cards" ? (
         <Center>
           <Wrap justify="center" spacing={10} mt={10}>
