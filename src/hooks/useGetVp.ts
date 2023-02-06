@@ -3,8 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
-import type { SpaceStrategy } from "types/bribelist.trpc";
-import { Strategy } from "@snapshot-labs/snapshot.js/dist/voting/types";
+import type { Strategy } from "@snapshot-labs/snapshot.js/dist/voting/types";
 
 const votingActive = false;
 let strategies: Strategy[];
