@@ -29,7 +29,14 @@ export interface BribeOffer extends SingleOffer {
   assumption?: string;
 }
 
+export interface SpaceStrategy {
+  name: string;
+  network: string;
+  params: Record<string, unknown>;
+}
+
 export interface BribeData {
   header: BribeHeader;
   bribelist: BribeOffer[];
+  strategies: SpaceStrategy;
 }
