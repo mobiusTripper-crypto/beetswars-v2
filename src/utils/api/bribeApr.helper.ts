@@ -42,8 +42,10 @@ export async function getEmissionForRound(round: string): Promise<EmissionData |
   // C) emission has not yet started (ts1 > date.now) take emissions of last 1 day * 14
   else {
     console.log("future");
-    start = now - 24 * 60 * 60; //one day back
-    end = now;
+    // start = now - 24 * 60 * 60; //one day back
+    // end = now;
+    start = 1675530000;
+    end = 1675616400;
     factor = 14;
   }
   const block1 = await getBlockByTs(start);
@@ -64,8 +66,11 @@ export async function getEmissionForRound(round: string): Promise<EmissionData |
     emission = (part1 + part2) * factor;
   }
   const beetsPrice = await findBeetsPrice(round);
+  // console.log("beets price ", beetsPrice);
   const usdValue = emission * beetsPrice;
-  const voteEmission = Math.round(emission * 0.872 * 0.3); // 30% of 87.2% of emissions
+  const voteEmissionPercent = +round < 29 ? 0.3 : 0.5;
+  // console.log("percent ", voteEmissionPercent);
+  const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
   const percentUsdValue = (voteEmission * beetsPrice) / 100;
   const avgBribeRoiInPercent = await findRoi(round, voteEmission * beetsPrice);
   return {
@@ -105,7 +110,10 @@ async function findEmissionChangeBlock(lowBlock: number, highBlock: number): Pro
 // find BEETS price from database or from live source
 async function findBeetsPrice(round: string): Promise<number> {
   const chartdata = await readOneChartdata(round);
-  if (!!chartdata) return chartdata.priceBeets;
+  if (!!chartdata) {
+    // console.log(chartdata);
+    return chartdata.priceBeets;
+  }
   const cg = await getCoingeckoCurrentPrice("beethoven-x");
   return cg;
 }
