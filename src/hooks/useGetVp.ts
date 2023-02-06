@@ -20,15 +20,9 @@ export const useGetVp = () => {
     }
   ).data?.bribefile;
   const proposal = bribeData?.header.proposal;
-
   const st = bribeData?.strategies;
-
   strategies = st as unknown as Strategy[];
-
   const account = useAccount();
-
-  console.log(bribeData);
-
   const { data: vp } = useQqueryVp(proposal, account.address);
   if (vp) {
     return vp;
@@ -48,9 +42,9 @@ const useQqueryVp = (proposal: string | undefined, address: string | undefined) 
   });
 
 async function getVotingPower(proposal: string | undefined, address: string | undefined) {
-  console.log("prop:", proposal);
-  console.log("addr:", address);
-  console.log("strat:", strategies);
+  //console.log("prop:", proposal);
+  //console.log("addr:", address);
+  //console.log("strat:", strategies);
 
   const network = "250";
   const space = "beets.eth";

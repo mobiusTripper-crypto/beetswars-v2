@@ -34,11 +34,10 @@ import { useAccount } from "wagmi";
 const votingActive = false;
 
 export default function Round() {
-const account = useAccount()
+  const account = useAccount();
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
-  // const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
   const { requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
@@ -50,9 +49,7 @@ const account = useAccount()
   ).data?.bribefile;
 
   const votingPower: number = useGetVp();
-
-  console.log("DP vp:", votingPower);
-  console.log("DP acc:", account.address, account.isConnected, account.status);
+  console.log("DP vp:", votingPower, account.address, account.isConnected, account.status);
 
   useEffect(() => {
     if (number[1]) {
@@ -93,7 +90,9 @@ const account = useAccount()
           </Text>
         </Center>
         <Center>
-          <Text>{account.address}  VP: {votingPower}</Text>
+          <Text>
+            {account.address} VP: {votingPower}
+          </Text>
         </Center>
       </Box>
       {display === "cards" ? (

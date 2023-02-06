@@ -15,7 +15,6 @@ export const TopRow = () => {
   const cardLink = "/round/" + requestedRound + "/cards";
   const tableLink = "/round/" + requestedRound + "/table";
   const router = useRouter();
-
   const votingPower: number = useGetVp();
   console.log("TR vp:", votingPower);
 
@@ -39,11 +38,6 @@ export const TopRow = () => {
             <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
               VP: {votingPower?.toFixed(0)}
             </Text>
-          </Link>
-        </Box>
-        <Box style={{ marginRight: "1rem" }}>
-          <Link href="/bribeform">
-            <Text fontSize="1xl">bribeform</Text>
           </Link>
         </Box>
         <Box style={{ marginRight: "1rem" }}>
