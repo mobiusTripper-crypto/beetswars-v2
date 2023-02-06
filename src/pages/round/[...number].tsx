@@ -28,6 +28,9 @@ import { useGlobalContext } from "contexts/GlobalContext";
 import { trpc } from "utils/trpc";
 import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 import type { BribeOffer } from "types/bribelist.trpc";
+import { useGetVp } from "hooks/useGetVp";
+import { useAccount } from "wagmi";
+
 
 export default function Round() {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
@@ -37,8 +40,12 @@ export default function Round() {
   const { requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery({ round: requestedRound }, { enabled: !!number }).data
     ?.bribefile;
+  const account = useAccount();
+  const address = account.address;
+  const proposal = bribeData?.header.proposal;
+  const { data: votingPower } = useGetVp(proposal,address);
 
-  console.log(router.query, number[0]);
+  console.log("vp:", votingPower);
 
   useEffect(() => {
     if (number[1]) {
