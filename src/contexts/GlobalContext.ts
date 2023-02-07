@@ -9,8 +9,8 @@ type GlobalContext = {
   requestRound: (c: number) => void;
   display: string;
   setDisplay: (c: string) => void;
-  gVersion: string;
-  setGVersion: (c: string) => void;
+  voteActive: boolean;
+  setVoteActive: (c: boolean) => void;
 };
 
 export const MyGlobalContext = createContext<GlobalContext>({
@@ -18,8 +18,8 @@ export const MyGlobalContext = createContext<GlobalContext>({
   requestRound: () => {},
   display: "",
   setDisplay: () => {},
-  gVersion: "",
-  setGVersion: () => {},
+  voteActive: false,
+  setVoteActive: () => {},
 });
 
 export const useGlobalContext = () => useContext(MyGlobalContext);
