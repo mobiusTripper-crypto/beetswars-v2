@@ -1,4 +1,4 @@
-import type { Chartdata2 } from "../../types/chartdata.raw";
+import type { Chartdata } from "../../types/chartdata.raw";
 import { getSnapshotProposal, getSnapshotVotes } from "../externalData/snapshot";
 import { getCoingeckoPrice } from "../externalData/coingecko";
 import { getTokenPrice } from "../externalData/beetsBack";
@@ -6,11 +6,11 @@ import { readOneBribefile } from "utils/database/bribefile.db";
 import { getEmissionForRound } from "./bribeApr.helper";
 
 export async function getData(round: number) {
-  const newData = {} as Chartdata2;
+  const newData = {} as Chartdata;
   newData.round = round;
 
   // gather basics
-  const bribefile = await readOneBribefile(+round);
+  const bribefile = await readOneBribefile(round);
   if (!bribefile) return newData; //empty
   const proposal = bribefile.snapshot;
   const bribedOffers = bribefile.bribedata.map(x => (x.voteindex + 1).toString());
@@ -83,7 +83,7 @@ export async function getData(round: number) {
     bribes[index] = bribeEntry;
   }
   const totalBribes = Math.round(bribes.reduce((sum, x) => sum + x.usd, 0));
-  const emissions = await getEmissionForRound(+round);
+  const emissions = await getEmissionForRound(round);
   const bribersRoi = emissions?.avgBribeRoiInPercent ?? 0;
 
   // fill data

@@ -15,8 +15,8 @@ export const ChartdataV1 = z.object({
 
 export type ChartdataV1 = z.infer<typeof ChartdataV1>;
 
-export const Chartdata2 = z.object({
-  round: z.string().or(z.number()),
+export const Chartdata = z.object({
+  round: z.number(),
   voteEnd: z.number(),
   totalVotes: z.number(),
   bribedVotes: z.number(),
@@ -28,4 +28,4 @@ export const Chartdata2 = z.object({
   bribersRoi: z.number().optional(),
 });
 
-export type Chartdata2 = z.infer<typeof Chartdata2>;
+export type Chartdata = z.infer<typeof Chartdata>;

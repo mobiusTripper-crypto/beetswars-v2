@@ -12,7 +12,6 @@ export const Tokendata = z.object({
 export type Tokendata = z.infer<typeof Tokendata>;
 
 export const Reward = z.object({
-  // type: z.string(),
   type: z.enum(["fixed", "percent", "pervote"]),
   token: z.string(),
   amount: z.number(),
