@@ -30,5 +30,5 @@ export interface SnapProposal {
   state: string; // "pending"|"active"|"closed"
   snapshot: string; // ftm block number as string
   choices: string[]; // list of pools
-  strategies: SpaceStrategy; // JSON object of all strategies
+  strategies: SpaceStrategy[]; // JSON object of all strategies
 }

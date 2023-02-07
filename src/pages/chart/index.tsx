@@ -491,7 +491,7 @@ function Chart1() {
       let requestedRound = params.dataIndex + offset;
       requestedRound =
         requestedRound < 10 ? "0" + requestedRound : requestedRound;
-      requestRound(requestedRound);
+      requestRound(Number(requestedRound));
       console.log("click", params.dataIndex, "->", "request " + requestedRound);
 
       const roundPage = "/round/" + requestedRound;
