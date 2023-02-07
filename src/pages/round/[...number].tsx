@@ -44,6 +44,7 @@ export default function Round() {
       refetchIntervalInBackground: false,
       refetchInterval: voteActive ? 60000 : 0,
       staleTime: voteActive ? 30000 : Infinity,
+      cacheTime: voteActive ? 120000 : Infinity,
     }
   ).data?.bribefile;
 
