@@ -19,7 +19,8 @@ import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import RoundSelector from "components/RoundSelector";
 import { EditRoundModal } from "components/EditRound/EditRound";
-import { DeleteConfrimModal } from "components/DeleteConfirmModal";
+import { DeleteOfferModal } from "components/DeleteOfferModal";
+import { EditOfferModal } from "components/EditOfferModal";
 
 const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
@@ -95,28 +96,24 @@ const BribeForm: NextPage = () => {
             </Flex>
           </CardHeader>
           <CardBody>
-            <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr">
-              {!bribedata ||
-                bribedata?.tokendata.map(token => (
-                  <>
-                    <GridItem>{token.tokenId}</GridItem>
-                    <GridItem>{token.token}</GridItem>
-                    <GridItem>{token.tokenaddress}</GridItem>
-                    <GridItem>
-                      <Flex justifyContent="flex-end">
-                        <Spacer />
-                        <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>
-                          Edit
-                        </Button>
-                        <Spacer />
-                        <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>
-                          Delete
-                        </Button>
-                      </Flex>
-                    </GridItem>
-                  </>
-                ))}
-            </Grid>
+            {!bribedata ||
+              bribedata?.tokendata.map((token, index) => (
+                <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr" key={index}>
+                  <GridItem>{token.tokenId}</GridItem>
+                  <GridItem>{token.token}</GridItem>
+                  <GridItem>{token.tokenaddress}</GridItem>
+                  <GridItem>
+                    <Flex justifyContent="flex-end">
+                      <Spacer />
+                      <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>Edit</Button>
+                      <Spacer />
+                      <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>
+                        Delete
+                      </Button>
+                    </Flex>
+                  </GridItem>
+                </Grid>
+              ))}
           </CardBody>
         </Card>
 
@@ -125,7 +122,7 @@ const BribeForm: NextPage = () => {
             <Flex>
               <Heading size="md">Offers:</Heading>
               <Spacer />
-              <Button onClick={() => showToast(`add new bribe`)}>add new offer</Button>
+              <EditOfferModal isNew round={round} />
             </Flex>
           </CardHeader>
           <CardBody>
@@ -137,8 +134,8 @@ const BribeForm: NextPage = () => {
                   <GridItem>{bribe.rewarddescription}</GridItem>
                   <GridItem>
                     <HStack spacing={3}>
-                      <Button onClick={() => showToast(`edit bribe ${bribe.offerId}`)}>Edit</Button>
-                      <DeleteConfrimModal round={round} offerId={bribe.offerId} />
+                      <EditOfferModal round={round} offerId={bribe.offerId} isNew={false} />
+                      <DeleteOfferModal round={round} offerId={bribe.offerId} />
                     </HStack>
                   </GridItem>
                 </Grid>

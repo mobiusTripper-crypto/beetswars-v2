@@ -28,14 +28,14 @@ export function EditRoundModal(props: modalProps) {
   const editRound = trpc.bribes.editRound.useMutation();
   const addRound = trpc.bribes.addRound.useMutation();
   const [description, setDescription] = useState("");
-  const [snapshotID, setSnapshotID] = useState("");
+  const [snapshotId, setSnapshotId] = useState("");
   const [round, setRound] = useState("");
   const bribedata = trpc.bribes.list_raw.useQuery({ round: roundNumber }).data?.bribefile;
 
   const openModal = () => {
     if (!isNew) {
       setDescription(bribedata?.description || "");
-      setSnapshotID(bribedata?.snapshot || "");
+      setSnapshotId(bribedata?.snapshot || "");
       setRound(bribedata?.round.toString() || "");
     }
     onOpen();
@@ -45,7 +45,7 @@ export function EditRoundModal(props: modalProps) {
     if (isNew) {
       const bribefile = {
         version: round + ".0.0",
-        snapshot: snapshotID,
+        snapshot: snapshotId,
         description: description,
         round: Number(round),
         tokendata: [],
@@ -54,7 +54,7 @@ export function EditRoundModal(props: modalProps) {
       addRound.mutate(bribefile);
       refresh(round);
     } else if (bribedata) {
-      editRound.mutate({ ...bribedata, description: description });
+      editRound.mutate({ ...bribedata, description: description, snapshot: snapshotId });
       refresh(bribedata.round.toString());
     }
     onClose();
@@ -88,8 +88,8 @@ export function EditRoundModal(props: modalProps) {
                   <FormLabel>Snapshot ID</FormLabel>
                   <Input
                     placeholder="0x..."
-                    value={snapshotID}
-                    onChange={e => setSnapshotID(e.target.value)}
+                    value={snapshotId}
+                    onChange={e => setSnapshotId(e.target.value)}
                   />
                 </FormControl>
               </VStack>

@@ -17,7 +17,7 @@ interface modalProps {
   offerId: number;
 }
 
-export function DeleteConfrimModal(props: modalProps) {
+export function DeleteOfferModal(props: modalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { round, offerId } = props;
   const deleteOffer = trpc.bribes.deleteOffer.useMutation();
@@ -28,7 +28,7 @@ export function DeleteConfrimModal(props: modalProps) {
 
   return (
     <>
-      <Button onClick={openModal}>Delete Offer</Button>
+      <Button onClick={openModal}>Delete</Button>
 
       <Modal closeOnOverlayClick={false} blockScrollOnMount isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
