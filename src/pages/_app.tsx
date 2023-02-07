@@ -28,7 +28,7 @@ const MyApp = ({
 }: AppProps<{ session: Session }>) => {
   const [requestedRound, requestRound] = useState<number>(0);
   const [display, setDisplay] = useState<string>("cards");
-  const [gVersion, setGVersion] = useState<string>("");
+  const [voteActive, setVoteActive] = useState<boolean>(false);
 
   return (
     <SessionProvider session={session}>
@@ -38,8 +38,8 @@ const MyApp = ({
           requestRound,
           display,
           setDisplay,
-          gVersion,
-          setGVersion,
+          voteActive,
+          setVoteActive,
         }}
       >
         <QueryClientProvider client={queryClient}>
