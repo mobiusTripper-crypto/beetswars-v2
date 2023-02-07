@@ -19,6 +19,8 @@ export function RoundSelector({
 
   const roundList = trpc.rounds.list.useQuery(undefined, {
     refetchOnWindowFocus: false,
+    refetchInterval: 0,
+    staleTime: Infinity,
   }).data?.data ?? {
     rounds: [] as number[],
     latest: 0,
