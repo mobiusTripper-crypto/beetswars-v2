@@ -21,6 +21,7 @@ import {
   Button,
   Link,
   VStack,
+  Progress,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -36,6 +37,7 @@ export default function Round() {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
+  //console.log(number[1]);
   const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
@@ -48,7 +50,6 @@ export default function Round() {
     }
   ).data?.bribefile;
 
-  console.log(voteActive);
   const votingPower: number = useGetVp();
   //console.log("DP vp:", votingPower, account.address, account.isConnected, account.status);
 
@@ -77,6 +78,14 @@ export default function Round() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [number]);
+
+  if (!bribeData) {
+    return (
+      <>
+        <Progress size="xs" isIndeterminate />
+      </>
+    );
+  }
 
   return (
     <>
