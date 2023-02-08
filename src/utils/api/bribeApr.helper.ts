@@ -82,7 +82,10 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
 }
 
 // find block by continuous halving
-async function findEmissionChangeBlock(lowBlock: number, highBlock: number): Promise<number> {
+export async function findEmissionChangeBlock(
+  lowBlock: number,
+  highBlock: number
+): Promise<number> {
   // console.log("try to find change block");
   const beets1 = await getBeetsPerBlock(lowBlock);
   const beets2 = await getBeetsPerBlock(highBlock);

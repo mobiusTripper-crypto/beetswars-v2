@@ -20,7 +20,7 @@ export async function getBeetsPerBlock(block: number): Promise<number> {
     }
     return value.beetsPerBlock / 10 ** 18;
   } catch (error) {
-    console.error("failed query theGraph BeetsPerBlock", error);
+    console.error("failed query theGraph BeetsPerBlock");
     return 0;
   }
 }
