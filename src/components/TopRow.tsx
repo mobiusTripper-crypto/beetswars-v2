@@ -8,15 +8,46 @@ import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { RoundSelector } from "components/RoundSelector";
 import React from "react";
+import { useEffect } from "react";
 import { useGetVp } from "hooks/useGetVp";
+import { useRoundList } from "hooks/useRoundList";
+import { useVoteState } from "hooks/useVoteState";
 
 export const TopRow = () => {
+  const { data: VoteStateActive } = useVoteState();
+  //console.log("vote active:", VoteStateActive);
   const { requestedRound, requestRound, display } = useGlobalContext();
+  const votingPower: number = useGetVp();
+  const { data: roundList, loaded: rloaded } = useRoundList();
+  //  console.log("round list:", roundList, rloaded);
+  const router = useRouter();
+  const urlParam = router.query;
+
+  useEffect(() => {
+    const parsedNumber: number = urlParam.number ? parseInt(urlParam.number[0] as string) : NaN;
+    console.log("urlparm num:", parsedNumber);
+    if (parsedNumber && rloaded) {
+      console.log("number:", parsedNumber);
+      if (roundList.rounds.includes(parsedNumber)) {
+        console.log("valid:", parsedNumber);
+        requestRound(parsedNumber);
+      } else {
+        console.log("invalid -> latest:", parsedNumber);
+        requestRound(roundList.latest);
+      }
+    } else {
+      if (roundList && roundList.latest !== 0) {
+        console.log("set to latest", roundList.latest);
+        requestRound(roundList.latest);
+        if (VoteStateActive) {
+          router.push("/round/" + roundList.latest, undefined, { shallow: true });
+        }
+      }
+    }
+  }, [roundList]);
+
   const cardLink = "/round/" + requestedRound + "/cards";
   const tableLink = "/round/" + requestedRound + "/table";
-  const router = useRouter();
-  const votingPower: number = useGetVp();
-  console.log("TR vp:", votingPower);
 
   const iconProps = {
     size: "1.6rem",

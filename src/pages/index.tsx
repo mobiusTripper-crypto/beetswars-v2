@@ -5,29 +5,38 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useGlobalContext } from "contexts/GlobalContext";
-
-const voteActive = true;
+import { useVoteState } from "hooks/useVoteState";
 
 const Home: NextPage = () => {
   const { requestedRound } = useGlobalContext();
   const router = useRouter();
 
+  const { data: voteStateActive, loaded: stateLoaded } = useVoteState();
+
   useEffect(() => {
-    if (!voteActive) {
-      router.push("/chart");
-    } else {
-      router.push("/round/" + requestedRound);
+    if (stateLoaded) {
+      if (voteStateActive) {
+        console.log("vote active:", voteStateActive);
+        router.push("/round/" + requestedRound);
+      } else {
+        console.log("vote inactive:", voteStateActive);
+        router.push("/chart");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [voteStateActive, stateLoaded]);
 
-  return (
-    <>
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <div>Home</div>
-      </ErrorBoundary>
-    </>
-  );
+  if (!stateLoaded) {
+    return (
+      <>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <div>Init .... </div>
+        </ErrorBoundary>
+      </>
+    );
+  }
+
+  return <></>;
 };
 
 export default Home;

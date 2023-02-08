@@ -1,6 +1,7 @@
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { Select } from "@chakra-ui/react";
+import { useRoundList } from "hooks/useRoundList";
 
 // definition to avoid "any"
 interface RoundSelectorProps {
@@ -17,6 +18,9 @@ export function RoundSelector({
 }: RoundSelectorProps): JSX.Element {
   const { requestedRound } = useGlobalContext();
 
+  const { data: roundList, loaded } = useRoundList();
+
+  /*
   const roundList = trpc.rounds.list.useQuery(undefined, {
     refetchOnWindowFocus: false,
     refetchInterval: 0,
@@ -25,6 +29,9 @@ export function RoundSelector({
     rounds: [] as number[],
     latest: 0,
   };
+*/
+
+if (!loaded) { return (<>XXXX</>) }
 
   return (
     <Select onChange={handleChange} value={requestedRound}>
