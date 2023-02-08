@@ -68,11 +68,9 @@ export const TopRow = () => {
     <>
       <HStack p={4} justifyContent="flex-end">
         <Box style={{ marginRight: "1rem" }}>
-          <Link href="/bribeform">
-            <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
-              VP: {votingPower?.toFixed(0)}
-            </Text>
-          </Link>
+          <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
+            VP: {votingPower?.toFixed(0)}
+          </Text>
         </Box>
         <Box style={{ marginRight: "1rem" }}>
           <RoundSelector handleChange={changeRound} />

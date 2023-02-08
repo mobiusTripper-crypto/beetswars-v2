@@ -37,7 +37,6 @@ export default function Round() {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
-  //console.log(number[1]);
   const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
@@ -50,8 +49,8 @@ export default function Round() {
     }
   ).data?.bribefile;
 
+  const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
   const votingPower: number = useGetVp();
-  //console.log("DP vp:", votingPower, account.address, account.isConnected, account.status);
 
   useEffect(() => {
     if (bribeData?.header.voteState) {
@@ -91,7 +90,21 @@ export default function Round() {
     <>
       <Box>
         <Center>
-          <Text fontSize="4xl">{bribeData?.header.roundName}</Text>
+          <Box>
+            <Link href={snapshotLink} isExternal>
+              <Button
+                fontSize="2rem"
+                whiteSpace="normal"
+                height="auto"
+                blockSize="auto"
+                variant="unstyled"
+                size="md"
+                rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
+              >
+                {bribeData?.header.roundName}
+              </Button>
+            </Link>
+          </Box>
         </Center>
         <Center>
           <Text fontSize="1.4rem">
