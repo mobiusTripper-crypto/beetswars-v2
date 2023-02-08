@@ -21,6 +21,7 @@ import {
   Button,
   Link,
   VStack,
+  Progress,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -80,9 +81,9 @@ export default function Round() {
 
   if (!bribeData) {
     return (
-      <Center>
-        <Text fontSize="2xl">loading</Text>
-      </Center>
+      <>
+        <Progress size="xs" isIndeterminate />
+      </>
     );
   }
 

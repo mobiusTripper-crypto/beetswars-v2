@@ -2,7 +2,7 @@ import type { Echarts } from "types/echarts.trpc";
 import { trpc } from "utils/trpc";
 import ReactECharts from "echarts-for-react";
 import { useGlobalContext } from "contexts/GlobalContext";
-import { Text } from "@chakra-ui/react";
+import { Progress, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 const RefetchOptions = {
@@ -498,12 +498,11 @@ function Chart1() {
     click: onChartClick,
   };
 
-  if (!chartData) {
+  if (!chartData.rounds) {
     return (
       <>
-        <Text variant="body2" align="center">
-          Chart loading ...
-        </Text>
+        <Progress size="xs" isIndeterminate />
+        <Text fontSize="2xl"> Chart loading ... </Text>
       </>
     );
   }

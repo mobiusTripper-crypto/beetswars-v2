@@ -1,11 +1,10 @@
 import type { NextPage } from "next";
-// import { Header } from "components/Header";
-// import { TopRow } from "components/TopRow";
 import { ErrorBoundary } from "react-error-boundary";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useVoteState } from "hooks/useVoteState";
+import { Progress, Center, Text } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
   const { requestedRound } = useGlobalContext();
@@ -30,7 +29,10 @@ const Home: NextPage = () => {
     return (
       <>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-          <div>Init .... </div>
+          <Progress size="xs" isIndeterminate />
+          <Center>
+            <Text fontSize="2xl">Init .... </Text>
+          </Center>
         </ErrorBoundary>
       </>
     );

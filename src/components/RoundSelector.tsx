@@ -19,7 +19,7 @@ export function RoundSelector({
   const { data: roundList, loaded } = useRoundList();
 
   if (!loaded) {
-    return <>???</>;
+    return <>.......</>;
   }
 
   return (

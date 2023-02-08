@@ -24,23 +24,25 @@ export const TopRow = () => {
   const urlParam = router.query;
 
   useEffect(() => {
-    const parsedNumber: number = urlParam.number ? parseInt(urlParam.number[0] as string) : NaN;
-    console.log("urlparm num:", parsedNumber);
-    if (parsedNumber && rloaded) {
-      console.log("number:", parsedNumber);
-      if (roundList.rounds.includes(parsedNumber)) {
-        console.log("valid:", parsedNumber);
-        requestRound(parsedNumber);
+    if (urlParam.number) {
+      const parsedNumber: number = urlParam.number ? parseInt(urlParam.number[0] as string) : NaN;
+      console.log("urlparm num:", parsedNumber);
+      if (parsedNumber && rloaded) {
+        console.log("number:", parsedNumber);
+        if (roundList.rounds.includes(parsedNumber)) {
+          console.log("valid:", parsedNumber);
+          requestRound(parsedNumber);
+        } else {
+          console.log("invalid -> latest:", parsedNumber);
+          requestRound(roundList.latest);
+        }
       } else {
-        console.log("invalid -> latest:", parsedNumber);
-        requestRound(roundList.latest);
-      }
-    } else {
-      if (roundList && roundList.latest !== 0) {
-        console.log("set to latest", roundList.latest);
-        requestRound(roundList.latest);
-        if (VoteStateActive) {
-          router.push("/round/" + roundList.latest, undefined, { shallow: true });
+        if (roundList && roundList.latest !== 0) {
+          console.log("set to latest", roundList.latest);
+          requestRound(roundList.latest);
+          if (!VoteStateActive) {
+            router.push("/round/" + roundList.latest, undefined, { shallow: true });
+          }
         }
       }
     }
