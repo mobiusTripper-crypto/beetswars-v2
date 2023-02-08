@@ -3,6 +3,8 @@ import type { RoundlistNum } from "types/roundlist.trpc";
 import { readAllBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 
+// TODO: remove unused code, when nothing failed
+
 // export default async function getRoundlist(): Promise<Roundlist> {
 //   let rounds: string[];
 //   const data = await readAllBribefile();
