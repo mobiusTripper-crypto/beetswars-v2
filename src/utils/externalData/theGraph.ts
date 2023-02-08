@@ -15,12 +15,12 @@ export async function getBeetsPerBlock(block: number): Promise<number> {
     };
     const value = masterChefs[0];
     if (!value) {
-      // console.error("failed query theGraph BeetsPerBlock");
+      console.error("failed query theGraph BeetsPerBlock");
       return 0;
     }
     return value.beetsPerBlock / 10 ** 18;
   } catch (error) {
-    // console.error("failed query theGraph BeetsPerBlock");
+    console.error("failed query theGraph BeetsPerBlock");
     return 0;
   }
 }

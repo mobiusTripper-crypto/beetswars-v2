@@ -11,6 +11,7 @@ export async function getBlockByTs(ts: number): Promise<number> {
     }
     return +res.result;
   } catch (error) {
+    console.error("failed ftmscan getBlockByTs: ", ts);
     return 0;
   }
 }
@@ -29,6 +30,7 @@ export async function getTsByBlock(block: number): Promise<number> {
     if (!result) return 0;
     return Number(result);
   } catch (error) {
+    console.error("failed ftmscan getTsByBlock");
     return 0;
   }
 }
