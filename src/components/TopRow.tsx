@@ -44,7 +44,8 @@ export const TopRow = () => {
         }
       }
     }
-  }, [roundList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roundList, rloaded]);
 
   const cardLink = "/round/" + requestedRound + "/cards";
   const tableLink = "/round/" + requestedRound + "/table";

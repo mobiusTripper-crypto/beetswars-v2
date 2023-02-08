@@ -1,21 +1,16 @@
-// import type { NextPage } from "next";
 import type { Echarts } from "types/echarts.trpc";
 import { trpc } from "utils/trpc";
 import ReactECharts from "echarts-for-react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { Text } from "@chakra-ui/react";
-// import { HStack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-
-// //commented out, because never used ...
-// const voteActive: boolean | undefined = true;
-// const REFRESH_INTERVAL = (voteActive: boolean) =>
-//   voteActive === true ? 60000 : 0;
 
 const RefetchOptions = {
   refetchOnWindowFocus: false,
   refetchIntervalInBackground: false,
   refetchInterval: 0,
+  staleTime: Infinity,
+  cacheTime: Infinity,
 };
 
 const emptyEcharts: Echarts = {
@@ -31,7 +26,7 @@ const emptyEcharts: Echarts = {
   avgPer1000: [],
   endTime: [],
   votingApr: [],
-}
+};
 
 function Chart1() {
   const chartData: Echarts =
@@ -489,8 +484,7 @@ function Chart1() {
 
     if (params.dataIndex > 2) {
       let requestedRound = params.dataIndex + offset;
-      requestedRound =
-        requestedRound < 10 ? "0" + requestedRound : requestedRound;
+      requestedRound = requestedRound < 10 ? "0" + requestedRound : requestedRound;
       requestRound(Number(requestedRound));
       console.log("click", params.dataIndex, "->", "request " + requestedRound);
 
@@ -519,11 +513,7 @@ function Chart1() {
       <Text fontSize="3xl" align="center" marginBottom="20px">
         Gauge Vote History
       </Text>
-      <ReactECharts
-        option={option}
-        onEvents={onEvents}
-        style={{ height: 1200 }}
-      />
+      <ReactECharts option={option} onEvents={onEvents} style={{ height: 1200 }} />
       <Text variant="body2" align="center">
         (clicking on data points loads historical pages)
       </Text>

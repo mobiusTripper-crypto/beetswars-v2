@@ -29,13 +29,9 @@ import { trpc } from "utils/trpc";
 import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 import type { BribeOffer } from "types/bribelist.trpc";
 import { useGetVp } from "hooks/useGetVp";
-import { useVoteState } from "hooks/useVoteState";
 import { useAccount } from "wagmi";
 
 export default function Round() {
-  // const VoteStateActive: boolean = useVoteState();
-  // console.log(VoteStateActive);
-
   const account = useAccount();
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
