@@ -1,6 +1,6 @@
+// TODO: if vote active probably redirect -> /round/{roundList.latest}
+//import { useRouter } from "next/router";
 import type { NextPage } from "next";
-import { ErrorBoundary } from "react-error-boundary";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useVoteState } from "hooks/useVoteState";
@@ -10,11 +10,13 @@ import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { FaCoins as BribersIcon } from "react-icons/fa";
 import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { BiLineChart as ChartIcon } from "react-icons/bi";
+import { useRoundList } from "hooks/useRoundList";
 
 const Home: NextPage = () => {
-  const { requestedRound } = useGlobalContext();
-  const router = useRouter();
+  //  const router = useRouter();
 
+  const { data: roundList, loaded: roundsLoaded } = useRoundList();
+  const { requestedRound, display } = useGlobalContext();
   const { data: voteStateActive, loaded: stateLoaded } = useVoteState();
 
   useEffect(() => {
@@ -28,36 +30,24 @@ const Home: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voteStateActive, stateLoaded]);
 
-  /*
-  if (!stateLoaded) {
-    return (
-      <>
-          <Progress size="xs" isIndeterminate />
-          <Center>
-            <Text fontSize="2xl">Init .... </Text>
-          </Center>
-      </>
-    );
-  }
-
-*/
-
   return (
     <>
-      <Box height="2px">{stateLoaded ? "" : <Progress size="xs" isIndeterminate />}</Box>
+      <Box height="2px">
+        {(stateLoaded && roundsLoaded) ? "" : <Progress size="xs" isIndeterminate />}
+      </Box>
       <Center>
         <Grid margin="2rem" templateColumns="repeat(2, 1fr)" gap={6}>
           <SplashItem
-            href="/round/0/cards"
+            href={`/round/${roundList?.latest}/${display}`}
             icon={CardIcon}
             text="Voter Dashboard"
-            caption="main dashboard "
+            caption={`Main Dashboard (${roundList?.latest})`}
           />
           <SplashItem
             href="/chart"
             icon={ChartIcon}
             text="Gauge Vote History"
-            caption="history of previous rounds"
+            caption="History of previous rounds"
           />
           <SplashItem
             href="#"
@@ -65,7 +55,7 @@ const Home: NextPage = () => {
             text="Briber Dashboard"
             caption="coming soon ..."
           />
-          <SplashItem href="#" icon={StatsIcon} text="W Da F" caption="coming soon ..." />
+          <SplashItem href="#" icon={StatsIcon} text="W da F" caption="coming soon ..." />
         </Grid>
       </Center>
     </>
@@ -73,15 +63,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-/*
-// function ErrorFallback({ error }: { error: any }) {
-function ErrorFallback({ error }: { error: Error }) {
-  return (
-    <div role="alert">
-      <p>Something went wrong:</p>
-      <pre style={{ color: "red" }}>{error.message}</pre>
-    </div>
-  );
-}
-*/

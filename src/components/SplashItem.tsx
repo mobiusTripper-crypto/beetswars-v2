@@ -1,12 +1,10 @@
-import { Icon, Link, Box, useColorModeValue, Center, Text } from "@chakra-ui/react";
+import { Divider, Icon, Link, Box, useColorModeValue, Center, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 
 export function SplashItem(props: any) {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
-  const iconProps = {
-    size: "7rem",
-    marginRight: "1rem",
-  };
+  const iconProps = { size: "7rem" };
+
   return (
     <>
       <Box
@@ -21,6 +19,7 @@ export function SplashItem(props: any) {
         <Center>
           <Text fontSize="2xl">{props.text}</Text>
         </Center>
+
         <Link as={NextLink} textDecoration={"none"} href={props.href}>
           <Center>
             <Icon
