@@ -56,6 +56,12 @@ const Home: NextPage = () => {
             text="Briber Dashboard"
             caption="coming soon ..."
           />
+          <SplashItem
+            href="/chart"
+            icon={ChartIcon}
+            text="Gauge Vote History"
+            caption="History of previous rounds"
+          />
           <SplashItem href="#" icon={StatsIcon} text="W da F" caption="coming soon ..." />
         </Grid>
       </Center>
