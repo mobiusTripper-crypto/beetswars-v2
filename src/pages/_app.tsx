@@ -18,6 +18,7 @@ import { SessionProvider } from "next-auth/react";
 import { MyGlobalContext } from "contexts/GlobalContext";
 //add additional font weights here in needed
 import "@fontsource/inter/400.css";
+import "@fontsource/inter/600.css";
 import "@fontsource/inter/800.css";
 
 const queryClient = new QueryClient();

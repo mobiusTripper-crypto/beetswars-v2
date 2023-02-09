@@ -6,9 +6,9 @@ export const Header = () => {
   return (
     <Center>
       <Link as={NextLink} textDecoration={"none"} href="/" _hover={{ color: "#ed1200" }}>
-        <Heading fontSize="6xl" fontWeight="800">
-          <chakra.span color="#4BE39C">BEETS WARS</chakra.span> -{" "}
-          <chakra.span color="#ED1200">ROI Dashboard</chakra.span>
+        <Heading fontSize={["xl", "3xl", "5xl", "6xl", "7xl"]} fontWeight="800">
+          <chakra.span color="#4BE39C">BEETS&nbsp;WARS</chakra.span>&nbsp;-&nbsp;
+          <chakra.span color="#ED1200">ROI&nbsp;Dashboard</chakra.span>
         </Heading>
       </Link>
     </Center>
