@@ -4,6 +4,7 @@ import {
   FormLabel,
   Grid,
   GridItem,
+  Heading,
   HStack,
   Input,
   Modal,
@@ -13,12 +14,16 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
+  Text,
   Textarea,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useState } from "react";
+import { Reward } from "./Reward";
+import type { Reward as RewardType } from "types/bribedata.raw";
 
 interface modalProps {
   round: number;
@@ -29,6 +34,12 @@ interface modalProps {
 export function EditOfferModal(props: modalProps) {
   const { round, isNew, offerId } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const bribedata = trpc.bribes.list_raw.useQuery({ round: round }).data?.bribefile;
+  const offerData = bribedata?.bribedata?.find(item => item.offerId === offerId);
+  //const tokenData = bribedata?.tokendata;
+  const tokens = bribedata?.tokendata.map(t => t.token);
+
   const addOffer = trpc.bribes.addOffer.useMutation();
   const editOffer = trpc.bribes.editOffer.useMutation();
   const [rewardCap, setRewardCap] = useState<number | undefined>(undefined);
@@ -39,22 +50,57 @@ export function EditOfferModal(props: modalProps) {
   const [poolURL, setPoolURL] = useState("");
   const [description, setDescription] = useState("");
   const [assumption, setAssumption] = useState("");
-  const bribedata = trpc.bribes.list_raw.useQuery({ round: round }).data?.bribefile;
-  const offerData = bribedata?.bribedata?.find(item => item.offerId === offerId);
+  const [rewards, setRewards] = useState(offerData?.reward);
 
   const openModal = () => {
     if (!isNew && offerData) {
+      console.log("set values");
       setVoteIndex(offerData.voteindex);
-      setRewardCap(offerData.rewardcap);
-      setPayoutThreshold(offerData.payoutthreshold);
-      setPercentageThreshold(offerData.percentagethreshold);
-      setPoolName(offerData.poolname);
-      setPoolURL(offerData.poolurl);
-      setDescription(offerData.rewarddescription);
+      setRewardCap(offerData.rewardcap || undefined); //TODO, sometimes this is set to null, the || will make sure it's undefined
+      setPayoutThreshold(offerData.payoutthreshold || undefined);
+      setPercentageThreshold(offerData.percentagethreshold || undefined);
+      setPoolName(offerData.poolname || "");
+      setPoolURL(offerData.poolurl || "");
+      setDescription(offerData.rewarddescription || "");
       setAssumption(offerData.assumption || "");
+      setRewards(offerData?.reward);
+
+      console.log(offerData.rewardcap, rewardCap);
     }
 
     onOpen();
+  };
+
+  const updateReward = (rewardData: RewardType, rewardNumber: number) => {
+    const rewardArray = rewards ? [...rewards] : [];
+    rewardArray[rewards ? rewards.findIndex(r => r.rewardId === rewardNumber) : 0] = {
+      ...rewardData,
+    };
+    setRewards(rewardArray);
+  };
+
+  const maxRewardId =
+    rewards?.length === 0
+      ? 0
+      : rewards?.reduce((prev, current) => (prev.rewardId > current.rewardId ? prev : current))
+          .rewardId || 0;
+
+  const defaultReward: RewardType = {
+    type: "fixed",
+    token: "",
+    amount: 0,
+    isfixed: true,
+    rewardId: maxRewardId + 1,
+  };
+
+  const addReward = () => {
+    const newRewardData = Object.assign({}, defaultReward);
+    setRewards([...(rewards ? rewards : []), newRewardData]);
+  };
+
+  const deleteReward = (rewardId: number) => {
+    const filteredRewards = rewards?.filter(r => r.rewardId !== rewardId);
+    setRewards(filteredRewards);
   };
 
   const save = () => {
@@ -70,22 +116,16 @@ export function EditOfferModal(props: modalProps) {
         percentagethreshold: percentageThreshold,
         rewardcap: rewardCap,
         payoutthreshold: payoutThreshold,
-        reward: [],
+        reward: rewards || [],
         additionalrewards: [],
       },
     };
 
     if (isNew) {
-      // const bribefile = {
-      //   version: round + ".0.0",
-      //   snapshot: snapshotID,
-      //   description: description,
-      //   round: Number(round),
-      //   tokendata: [],
-      //   bribedata: [],
-      // };
       addOffer.mutate(data);
     } else {
+      console.log("rewardcap", rewardCap);
+      console.log("save edit", data);
       editOffer.mutate(data);
     }
     onClose();
@@ -185,8 +225,33 @@ export function EditOfferModal(props: modalProps) {
                 </FormControl>
               </GridItem>
             </Grid>
-            {offerData?.reward.toString()}
-            {offerData?.additionalrewards?.toString()}
+            <Heading size="md" mt={4}>
+              Rewards
+            </Heading>
+            <Grid templateColumns="1fr 3fr 3fr 3fr 2fr 1fr" gap={4} mt={2} alignItems="center">
+              <GridItem fontWeight="bold">ID</GridItem>
+              <GridItem fontWeight="bold">Type</GridItem>
+              <GridItem fontWeight="bold">Token</GridItem>
+              <GridItem fontWeight="bold">Amount</GridItem>
+              <GridItem fontWeight="bold">Is Fixed</GridItem>
+              <GridItem>
+                <Button onClick={addReward}>Add</Button>
+              </GridItem>
+              <>
+                {rewards?.map((r, index) => {
+                  return (
+                    <Reward
+                      reward={r}
+                      key={index}
+                      tokens={tokens || []}
+                      updateReward={updateReward}
+                      deleteReward={deleteReward}
+                    />
+                  );
+                })}
+              </>
+            </Grid>
+            {/* {offerData?.additionalrewards?.toString()} */}
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>

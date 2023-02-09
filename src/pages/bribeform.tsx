@@ -20,7 +20,7 @@ import { useGlobalContext } from "contexts/GlobalContext";
 import RoundSelector from "components/RoundSelector";
 import { EditRoundModal } from "components/EditRound/EditRound";
 import { DeleteOfferModal } from "components/DeleteOfferModal";
-import { EditOfferModal } from "components/EditOfferModal";
+import { EditOfferModal } from "components/EditOffer/EditOfferModal";
 
 const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
