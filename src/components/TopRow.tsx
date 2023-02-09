@@ -77,7 +77,7 @@ export const TopRow = () => {
           <>
             <Box style={{ marginRight: "1rem" }}>
               <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
-                {accountConnected ? `VP: ${votingPower.toFixed(0)}` : ""}
+                {accountConnected ? `VP: ${votingPower?.toFixed(0)}` : ""}
               </Text>
             </Box>
             <Box style={{ marginRight: "1rem" }}>
