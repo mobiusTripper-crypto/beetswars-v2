@@ -4,7 +4,12 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useVoteState } from "hooks/useVoteState";
-import { Progress, Center, Text } from "@chakra-ui/react";
+import { Box, Grid, Progress, Center, Text } from "@chakra-ui/react";
+import { SplashItem } from "components/SplashItem";
+import { CgCardSpades as CardIcon } from "react-icons/cg";
+import { FaCoins as BribersIcon } from "react-icons/fa";
+import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
+import { BiLineChart as ChartIcon } from "react-icons/bi";
 
 const Home: NextPage = () => {
   const { requestedRound } = useGlobalContext();
@@ -16,33 +21,60 @@ const Home: NextPage = () => {
     if (stateLoaded) {
       if (voteStateActive) {
         console.log("vote active:", voteStateActive);
-        router.push("/round/" + requestedRound);
       } else {
         console.log("vote inactive:", voteStateActive);
-        router.push("/chart");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voteStateActive, stateLoaded]);
 
+  /*
   if (!stateLoaded) {
     return (
       <>
-        <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Progress size="xs" isIndeterminate />
           <Center>
             <Text fontSize="2xl">Init .... </Text>
           </Center>
-        </ErrorBoundary>
       </>
     );
   }
 
-  return <></>;
+*/
+
+  return (
+    <>
+      <Box height="2px">{stateLoaded ? "" : <Progress size="xs" isIndeterminate />}</Box>
+      <Center>
+        <Grid margin="2rem" templateColumns="repeat(2, 1fr)" gap={6}>
+          <SplashItem
+            href="/round/0/cards"
+            icon={CardIcon}
+            text="Voter Dashboard"
+            caption="main dashboard "
+          />
+          <SplashItem
+            href="/chart"
+            icon={ChartIcon}
+            text="Gauge Vote History"
+            caption="history of previous rounds"
+          />
+          <SplashItem
+            href="#"
+            icon={BribersIcon}
+            text="Briber Dashboard"
+            caption="coming soon ..."
+          />
+          <SplashItem href="#" icon={StatsIcon} text="W Da F" caption="coming soon ..." />
+        </Grid>
+      </Center>
+    </>
+  );
 };
 
 export default Home;
 
+/*
 // function ErrorFallback({ error }: { error: any }) {
 function ErrorFallback({ error }: { error: Error }) {
   return (
@@ -52,3 +84,4 @@ function ErrorFallback({ error }: { error: Error }) {
     </div>
   );
 }
+*/
