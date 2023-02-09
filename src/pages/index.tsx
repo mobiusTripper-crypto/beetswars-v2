@@ -2,7 +2,6 @@
 //import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import { useEffect } from "react";
-import { useGlobalContext } from "contexts/GlobalContext";
 import { useVoteState } from "hooks/useVoteState";
 import { Box, Grid, Progress, Center } from "@chakra-ui/react";
 import { SplashItem } from "components/SplashItem";
@@ -40,7 +39,7 @@ const Home: NextPage = () => {
       <Center>
         <Grid margin="2rem" templateColumns="repeat(2, 1fr)" gap={6}>
           <SplashItem
-            href={`/round/${roundList?.latest}/${display}`}
+            href={`/round/${roundList?.latest}/cards`}
             icon={CardIcon}
             text="Voter Dashboard"
             caption={`Main Dashboard (${roundList?.latest})`}

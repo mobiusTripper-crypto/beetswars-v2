@@ -41,7 +41,7 @@ export default function Round() {
   const number = router.query.number || "";
   const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
-    { round: requestedRound },
+    { round: parseInt(number[0] as string) },
     {
       refetchOnWindowFocus: voteActive,
       refetchIntervalInBackground: false,
@@ -52,7 +52,7 @@ export default function Round() {
   ).data?.bribefile;
 
   const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
-  const votingPower: number = useGetVp();
+  const { data: votingPower, connected: accountConnected } = useGetVp();
 
   useEffect(() => {
     if (bribeData?.header.voteState) {
