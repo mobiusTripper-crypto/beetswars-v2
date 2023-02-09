@@ -5,7 +5,7 @@ import { Progress, Center, Text } from "@chakra-ui/react";
 const Page404 = () => {
   const router = useRouter();
   useEffect(() => {
-    router.push("/chart");
+    router.push("/");
   });
 
   return (
