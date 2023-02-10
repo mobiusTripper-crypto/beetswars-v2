@@ -55,6 +55,7 @@ export const TopRow = () => {
 
   const cardLink = "/round/" + requestedRound + "/cards";
   const tableLink = "/round/" + requestedRound + "/table";
+  const wdafLink = "/wdaf";
 
   const iconProps = {
     size: "1.6rem",
@@ -83,24 +84,27 @@ export const TopRow = () => {
             <Box style={{ marginRight: "1rem" }}>
               <RoundSelector handleChange={changeRound} />
             </Box>
-            <Link href={cardLink}>
-              <Icon
-                as={CardIcon}
-                height={iconProps.size}
-                width={iconProps.size}
-                marginRight={iconProps.marginRight}
-                color={display === "cards" ? "limegreen" : ""}
-              />
-            </Link>
-            <Link href={tableLink}>
-              <Icon
-                as={TableIcon}
-                height={iconProps.size}
-                width={iconProps.size}
-                marginRight={iconProps.marginRight}
-                color={display === "table" ? "limegreen" : ""}
-              />
-            </Link>
+            {display === "table" ? (
+              <Link href={cardLink}>
+                <Icon
+                  as={CardIcon}
+                  height={iconProps.size}
+                  width={iconProps.size}
+                  marginRight={iconProps.marginRight}
+                  color={display === "table" ? "limegreen" : ""}
+                />
+              </Link>
+            ) : (
+              <Link href={tableLink}>
+                <Icon
+                  as={TableIcon}
+                  height={iconProps.size}
+                  width={iconProps.size}
+                  marginRight={iconProps.marginRight}
+                  color={display === "cards" ? "limegreen" : ""}
+                />
+              </Link>
+            )}
             <Link href="/#">
               <Icon
                 as={BribersIcon}
@@ -117,7 +121,7 @@ export const TopRow = () => {
                 marginRight={iconProps.marginRight}
               />
             </Link>
-            <Link href="/#">
+            <Link href={wdafLink}>
               <Icon
                 as={StatsIcon}
                 height={iconProps.size}

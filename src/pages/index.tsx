@@ -62,7 +62,7 @@ const Home: NextPage = () => {
             text="Gauge Vote History"
             caption="History of previous rounds"
           />
-          <SplashItem href="#" icon={StatsIcon} text="W da F" caption="coming soon ..." />
+          <SplashItem href="/wdaf" icon={StatsIcon} text="W da F" caption="coming soon ..." />
         </Grid>
       </Center>
     </>
