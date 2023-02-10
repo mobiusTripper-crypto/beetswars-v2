@@ -40,7 +40,6 @@ const VotablePoolForm: NextPage = () => {
   };
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newRound = parseInt(e.target.value);
-    console.log(newRound);
     requestRound(newRound);
   };
 
@@ -52,7 +51,7 @@ const VotablePoolForm: NextPage = () => {
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
         <Card m={6}>
-          <Table>
+          <Table variant="striped" colorScheme="teal" size="sm">
             <Thead>
               <Tr>
                 <Th>Pool Name</Th>
@@ -72,7 +71,7 @@ const VotablePoolForm: NextPage = () => {
                       <Checkbox
                         id={`isUncapped-${index}`}
                         name={`isUncapped-${index}`}
-                        checked={votablePool.isUncapped}
+                        isChecked={votablePool.isUncapped}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                           handleCheckboxChange(index, event.target.checked)
                         }
