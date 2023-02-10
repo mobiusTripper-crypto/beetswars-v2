@@ -9,7 +9,7 @@ export const DashboardData = z.object({
   voteIncentivesRoi: z.number(),
   poolsOverThreshold: z.number(),
   totalRelics: z.number(),
-  payoutStatus: z.enum(["pending", "active", "finished"]),
+  payoutStatus: z.enum(["estimated", "payout active", "settled"]),
 });
 
 export type DashboardData = z.infer<typeof DashboardData>;
