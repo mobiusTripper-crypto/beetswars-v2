@@ -2,7 +2,7 @@ import type { BribesRoi, DashboardData } from "types/bribersDashboard.trpc";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { getBlockByTs } from "utils/externalData/ftmScan";
-import { getTotalFbeets } from "utils/externalData/liveRpcPrice";
+import { getTotalFbeets } from "utils/externalData/liveRpcQueries";
 import { getEmissionForRound } from "./bribeApr.helper";
 import { getEmissionForBlockspan } from "./emission.helper";
 import { getRoundlistNum } from "./roundlist.helper";
