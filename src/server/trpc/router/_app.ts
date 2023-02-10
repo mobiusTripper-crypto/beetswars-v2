@@ -6,6 +6,7 @@ import { exampleRouter } from "./example";
 import { loginRouter } from "./loginId";
 import { statsRouter } from "./overallStats";
 import { roundlistRouter } from "./roundlist";
+import { votepoolsRouter } from "./votepools";
 
 export const appRouter = router({
   example: exampleRouter,
@@ -15,6 +16,7 @@ export const appRouter = router({
   login: loginRouter,
   bribes_test: bribesRouter,
   bribes: bribedataRouter,
+  votepools: votepoolsRouter,
 });
 
 // export type definition of API
