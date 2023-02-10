@@ -33,7 +33,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Box height="2px">
-        {(stateLoaded && roundsLoaded) ? "" : <Progress size="xs" isIndeterminate />}
+        {stateLoaded && roundsLoaded ? "" : <Progress size="xs" isIndeterminate />}
       </Box>
       <Center>
         <Grid margin="2rem" templateColumns="repeat(2, 1fr)" gap={6}>
@@ -50,7 +50,7 @@ const Home: NextPage = () => {
             caption="History of previous rounds"
           />
           <SplashItem
-            href="#"
+            href="/bribersDashboard"
             icon={BribersIcon}
             text="Briber Dashboard"
             caption="coming soon ..."
