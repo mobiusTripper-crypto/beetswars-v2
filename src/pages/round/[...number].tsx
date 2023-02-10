@@ -22,6 +22,8 @@ import {
   Link,
   VStack,
   Progress,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -37,7 +39,6 @@ export default function Round() {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
-  //console.log(number[1]);
   const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
@@ -50,8 +51,8 @@ export default function Round() {
     }
   ).data?.bribefile;
 
+  const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
   const votingPower: number = useGetVp();
-  //console.log("DP vp:", votingPower, account.address, account.isConnected, account.status);
 
   useEffect(() => {
     if (bribeData?.header.voteState) {
@@ -91,31 +92,82 @@ export default function Round() {
     <>
       <Box>
         <Center>
-          <Text fontSize="4xl">{bribeData?.header.roundName}</Text>
+          <Box>
+            <Link href={snapshotLink} isExternal>
+              <Button
+                fontSize="2rem"
+                whiteSpace="normal"
+                height="auto"
+                blockSize="auto"
+                variant="unstyled"
+                size="md"
+                rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
+              >
+                <Text fontWeight="600" fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}>
+                  {bribeData?.header.roundName}
+                </Text>
+              </Button>
+            </Link>
+          </Box>
         </Center>
         <Center>
-          <Text fontSize="1.4rem">
-            Vote Start: {bribeData?.header.voteStart} - Vote End: {bribeData?.header.voteEnd} -{" "}
-            {bribeData?.header.timeRemaining}
-          </Text>
-        </Center>
-        <Center>
-          <Text fontSize="1.4rem">
-            Votes Total: {bribeData?.header.totalVotes.toLocaleString("en-us")} - on incentivized
-            Pools: {bribeData?.header.bribedVotes.toLocaleString("en-us")} - Total Voter:{" "}
-            {bribeData?.header.totalVoter} - Bribed Voter: {bribeData?.header.bribedVoter}
-          </Text>
-        </Center>
-        <Center>
-          <Text fontSize="1.4rem">
-            Total Incentives: {bribeData?.header.totalBribes.toLocaleString("en-us")} - avg/1kfB:{" "}
-            {bribeData?.header.avgPer1000}{" "}
-          </Text>
-        </Center>
-        <Center>
-          <Text>
-            {account.address} VP: {votingPower}
-          </Text>
+          <Grid mt={5} templateColumns="1fr 1fr 1fr" fontSize="lg" gap={5}>
+            <GridItem>
+              <HStack>
+                <Text>Vote Start:</Text>
+                <Text>{bribeData?.header.voteStart}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              <HStack>
+                <Text>Votes Total:</Text>
+                <Text>{bribeData?.header.totalVotes.toLocaleString("en-us")}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              <HStack>
+                <Text>Total Incentives:</Text>
+                <Text>{bribeData?.header.totalBribes.toLocaleString("en-us")}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              <HStack>
+                <Text>Vote End:</Text>
+                <Text>{bribeData?.header.voteEnd}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              <HStack>
+                <Text>Incentivized Pools:</Text>
+                <Text>{bribeData?.header.bribedVotes.toLocaleString("en-us")}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              {" "}
+              <HStack>
+                <Text>avg/1kfB:</Text>
+                <Text>{bribeData?.header.avgPer1000}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              <HStack>
+                <Text>Time Left:</Text>
+                <Text>{bribeData?.header.timeRemaining}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              <HStack>
+                <Text>Total Voter:</Text>
+                <Text>{bribeData?.header.totalVoter}</Text>
+              </HStack>
+            </GridItem>
+            <GridItem>
+              <HStack>
+                <Text>Bribed Voter:</Text>
+                <Text>{bribeData?.header.bribedVoter}</Text>
+              </HStack>
+            </GridItem>
+          </Grid>
         </Center>
       </Box>
       {display === "cards" ? (
