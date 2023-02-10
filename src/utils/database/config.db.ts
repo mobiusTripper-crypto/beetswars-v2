@@ -24,3 +24,8 @@ export async function setConfigEntry(data: Config): Promise<boolean> {
     return false;
   }
 }
+
+// List of config entries
+/////////////////////////
+// latest: number - latest round
+// tsEmissionChange: number - ts for last emission change check

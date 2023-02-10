@@ -1,7 +1,7 @@
 import type { Bribedata, Tokendata } from "types/bribedata.raw";
 import type { SingleOffer } from "types/bribelist.trpc";
 import { getCoinGeckoHistoryOldMethod } from "utils/externalData/coingecko";
-import { getRpcPrice } from "utils/externalData/liveRpcPrice";
+import { getRpcPrice } from "utils/externalData/liveRpcQueries";
 import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
 
 export async function calculateSingleOffer(

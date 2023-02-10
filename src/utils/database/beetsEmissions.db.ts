@@ -1,7 +1,6 @@
 import type { Emission } from "types/emission.raw";
-import { findEmissionChangeBlock } from "utils/api/bribeApr.helper";
-import { getBlockByTs, getTsByBlock } from "utils/externalData/ftmScan";
-import { getBeetsPerBlock } from "utils/externalData/theGraph";
+import { checkEmissionChange } from "utils/api/emission.helper";
+import { findConfigEntry, setConfigEntry } from "./config.db";
 import clientPromise from "./mongodb";
 
 const dbName = process.env.DB_NAME;
@@ -42,6 +41,12 @@ export async function updateEmissionChange(): Promise<Emission[]> {
     const client = await clientPromise;
     const coll = client.db(dbName).collection<Emission>("emissiondata");
     const items = await coll.find<Emission>({}, { projection: { _id: 0 } }).toArray(); // find all
+
+    // no action if last entry younger than 1 day
+    const lastChange = await findConfigEntry("tsEmissionChange");
+    if (!!lastChange && Number(lastChange) >= Math.floor(Date.now() / 1000) - 24 * 60 * 60)
+      return items;
+
     const lastEmission = items.reduce(
       (max, x) => {
         return max.block > x.block ? max : x;
@@ -50,29 +55,30 @@ export async function updateEmissionChange(): Promise<Emission[]> {
     );
     const data = await checkEmissionChange(lastEmission);
     await Promise.all(data.map(item => addEmission(item)));
+    await setConfigEntry({ name: "tsEmissionChange", data: Math.floor(Date.now() / 1000) });
     return await coll.find<Emission>({}, { projection: { _id: 0 } }).toArray();
   } catch (error) {
     return [];
   }
 }
 
-async function checkEmissionChange(lastEmission: Emission): Promise<Emission[]> {
-  const stepwidth = 40000;
-  let block = lastEmission.block + stepwidth;
-  const oldBeets = lastEmission.beets;
-  const currentBlock = await getBlockByTs(Math.floor(Date.now() / 1000) - 60);
-  const data = [] as Emission[];
-  while (block < currentBlock + stepwidth) {
-    const beets = await getBeetsPerBlock(block);
-    if (!beets) break;
-    if (beets !== oldBeets) {
-      const newblock = await findEmissionChangeBlock(block - stepwidth, block);
-      const timestamp = await getTsByBlock(newblock);
-      data.push({ block: newblock, beets, timestamp });
-      block = newblock;
-    } else {
-      block += stepwidth;
-    }
-  }
-  return data;
-}
+// async function checkEmissionChange(lastEmission: Emission): Promise<Emission[]> {
+//   const stepwidth = 40000; // estimated between 0.5 and 1 days
+//   let block = lastEmission.block + stepwidth;
+//   const oldBeets = lastEmission.beets;
+//   const currentBlock = await getBlockByTs(Math.floor(Date.now() / 1000) - 60);
+//   const data = [] as Emission[];
+//   while (block < currentBlock + stepwidth) {
+//     const beets = await getBeetsPerBlock(block);
+//     if (!beets) break;
+//     if (beets !== oldBeets) {
+//       const newblock = await findEmissionChangeBlock(block - stepwidth, block);
+//       const timestamp = await getTsByBlock(newblock);
+//       data.push({ block: newblock, beets, timestamp });
+//       block = newblock;
+//     } else {
+//       block += stepwidth;
+//     }
+//   }
+//   return data;
+// }
