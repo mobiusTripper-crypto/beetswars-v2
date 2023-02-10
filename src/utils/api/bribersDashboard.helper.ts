@@ -1,6 +1,8 @@
 import type { BribesRoi, DashboardData } from "types/bribersDashboard.trpc";
+import type { VotablePool } from "types/votablePools.raw";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
+import { readRoundPoolentries } from "utils/database/votablePools.db";
 import { getBlockByTs } from "utils/externalData/ftmScan";
 import { getTotalFbeets } from "utils/externalData/liveRpcQueries";
 import { getEmissionForRound } from "./bribeApr.helper";
@@ -29,6 +31,10 @@ export async function dashData(round = 0): Promise<DashboardData> {
     : roundEmissions.voteEmission * roundEmissions.beetsPrice;
   const payoutStatus = !roundEmissions ? "estimated" : roundEmissions.payoutStatus;
 
+  // get number of eligible pools
+  const votablePools = (await readRoundPoolentries(round)) || ([] as VotablePool[]);
+  const poolsOverThreshold = votablePools.reduce((sum, x) => (x.isUncapped ? sum + 1 : sum), 0);
+
   const result: DashboardData = {
     beetsEmissionsPerDay: await getEmissionForBlockspan(startBlock, endBlock),
     fantomBlocksPerDay: endBlock - startBlock,
@@ -36,7 +42,7 @@ export async function dashData(round = 0): Promise<DashboardData> {
     roundBeetsEmissions: roundEmissions?.voteEmission || 0,
     roundEmissionsUsd,
     voteIncentivesRoi: roundEmissions?.avgBribeRoiInPercent || 0,
-    poolsOverThreshold: 0, // TODO: get count from database
+    poolsOverThreshold,
     totalRelics: 0,
     payoutStatus,
   };

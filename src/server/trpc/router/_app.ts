@@ -1,5 +1,6 @@
 import { router } from "../trpc";
 import { bribedataRouter } from "./bribedata";
+import { dashboardRouter } from "./bribersDashboard";
 import { bribesRouter } from "./bribes";
 import { chartdataRouter } from "./chartdata";
 import { exampleRouter } from "./example";
@@ -17,6 +18,7 @@ export const appRouter = router({
   bribes_test: bribesRouter,
   bribes: bribedataRouter,
   votepools: votepoolsRouter,
+  dashboard: dashboardRouter,
 });
 
 // export type definition of API

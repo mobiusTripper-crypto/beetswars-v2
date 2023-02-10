@@ -16,8 +16,11 @@ export async function getTotalFbeets(): Promise<number> {
   const fbeetsContract = "0xfcef8a994209d6916EB2C86cDD2AFD60Aa6F54b1";
   const provider = new ethers.providers.JsonRpcProvider(providerUrl);
   const contract = new ethers.Contract(fbeetsContract, fbeetsAbi, provider);
-  const supply = await contract.totalSupply;
-  return supply / 10 ** 18;
+  const supplyobj = await contract.totalSupply;
+  const supply = parseFloat(ethers.utils.formatEther(supplyobj));
+  console.log("supply: ", supply);
+  // return supply;
+  return 0;
 }
 
 const fbeetsAbi = [
