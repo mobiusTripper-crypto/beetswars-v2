@@ -5,9 +5,8 @@ import * as z from "zod";
 import { dashData } from "utils/api/bribersDashboard.helper";
 
 export const dashboardRouter = router({
-  list: publicProcedure
-    .input(z.object({ round: z.number().nullish() }).nullish())
-    .query(async ({ input }) => {
-      return { board: await dashData(input?.round ?? 0) };
-    }),
+  list: publicProcedure.input(z.object({ round: z.number() })).query(async ({ input }) => {
+    const board = await dashData(input.round);
+    return { board: board };
+  }),
 });

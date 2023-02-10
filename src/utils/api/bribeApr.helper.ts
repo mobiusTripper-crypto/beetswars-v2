@@ -6,7 +6,6 @@ import { getBlockByTs } from "utils/externalData/ftmScan";
 import { getEmissionForBlockspan } from "./emission.helper";
 
 export async function getEmissionForRound(round: number): Promise<EmissionData | null> {
-  console.log("getEmissionForRound");
   // start at Wed Jan 12, 2022 - the start of round 1 payout (I guess)
   const ROUND1 = 1641988800; // timestamp of 12-01-2022 12:00 pm UTC as reference point
   const TWOWEEKS = 14 * 24 * 60 * 60; // seconds
@@ -21,14 +20,12 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
   // switch cases
   // A) emission is finished (ts2 <= now)
   if (ts2 <= now) {
-    console.log("finished");
     start = ts1;
     end = ts2;
     payoutStatus = "settled";
   }
   // B) emission has started but not finished (ts1 < date.now, ts2 > date.now) take emissions from start to now and expand to 14 days
   else if (ts1 < now) {
-    console.log("active");
     start = ts1;
     end = now;
     factor = TWOWEEKS / (end - start); // expand to full 14 days
@@ -36,7 +33,6 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
   }
   // C) emission has not yet started (ts1 > date.now) take emissions of last 1 day * 14
   else {
-    console.log("future");
     start = now - 24 * 60 * 60; //one day back
     end = now;
     factor = 14;

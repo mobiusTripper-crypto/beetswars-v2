@@ -1,13 +1,11 @@
 import type { VotablePool } from "types/votablePools.raw";
 import { type NextPage } from "next";
-import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import {
   Text,
   Checkbox,
   Table,
   FormControl,
-  FormLabel,
   Button,
   Thead,
   Tr,
@@ -23,27 +21,27 @@ import RoundSelector from "components/RoundSelector";
 
 const VotablePoolForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
-
-  const votablePools =
+  const pools =
     trpc.votepools.list.useQuery({ round: requestedRound }).data?.pools || ([] as VotablePool[]);
   const initPools = trpc.votepools.init.useMutation();
   const insertPools = trpc.votepools.insert.useMutation();
 
-  const [pools, setPools] = useState(votablePools);
+  // const [pools, setPools] = useState(votablePools);
   const { data: session, status } = useSession();
 
   const handleCheckboxChange = (index: number, checked: boolean) => {
     const votablePools = [...pools];
     (votablePools[index] as VotablePool).isUncapped = checked;
-    setPools(votablePools);
+    // setPools(votablePools);
   };
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     insertPools.mutate(pools);
   };
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
-    requestRound(parseInt(e.target.value));
+    const newRound = parseInt(e.target.value);
+    console.log(newRound);
+    requestRound(newRound);
   };
 
   if (session && status === "authenticated") {
@@ -65,13 +63,12 @@ const VotablePoolForm: NextPage = () => {
             </Thead>
             <Tbody>
               {pools.map((votablePool, index) => (
-                <Tr key={votablePool.poolName}>
+                <Tr key={index}>
                   <Td>{votablePool.poolName}</Td>
                   <Td>{votablePool.voteindex}</Td>
                   <Td>{votablePool.round}</Td>
                   <Td>
                     <FormControl>
-                      <FormLabel htmlFor={`isUncapped-${index}`}>Is Uncapped</FormLabel>
                       <Checkbox
                         id={`isUncapped-${index}`}
                         name={`isUncapped-${index}`}

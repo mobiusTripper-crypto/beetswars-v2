@@ -19,7 +19,6 @@ export async function dashData(round = 0): Promise<DashboardData> {
   if (!round) round = Number(latest || 0);
   const ONEDAY = 24 * 60 * 60;
   const tsnow = Math.floor(Date.now() / 1000) - 60;
-
   // get blocks
   const startBlock = await getBlockByTs(tsnow - ONEDAY);
   const endBlock = await getBlockByTs(tsnow);
@@ -28,20 +27,25 @@ export async function dashData(round = 0): Promise<DashboardData> {
   const roundEmissions = await getEmissionForRound(round);
   const roundEmissionsUsd = !roundEmissions
     ? 0
-    : roundEmissions.voteEmission * roundEmissions.beetsPrice;
+    : Math.round(roundEmissions.voteEmission * roundEmissions.beetsPrice);
   const payoutStatus = !roundEmissions ? "estimated" : roundEmissions.payoutStatus;
 
   // get number of eligible pools
   const votablePools = (await readRoundPoolentries(round)) || ([] as VotablePool[]);
   const poolsOverThreshold = votablePools.reduce((sum, x) => (x.isUncapped ? sum + 1 : sum), 0);
+  const beetsEmissionsPerDay = Math.floor(await getEmissionForBlockspan(startBlock, endBlock));
+  const fantomBlocksPerDay = endBlock - startBlock;
+  const totalFbeetsSupply = await getTotalFbeets();
+  const roundBeetsEmissions = Math.round(roundEmissions?.voteEmission || 0);
+  const voteIncentivesRoi = Math.round(roundEmissions?.avgBribeRoiInPercent || 0);
 
   const result: DashboardData = {
-    beetsEmissionsPerDay: await getEmissionForBlockspan(startBlock, endBlock),
-    fantomBlocksPerDay: endBlock - startBlock,
-    totalFbeetsSupply: await getTotalFbeets(),
-    roundBeetsEmissions: roundEmissions?.voteEmission || 0,
+    beetsEmissionsPerDay,
+    fantomBlocksPerDay,
+    totalFbeetsSupply,
+    roundBeetsEmissions,
     roundEmissionsUsd,
-    voteIncentivesRoi: roundEmissions?.avgBribeRoiInPercent || 0,
+    voteIncentivesRoi,
     poolsOverThreshold,
     totalRelics: 0,
     payoutStatus,

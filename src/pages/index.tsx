@@ -4,11 +4,12 @@ import type { NextPage } from "next";
 import { useEffect } from "react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useVoteState } from "hooks/useVoteState";
-import { Box, Grid, Progress, Center, Text } from "@chakra-ui/react";
+import { Box, Grid, Progress, Center } from "@chakra-ui/react";
 import { SplashItem } from "components/SplashItem";
 import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { FaCoins as BribersIcon } from "react-icons/fa";
-import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
+import { ImStatsBars as StatsIcon } from "react-icons/im";
+// import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { BiLineChart as ChartIcon } from "react-icons/bi";
 import { useRoundList } from "hooks/useRoundList";
 
@@ -16,7 +17,8 @@ const Home: NextPage = () => {
   //  const router = useRouter();
 
   const { data: roundList, loaded: roundsLoaded } = useRoundList();
-  const { requestedRound, display } = useGlobalContext();
+  // const { requestedRound, display } = useGlobalContext();
+  const { display } = useGlobalContext();
   const { data: voteStateActive, loaded: stateLoaded } = useVoteState();
 
   useEffect(() => {

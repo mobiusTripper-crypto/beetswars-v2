@@ -1,40 +1,50 @@
+import type { NextPage } from "next";
 import { Box, Card, Flex, Heading, Text } from "@chakra-ui/react";
-import RoundSelector from "components/RoundSelector";
-import { useGlobalContext } from "contexts/GlobalContext";
 import { trpc } from "utils/trpc";
+import { useGlobalContext } from "contexts/GlobalContext";
+import RoundSelector from "components/RoundSelector";
 
-const Dashboard = () => {
-  const { requestedRound } = useGlobalContext();
+const Dashboard: NextPage = () => {
+  const { requestedRound, requestRound } = useGlobalContext();
   const data = trpc.dashboard.list.useQuery({ round: requestedRound }).data?.board;
+
+  const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value);
+    requestRound(parseInt(e.target.value));
+  };
+
   if (!data)
     return (
       <Box m={6}>
-        <RoundSelector />
-        <Heading mt={6}>Error</Heading>
-        <Text>no data available for Round {requestedRound}</Text>
+        <RoundSelector handleChange={changeRound} />
+        <Heading mt={6}>Loading ...</Heading>
+        <Text>waiting for data round {requestedRound}</Text>
       </Box>
     );
   return (
     <>
-      <RoundSelector />
+      <Box m={6}>
+        <RoundSelector handleChange={changeRound} />
+      </Box>
       <Flex direction="row" justifyContent="center" alignItems="center">
         <Box p={5}>
           <Flex direction="row" justifyContent="space-between">
             <Card m={6} p={4}>
               <Heading size="md">Beets Emissions</Heading>
               <Text>last day</Text>
-              <Text fontSize="xl">{data.beetsEmissionsPerDay}</Text>
+              <Text fontSize="xl">{data.beetsEmissionsPerDay.toLocaleString()}</Text>
             </Card>
             <Card m={6} p={4}>
               <Heading size="md">Fantom Blocks</Heading>
               <Text>last day</Text>
-              <Text fontSize="xl">{data.fantomBlocksPerDay}</Text>
+              <Text fontSize="xl">{data.fantomBlocksPerDay.toLocaleString()}</Text>
             </Card>
             <Card m={6} p={4}>
               <Heading size="md">Total fBEETS Supply</Heading>
               <Text>up to now</Text>
               <Text fontSize="xl" justifySelf={"end"}>
-                {data.totalFbeetsSupply}
+                {/* //TODO: move to right */}
+                {data.totalFbeetsSupply.toLocaleString()}
               </Text>
             </Card>
           </Flex>
@@ -44,16 +54,21 @@ const Dashboard = () => {
               <Text>
                 for Round {requestedRound} {data.payoutStatus !== "settled" ? "estimated" : ""}
               </Text>
-              <Text fontSize="xl"> {data.roundBeetsEmissions}</Text>
+              <Text fontSize="xl"> {data.roundBeetsEmissions.toLocaleString()}</Text>
             </Card>
             <Card m={6} p={4}>
               <Heading size="md">Round Emissions Usd</Heading>
-              <Text>for Round {requestedRound}</Text>
-              <Text fontSize="xl">$ {data.roundEmissionsUsd}</Text>
+              <Text>
+                for Round {requestedRound} {data.payoutStatus !== "settled" ? "estimated" : ""}
+              </Text>
+              <Text fontSize="xl">$ {data.roundEmissionsUsd.toLocaleString()}</Text>
             </Card>
             <Card m={6} p={4}>
               <Heading size="md">Vote Incentives Roi</Heading>
-              <Text fontSize="xl">{data.voteIncentivesRoi}</Text>
+              <Text>
+                for Round {requestedRound} {data.payoutStatus !== "settled" ? "estimated" : ""}
+              </Text>
+              <Text fontSize="xl">{data.voteIncentivesRoi} %</Text>
             </Card>
           </Flex>
           <Flex direction="row" justifyContent="space-between">
