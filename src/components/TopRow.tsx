@@ -56,6 +56,7 @@ export const TopRow = () => {
   const cardLink = "/round/" + requestedRound + "/cards";
   const tableLink = "/round/" + requestedRound + "/table";
   const wdafLink = "/wdaf";
+  const bbDashLink = "/bribersDashboard";
 
   const iconProps = {
     size: "1.6rem",
@@ -105,7 +106,7 @@ export const TopRow = () => {
                 />
               </Link>
             )}
-            <Link href="/#">
+            <Link href={bbDashLink}>
               <Icon
                 as={BribersIcon}
                 height="1.2rem"
