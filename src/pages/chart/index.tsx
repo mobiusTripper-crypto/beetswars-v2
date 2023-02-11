@@ -481,7 +481,7 @@ function Chart1() {
   const onChartClick = (params: any) => {
     const offset = 1;
     if (params.dataIndex > 2) {
-      const selectedRound = (params.dataIndex + offset) as number ;
+      const selectedRound = (params.dataIndex + offset) as number;
       requestRound(selectedRound);
       console.log("click", params.dataIndex, "->", "request " + selectedRound);
       const roundPage = "/round/" + selectedRound;
@@ -493,13 +493,8 @@ function Chart1() {
     click: onChartClick,
   };
 
-  if (!chartData.rounds) {
-    return (
-      <>
-        <Progress size="xs" isIndeterminate />
-        <Text fontSize="2xl"> Chart loading ... </Text>
-      </>
-    );
+  if (chartData.rounds.length === 0) {
+    return <Progress size="xs" isIndeterminate />;
   }
 
   return (

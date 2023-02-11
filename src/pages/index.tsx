@@ -57,7 +57,7 @@ const Home: NextPage = () => {
             text="Briber Dashboard"
             caption="coming soon ..."
           />
-          <SplashItem href="#" icon={StatsIcon} text="W da F" caption="coming soon ..." />
+          <SplashItem href="/wdaf" icon={StatsIcon} text="W da F" caption="coming soon ..." />
         </Grid>
       </Center>
     </>

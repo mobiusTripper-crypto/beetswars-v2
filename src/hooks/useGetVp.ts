@@ -24,10 +24,8 @@ export const useGetVp = () => {
   strategies = st as unknown as Strategy[];
   const account = useAccount();
   const { data: vp } = useQqueryVp(proposal, account.address);
-  if (vp) {
-    return vp;
-  }
-  return 0;
+
+  return { data: vp, connected: account.isConnected };
 };
 
 const useQqueryVp = (proposal: string | undefined, address: string | undefined) =>
