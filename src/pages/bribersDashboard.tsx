@@ -1,12 +1,14 @@
 import type { NextPage } from "next";
-import { Box, Card, Flex, Heading, Text, Progress } from "@chakra-ui/react";
+import { Box, Heading, Text, Progress, Grid, GridItem, Center } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import RoundSelector from "components/RoundSelector";
+import { DashboardTemp } from "components/dashboardTemp";
+import type { DashboardData } from "types/bribersDashboard.trpc";
 
 const Dashboard: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
-  const data = trpc.dashboard.list.useQuery({ round: requestedRound }).data?.board;
+  const data = trpc.dashboard.list.useQuery({ round: requestedRound }).data?.board as DashboardData;
 
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
@@ -20,79 +22,24 @@ const Dashboard: NextPage = () => {
           <Progress size="xs" isIndeterminate />{" "}
         </Box>
         <Box m={6}>
-          <RoundSelector handleChange={changeRound} />
           <Heading mt={6}>Loading ...</Heading>
           <Text>waiting for data round {requestedRound}</Text>
         </Box>
       </>
     );
   return (
-    <>
-      <Box m={6}>
-        <RoundSelector handleChange={changeRound} />
-      </Box>
-      <Flex direction="row" justifyContent="center" alignItems="center">
-        <Box p={5}>
-          <Flex direction="row" justifyContent="space-between">
-            <Card m={6} p={4}>
-              <Heading size="md">Beets Emissions</Heading>
-              <Text>last day</Text>
-              <Text fontSize="xl">{data.beetsEmissionsPerDay.toLocaleString()}</Text>
-            </Card>
-            <Card m={6} p={4}>
-              <Heading size="md">Fantom Blocks</Heading>
-              <Text>last day</Text>
-              <Text fontSize="xl">{data.fantomBlocksPerDay.toLocaleString()}</Text>
-            </Card>
-            <Card m={6} p={4}>
-              <Heading size="md">Total fBEETS Supply</Heading>
-              <Text>up to now</Text>
-              <Text fontSize="xl" justifySelf={"end"}>
-                {/* //TODO: move to right */}
-                {data.totalFbeetsSupply.toLocaleString()}
-              </Text>
-            </Card>
-          </Flex>
-          <Flex direction="row" justifyContent="space-between">
-            <Card m={6} p={4}>
-              <Heading size="md">Beets Emissions for Votes</Heading>
-              <Text>
-                for Round {requestedRound} {data.payoutStatus !== "settled" ? "estimated" : ""}
-              </Text>
-              <Text fontSize="xl"> {data.roundBeetsEmissions.toLocaleString()}</Text>
-            </Card>
-            <Card m={6} p={4}>
-              <Heading size="md">Round Emissions Usd</Heading>
-              <Text>
-                for Round {requestedRound} {data.payoutStatus !== "settled" ? "estimated" : ""}
-              </Text>
-              <Text fontSize="xl">$ {data.roundEmissionsUsd.toLocaleString()}</Text>
-            </Card>
-            <Card m={6} p={4}>
-              <Heading size="md">Vote Incentives Roi</Heading>
-              <Text>
-                for Round {requestedRound} {data.payoutStatus !== "settled" ? "estimated" : ""}
-              </Text>
-              <Text fontSize="xl">{data.voteIncentivesRoi} %</Text>
-            </Card>
-          </Flex>
-          <Flex direction="row" justifyContent="space-between">
-            <Card m={6} p={4}>
-              <Heading size="md">Pools Over Threshold</Heading>
-              <Text fontSize="xl">{data.poolsOverThreshold}</Text>
-            </Card>
-            <Card m={6} p={4}>
-              <Heading size="md">Total Relics</Heading>
-              <Text fontSize="xl">{data.totalRelics}</Text>
-            </Card>
-            <Card m={6} p={4}>
-              <Heading size="md">Payout Status</Heading>
-              <Text fontSize="xl">{data.payoutStatus}</Text>
-            </Card>
-          </Flex>
-        </Box>
-      </Flex>
-    </>
+    <Center mt={12}>
+      <Grid templateColumns="200px 3fr">
+        <GridItem w="100%" bg="black">
+          <Box m={6}>
+            <RoundSelector handleChange={changeRound} />
+          </Box>
+        </GridItem>
+        <GridItem w="100%" bg="darkblue">
+          <DashboardTemp data={data} requestedRound={requestedRound} />
+        </GridItem>
+      </Grid>
+    </Center>
   );
 };
 

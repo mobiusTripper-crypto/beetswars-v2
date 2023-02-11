@@ -25,7 +25,7 @@ export const DashboardCard: React.FC<Props> = ({ cardData }) => {
           <Text>{cardData.text}</Text>
           {cardData.subtext && <Text fontSize="sm">{cardData.subtext}</Text>}
           <hr />
-          {cardData.data.length > 0 && (
+          {cardData.data && cardData.data.length > 0 && (
             <>
               {cardData.data.map(item => (
                 <Box key="{item.key}">
