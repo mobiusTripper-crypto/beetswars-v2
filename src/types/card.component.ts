@@ -5,12 +5,14 @@ export const CardData = z.object({
   headUrl: z.string().optional(),
   text: z.string(),
   subtext: z.string().optional(),
-  data: z.array(
-    z.object({
-      key: z.string(),
-      value: z.string(),
-    })
-  ),
+  data: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional(),
   footer: z.string(),
 });
 

@@ -1,4 +1,5 @@
 import type { BribesRoi, DashboardData } from "types/bribersDashboard.trpc";
+import type { CardData } from "types/card.component";
 import type { VotablePool } from "types/votablePools.raw";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
@@ -15,6 +16,80 @@ import { initialInsertFromSnapshot } from "./votablePools.helper";
 export async function roundlist() {
   const result = await getRoundlistNum(true);
   return result;
+}
+
+export async function commonDashData(round = 0): Promise<CardData[]> {
+  const data = await dashData(round);
+  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "estimated" : ""}`;
+  if (!data) return [];
+  return [
+    {
+      heading: "Beets Emissions",
+      text: "last 24 hours",
+      footer: data.beetsEmissionsPerDay.toLocaleString(),
+    },
+    {
+      heading: "Fantom Blocks",
+      text: "last 24 hours",
+      footer: data.fantomBlocksPerDay.toLocaleString(),
+    },
+    {
+      heading: "Total fBEETS Supply",
+      text: "totally minted fBEETS",
+      footer: data.totalFbeetsSupply.toLocaleString(),
+    },
+    {
+      heading: "Beets Emissions for Votes",
+      text: roundtext,
+      footer: data.roundBeetsEmissions.toLocaleString(),
+    },
+    {
+      heading: "Round Emissions USD",
+      text: roundtext,
+      footer: "$ " + data.roundEmissionsUsd.toLocaleString(),
+    },
+    { heading: "Vote Incentives ROI", text: roundtext, footer: `${data.voteIncentivesRoi} %` },
+    {
+      heading: "Pools over Threshold",
+      text: roundtext,
+      footer: data.poolsOverThreshold.toString(),
+    },
+    { heading: "Total Relics", text: "up to now", footer: data.totalRelics.toString() },
+    { heading: "Payout Status", text: "", footer: data.payoutStatus },
+  ];
+}
+
+export async function poolDashData(round: number, voteindex: number): Promise<CardData[]> {
+  const data = await bribesRoi(round, voteindex);
+  if (!data) return [];
+  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "estimated" : ""}`;
+  return [
+    { heading: "Pool Name", text: "", footer: data.poolname },
+    { heading: "Pool Votes", text: roundtext, footer: data.votes.toLocaleString() },
+    { heading: "Pool Votes %", text: roundtext, footer: data.votesPercent.toFixed(2) + " %" },
+    {
+      heading: "Total Incentives",
+      text: roundtext,
+      footer: "$ " + data.poolIncentivesUsd.toLocaleString(),
+    },
+    {
+      heading: "Pool Incentives",
+      text: roundtext,
+      footer: "$ " + data.poolIncentivesUsd.toLocaleString(),
+    },
+    { heading: "Pool Incentives ROI", text: roundtext, footer: data.roiPercent.toFixed() + " %" },
+    {
+      heading: "Total Emissions value",
+      text: roundtext,
+      footer: "$ " + data.totalEmissionUsd.toLocaleString(),
+    },
+    {
+      heading: "Emissions to Pool",
+      text: roundtext,
+      footer: "$ " + data.poolEmissionUsd.toLocaleString(),
+    },
+    { heading: "Payout Status", text: "", footer: data.payoutStatus },
+  ];
 }
 
 export async function dashData(round = 0): Promise<DashboardData> {
