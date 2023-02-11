@@ -53,22 +53,37 @@ export async function dashData(round = 0): Promise<DashboardData> {
   return result;
 }
 
-export async function bribesRoi(round = 0): Promise<BribesRoi | null> {
+export async function bribesRoi(round: number, voteindex: number): Promise<BribesRoi | null> {
   if (!round) return null;
+  let isBribed = true;
 
   const bribefile = await readOneBribefile(round);
-  if (!bribefile) return null;
+  if (!bribefile) isBribed = false;
+  else {
+    const bribe = bribefile.bribedata.find(x => x.voteindex === voteindex);
+    if (!bribe) isBribed = false;
+  }
+  const poolname = ""; //find from votable pools db
+  const votes = 0; //find in snapshot tools
+  const totalvotes = 1; // find in snapshot tools
+  const votesPercent = 100 * (votes / totalvotes); // done
+  const totalIncentivesUsd = 0; // find in calculate bribes
+  const poolIncentivesUsd = isBribed ? 1 : 0; // find 1 in calculate bribes
+  const totalEmissionUsd = 0; // see above
+  const poolEmissionUsd = totalEmissionUsd * (votesPercent / 100); // DONE
+  const roiPercent = (100 * poolIncentivesUsd) / poolEmissionUsd; //done
+  const payoutStatus = "estimated"; // see above
 
   const result: BribesRoi = {
-    poolname: "",
-    votes: 123,
-    votesPercent: 2.48,
-    totalIncentivesUsd: 3987.65,
-    poolIncentivesUsd: 99,
-    totalEmissionUsd: 8765.43,
-    poolEmissionUsd: 297,
-    roiPercent: 300,
-    payoutStatus: "estimated",
+    poolname,
+    votes,
+    votesPercent,
+    totalIncentivesUsd,
+    poolIncentivesUsd,
+    totalEmissionUsd,
+    poolEmissionUsd,
+    roiPercent,
+    payoutStatus,
   };
 
   return result;

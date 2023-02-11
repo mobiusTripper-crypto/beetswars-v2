@@ -41,4 +41,5 @@ export interface BribeData {
   header: BribeHeader;
   bribelist: BribeOffer[];
   strategies: SpaceStrategy[];
+  roundnumber: number;
 }
