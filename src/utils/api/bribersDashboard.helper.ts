@@ -5,9 +5,12 @@ import { findConfigEntry } from "utils/database/config.db";
 import { readRoundPoolentries } from "utils/database/votablePools.db";
 import { getBlockByTs } from "utils/externalData/ftmScan";
 import { getTotalFbeets } from "utils/externalData/liveRpcQueries";
+import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
 import { getEmissionForRound } from "./bribeApr.helper";
+import getBribeData from "./bribedata.helper";
 import { getEmissionForBlockspan } from "./emission.helper";
 import { getRoundlistNum } from "./roundlist.helper";
+import { initialInsertFromSnapshot } from "./votablePools.helper";
 
 export async function roundlist() {
   const result = await getRoundlistNum(true);
@@ -57,22 +60,35 @@ export async function bribesRoi(round: number, voteindex: number): Promise<Bribe
   if (!round) return null;
   let isBribed = true;
 
-  const bribefile = await readOneBribefile(round);
-  if (!bribefile) isBribed = false;
-  else {
-    const bribe = bribefile.bribedata.find(x => x.voteindex === voteindex);
-    if (!bribe) isBribed = false;
-  }
-  const poolname = ""; //find from votable pools db
-  const votes = 0; //find in snapshot tools
-  const totalvotes = 1; // find in snapshot tools
+  const bribefile = await readOneBribefile(round); // raw data from database
+  if (!bribefile) return null;
+  const voteDashboard = await getBribeData(round); // data from dashboard
+  if (!voteDashboard) return null;
+  const snapshot = bribefile.snapshot;
+
+  let poolList = await readRoundPoolentries(round);
+  if (!poolList) poolList = await initialInsertFromSnapshot(round, snapshot);
+  if (!poolList) return null;
+
+  const roundEmissions = await getEmissionForRound(round);
+  const totalEmissionUsd = !roundEmissions
+    ? 0
+    : Math.round(roundEmissions.voteEmission * roundEmissions.beetsPrice);
+
+  const bribe = bribefile.bribedata.find(x => x.voteindex === voteindex);
+  if (!bribe) isBribed = false;
+  const votesAllPools = await getSnapshotVotesPerPool(snapshot);
+  const votesThisPool = votesAllPools.find(x => x.poolId === (voteindex + 1).toString());
+  const votes = votesThisPool?.votes || 0;
+  const poolname = poolList.find(x => x.voteindex === voteindex)?.poolName || "no Name";
+  const totalvotes = votesAllPools.reduce((sum, x) => sum + x.votes, 0);
   const votesPercent = 100 * (votes / totalvotes); // done
-  const totalIncentivesUsd = 0; // find in calculate bribes
-  const poolIncentivesUsd = isBribed ? 1 : 0; // find 1 in calculate bribes
-  const totalEmissionUsd = 0; // see above
-  const poolEmissionUsd = totalEmissionUsd * (votesPercent / 100); // DONE
-  const roiPercent = (100 * poolIncentivesUsd) / poolEmissionUsd; //done
-  const payoutStatus = "estimated"; // see above
+  const totalIncentivesUsd = voteDashboard.header.totalBribes;
+  const poolData = voteDashboard.bribelist.find(x => x.voteindex === voteindex);
+  const poolIncentivesUsd = isBribed && poolData ? poolData.rewardAmount : 0;
+  const poolEmissionUsd = totalEmissionUsd * (votesPercent / 100);
+  const roiPercent = (100 * poolIncentivesUsd) / poolEmissionUsd;
+  const payoutStatus = !roundEmissions ? "estimated" : roundEmissions.payoutStatus;
 
   const result: BribesRoi = {
     poolname,
