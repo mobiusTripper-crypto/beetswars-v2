@@ -1,24 +1,21 @@
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Grid, GridItem } from "@chakra-ui/react";
 import type { CardData } from "types/card.component";
 import { DashboardCard } from "./DashboardCard";
 
 interface Props {
   cardList: CardData[];
-  rows?: number;
-  columns?: number;
 }
 
-// export const Dashboard: React.FC<Props> = ({ cardData, rows = 1, columns = 1 }) => {
 export const DashboardGrid: React.FC<Props> = ({ cardList }) => {
   return (
-    <SimpleGrid minChildWidth="120 px" spacing="40 px">
+    <Grid templateRows="repeat(3, 1fr)" templateColumns="repeat(3, 1fr)" gap={4}>
       {cardList.length > 0 && (
-        <Box>
+        <GridItem>
           {cardList.map((item, index) => (
             <DashboardCard cardData={item} key={index} />
           ))}
-        </Box>
+        </GridItem>
       )}
-    </SimpleGrid>
+    </Grid>
   );
 };
