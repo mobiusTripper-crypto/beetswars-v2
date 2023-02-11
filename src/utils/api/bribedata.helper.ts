@@ -24,8 +24,8 @@ export default async function getBribeData(round = 0): Promise<BribeData | null>
   if (!snapshot) return null;
 
   const roundName = bribefile.description;
-  const voteStart = new Date(snapshot.start * 1000).toUTCString();
-  const voteEnd = new Date(snapshot.end * 1000).toUTCString();
+  const voteStart = Number(snapshot.start) * 1000;
+  const voteEnd = Number(snapshot.end) * 1000;
   const timeRemaining = timeformat(snapshot.end - Date.now() / 1000);
   const voteState = snapshot.state;
 

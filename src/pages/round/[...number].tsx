@@ -33,6 +33,7 @@ import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 import type { BribeOffer } from "types/bribelist.trpc";
 import { useGetVp } from "hooks/useGetVp";
 import { useAccount } from "wagmi";
+import { Summary } from "components/Summary";
 
 export default function Round() {
   const account = useAccount();
@@ -95,80 +96,19 @@ export default function Round() {
           <Box>
             <Link href={snapshotLink} isExternal>
               <Button
-                fontSize="2rem"
                 whiteSpace="normal"
                 height="auto"
-                blockSize="auto"
                 variant="unstyled"
-                size="md"
-                rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
+                fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+                fontWeight="600"
+                rightIcon={<Icon as={ArrowIcon} w={[2, 3, 4, 6, 8]} h={[2, 3, 4, 6, 8]} />}
               >
-                <Text fontWeight="600" fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}>
-                  {bribeData?.header.roundName}
-                </Text>
+                {bribeData?.header.roundName}
               </Button>
             </Link>
           </Box>
         </Center>
-        <Center>
-          <Grid mt={5} templateColumns="1fr 1fr 1fr" fontSize="lg" gap={5}>
-            <GridItem>
-              <HStack>
-                <Text>Vote Start:</Text>
-                <Text>{bribeData?.header.voteStart}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              <HStack>
-                <Text>Votes Total:</Text>
-                <Text>{bribeData?.header.totalVotes.toLocaleString("en-us")}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              <HStack>
-                <Text>Total Incentives:</Text>
-                <Text>{bribeData?.header.totalBribes.toLocaleString("en-us")}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              <HStack>
-                <Text>Vote End:</Text>
-                <Text>{bribeData?.header.voteEnd}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              <HStack>
-                <Text>Incentivized Pools:</Text>
-                <Text>{bribeData?.header.bribedVotes.toLocaleString("en-us")}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              {" "}
-              <HStack>
-                <Text>avg/1kfB:</Text>
-                <Text>{bribeData?.header.avgPer1000}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              <HStack>
-                <Text>Time Left:</Text>
-                <Text>{bribeData?.header.timeRemaining}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              <HStack>
-                <Text>Total Voter:</Text>
-                <Text>{bribeData?.header.totalVoter}</Text>
-              </HStack>
-            </GridItem>
-            <GridItem>
-              <HStack>
-                <Text>Bribed Voter:</Text>
-                <Text>{bribeData?.header.bribedVoter}</Text>
-              </HStack>
-            </GridItem>
-          </Grid>
-        </Center>
+        <Summary headerData={bribeData?.header} />
       </Box>
       {display === "cards" ? (
         <Center>
@@ -197,14 +137,14 @@ export default function Round() {
                         {bribe.poolname}
                       </Button>
                     </Link>
-                    <Divider height="1px" bg="red" my={3} />
+                    <Divider h="2px" bg="#ED1200" my={3} />
                     <Box>
                       <Text fontSize="sm">{bribe.rewarddescription}</Text>
                       <Text as="i" fontSize="xs">
                         {bribe.assumption}
                       </Text>
                     </Box>
-                    <Divider height="1px" bg="red" my={3} />
+                    <Divider h="2px" bg="#ED1200" my={3} />
                     <VStack align="left">
                       <HStack>
                         <Text>{bribe.label}:</Text>

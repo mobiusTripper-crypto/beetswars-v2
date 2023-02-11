@@ -10,8 +10,8 @@ export interface SingleOffer {
 
 export interface BribeHeader {
   roundName: string;
-  voteStart: string;
-  voteEnd: string;
+  voteStart: number;
+  voteEnd: number;
   timeRemaining: string;
   totalVotes: number;
   bribedVotes: number;
