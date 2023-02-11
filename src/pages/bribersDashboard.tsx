@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Box, Card, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Card, Flex, Heading, Text, Progress } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import RoundSelector from "components/RoundSelector";
@@ -15,11 +15,16 @@ const Dashboard: NextPage = () => {
 
   if (!data)
     return (
-      <Box m={6}>
-        <RoundSelector handleChange={changeRound} />
-        <Heading mt={6}>Loading ...</Heading>
-        <Text>waiting for data round {requestedRound}</Text>
-      </Box>
+      <>
+        <Box height="1px">
+          <Progress size="xs" isIndeterminate />{" "}
+        </Box>
+        <Box m={6}>
+          <RoundSelector handleChange={changeRound} />
+          <Heading mt={6}>Loading ...</Heading>
+          <Text>waiting for data round {requestedRound}</Text>
+        </Box>
+      </>
     );
   return (
     <>

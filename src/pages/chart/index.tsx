@@ -493,13 +493,8 @@ function Chart1() {
     click: onChartClick,
   };
 
-  if (!chartData.rounds) {
-    return (
-      <>
-        <Progress size="xs" isIndeterminate />
-        <Text fontSize="2xl"> Chart loading ... </Text>
-      </>
-    );
+  if (chartData.rounds.length === 0) {
+    return <Progress size="xs" isIndeterminate />;
   }
 
   return (
