@@ -74,7 +74,9 @@ export async function poolDashData(round: number, voteindex: number): Promise<Ca
     },
     {
       heading: "Pool Votes %",
-      text: `for Round ${round}`,
+      text: `(uncapped: ${(data.rawPercent || 0).toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      })} %)`,
       footer: data.votesPercent.toLocaleString(undefined, { maximumFractionDigits: 2 }) + " %",
     },
     {
@@ -178,13 +180,14 @@ export async function bribesRoi(round: number, voteindex: number): Promise<Bribe
   const poolData = voteDashboard.bribelist.find(x => x.voteindex === voteindex);
   const poolIncentivesUsd = isBribed && poolData ? poolData.rewardAmount : 0;
   const poolEmissionUsd = totalEmissionUsd * (votesPercent / 100);
-  const roiPercent = (100 * poolEmissionUsd) / poolIncentivesUsd;
+  const roiPercent = !poolIncentivesUsd ? 0 : (100 * poolEmissionUsd) / poolIncentivesUsd;
   const payoutStatus = !roundEmissions ? "estimated" : roundEmissions.payoutStatus;
 
   const result: BribesRoi = {
     poolname,
     votes,
     votesPercent,
+    rawPercent,
     totalIncentivesUsd,
     poolIncentivesUsd,
     totalEmissionUsd,
