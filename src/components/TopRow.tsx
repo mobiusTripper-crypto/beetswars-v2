@@ -79,7 +79,6 @@ export const TopRow = () => {
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
     requestRound(parseInt(e.target.value));
-    router.push("/round/" + e.target.value);
   };
 
   return (
