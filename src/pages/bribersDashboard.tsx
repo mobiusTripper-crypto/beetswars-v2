@@ -6,7 +6,7 @@ import RoundSelector from "components/RoundSelector";
 
 const Dashboard: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
-  const data = trpc.dashboard.list.useQuery({ round: requestedRound }).data?.board;
+  const data = trpc.dashboard.list.useQuery({ round: requestedRound },{enabled: (requestedRound !== undefined)}).data?.board;
 
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);

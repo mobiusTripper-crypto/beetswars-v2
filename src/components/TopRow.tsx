@@ -20,38 +20,48 @@ export const TopRow = () => {
   //console.log("vote active:", VoteStateActive);
   const { requestedRound, requestRound, display } = useGlobalContext();
   const { data: votingPower, connected: accountConnected } = useGetVp();
-  const { data: roundList, loaded: rloaded } = useRoundList();
-  //  console.log("round list:", roundList, rloaded);
+  const { data: roundList, loaded: roundListLoaded } = useRoundList();
+  //  console.log("round list:", roundList, roundListLoaded);
   const router = useRouter();
   const urlParam = router.query;
   const { asPath } = useRouter();
   console.log(asPath);
 
   useEffect(() => {
-    if (urlParam.number) {
+    if (urlParam.number && roundListLoaded) {
       const parsedNumber: number = urlParam.number ? parseInt(urlParam.number[0] as string) : NaN;
-      console.log("urlparm num:", parsedNumber);
-      if (parsedNumber && rloaded) {
-        console.log("number:", parsedNumber);
+      console.log("0 urlparm num:", parsedNumber);
+
+      if (parsedNumber === requestedRound) {
+        console.log("01 no change:", parsedNumber);
+      } else if (parsedNumber && roundListLoaded) {
+        console.log("02 number:", parsedNumber);
         if (roundList.rounds.includes(parsedNumber)) {
-          console.log("valid:", parsedNumber);
+          console.log("021 number valid:", parsedNumber);
           requestRound(parsedNumber);
         } else {
-          console.log("invalid -> latest:", parsedNumber);
+          console.log("022 invalid -> latest:", parsedNumber);
           requestRound(roundList.latest);
         }
       } else {
-        if (roundList && roundList.latest !== 0) {
-          console.log("set to latest", roundList.latest);
+        if (roundListLoaded) {
+          console.log("02 set to latest", roundList.latest);
           requestRound(roundList.latest);
-          if (!VoteStateActive) {
-            router.push("/round/" + roundList.latest, undefined, { shallow: true });
-          }
+          //          if (!VoteStateActive) {
+          //            router.push("/round/" + roundList.latest, undefined, { shallow: true });
+          //          }
         }
       }
+    } else if (roundListLoaded && requestedRound === undefined) {
+      console.log("1 set default:", roundList.latest, requestedRound);
+      requestRound(roundList.latest);
+    } else {
+      console.log("2 nothing to do:", roundList.latest, requestedRound);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roundList, rloaded, urlParam]);
+  }, [roundList, roundListLoaded, urlParam]);
+
+  console.log("RL:", roundList.latest, requestedRound);
 
   const dashboardLink = "/round";
   const cardLink = dashboardLink + "/" + requestedRound + "/cards";

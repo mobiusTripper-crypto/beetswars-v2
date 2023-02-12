@@ -42,13 +42,14 @@ export default function Round() {
   const number = router.query.number || "";
   const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
-    { round: parseInt(number[0] as string) },
+    { round: requestedRound },
     {
       refetchOnWindowFocus: voteActive,
       refetchIntervalInBackground: false,
       refetchInterval: voteActive ? 60000 : 0,
       staleTime: voteActive ? 30000 : Infinity,
       cacheTime: voteActive ? 120000 : Infinity,
+      enabled: requestedRound !== undefined,
     }
   ).data?.bribefile;
 

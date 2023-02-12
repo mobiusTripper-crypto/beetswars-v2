@@ -14,7 +14,7 @@ type GlobalContext = {
 };
 
 export const MyGlobalContext = createContext<GlobalContext>({
-  requestedRound: 0,
+  requestedRound: undefined,
   requestRound: () => {},
   display: "",
   setDisplay: () => {},
