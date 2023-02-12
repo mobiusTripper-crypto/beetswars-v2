@@ -18,7 +18,6 @@ export const BribesRoi = z.object({
   poolname: z.string(),
   votes: z.number(),
   votesPercent: z.number(),
-  rawPercent: z.number().optional(),
   totalIncentivesUsd: z.number(),
   poolIncentivesUsd: z.number(),
   totalEmissionUsd: z.number(),
