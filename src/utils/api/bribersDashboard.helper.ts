@@ -114,7 +114,6 @@ export async function dashData(round = 0): Promise<DashboardData> {
   // get blocks
   const startBlock = await getBlockByTs(tsnow - ONEDAY);
   const endBlock = await getBlockByTs(tsnow);
-
   // get emissions for round
   const roundEmissions = await getEmissionForRound(round);
   const roundEmissionsUsd = !roundEmissions

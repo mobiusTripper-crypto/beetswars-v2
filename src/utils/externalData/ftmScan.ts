@@ -23,14 +23,14 @@ export async function getTsByBlock(block: number): Promise<number> {
     const b = await fetch(url);
     const res = await b.json();
     if (!res) {
-      // console.error("failed ftmscan getTsByBlock");
+      console.error("failed ftmscan getTsByBlock");
       return 0;
     }
     const result = res.result.timestamp;
     if (!result) return 0;
     return Number(result);
   } catch (error) {
-    // console.error("failed ftmscan getTsByBlock");
+    console.error("failed ftmscan getTsByBlock");
     return 0;
   }
 }
