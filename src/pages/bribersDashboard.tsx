@@ -7,41 +7,32 @@ import {
   Grid,
   GridItem,
   Center,
-  RadioGroup,
-  VStack,
-  Radio,
   Select,
+  Switch,
 } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
-import RoundSelector from "components/RoundSelector";
 import type { CardData } from "types/card.component";
 import { useState } from "react";
 import type { VotablePool } from "types/votablePools.raw";
 import { DashboardGrid } from "components/DashboardGrid";
 
 const Dashboard: NextPage = () => {
-  const { requestedRound, requestRound } = useGlobalContext();
-  // const [round, setround] = useState(0);
-  const [voteindex, setvoteindex] = useState(22);
-  const [option, setoption] = useState("1");
+  const roundlist = trpc.dashboard.roundlist.useQuery().data?.rounds as number[];
+  const { requestedRound } = useGlobalContext();
+  const [round, setRound] = useState(requestedRound || 0);
+  const [voteindex, setVoteindex] = useState(22);
+  const [selected, setSelected] = useState(false);
 
-  // const data = trpc.dashboard.list.useQuery({ round: requestedRound }).data?.board as DashboardData;
-  const commonData = trpc.dashboard.list.useQuery({ round: requestedRound }).data
+  const commonData = trpc.dashboard.list.useQuery({ round: round }).data?.board as CardData[];
+  const poolData = trpc.dashboard.single.useQuery({ round: round, voteindex }).data
     ?.board as CardData[];
-  const poolData = trpc.dashboard.single.useQuery({ round: requestedRound, voteindex }).data
-    ?.board as CardData[];
-  // const roundlist = trpc.dashboard.roundlist.useQuery().data?.rounds as number[];
-  const poolslist = trpc.dashboard.poolslist.useQuery({ round: requestedRound }).data
+  const poolslist = trpc.dashboard.poolslist.useQuery({ round: round }).data
     ?.pools as VotablePool[];
 
-  const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
-    requestRound(parseInt(e.target.value));
-  };
   const changeVoteindex = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
-    setvoteindex(parseInt(e.target.value));
+    setVoteindex(parseInt(e.target.value));
   };
 
   if (!commonData || !poolData)
@@ -52,7 +43,7 @@ const Dashboard: NextPage = () => {
         </Box>
         <Box m={6}>
           <Heading mt={6}>Loading ...</Heading>
-          <Text>waiting for data round {requestedRound}</Text>
+          <Text>waiting for data round {round}</Text>
         </Box>
       </>
     );
@@ -61,36 +52,36 @@ const Dashboard: NextPage = () => {
       <Grid templateColumns="200px 3fr">
         <GridItem w="100%" bg="black">
           <Box m={6}>
-            {/* <Select onChange={changeRound} value={round}>
+            <Select
+              onChange={event => setRound(Number(event.target.value))}
+              value={round}
+              defaultValue={roundlist[1]}
+            >
               {roundlist.map((round: number, index: number) => (
                 <option key={index} value={round}>
                   Round {round}
                 </option>
               ))}
-            </Select> */}
-            <RoundSelector handleChange={changeRound} />
-            <Text>{requestedRound}</Text>
-            <RadioGroup onChange={setoption} value={option}>
-              <VStack>
-                <Radio value="1">Overall statistics</Radio>
-                <Radio value="2">Select single pool</Radio>
-              </VStack>
-            </RadioGroup>
-            {/* <Text>{JSON.stringify(poolslist)}</Text> */}
-            <Select onChange={changeVoteindex} value={voteindex}>
-              {poolslist.map((pool, index) => (
-                <option key={index} value={pool.voteindex}>
-                  {pool.poolName}
-                </option>
-              ))}
+            </Select>
+            {/* <RoundSelector handleChange={changeRound} /> */}
+            <Text mt={12}>activate single pool data for round {round}</Text>
+            <Switch size="lg" isChecked={selected} onChange={() => setSelected(!selected)} m={6} />
+            <Select onChange={changeVoteindex} placeholder="Select pool" disabled={!selected}>
+              {poolslist &&
+                poolslist.map((pool, index) => (
+                  <option key={index} value={pool.voteindex}>
+                    {pool.poolName}
+                  </option>
+                ))}
             </Select>
           </Box>
         </GridItem>
         <GridItem w="100%" bg="darkblue">
-          {/* Option 1 */}
-          {/* <DashboardGrid cardList={commonData} /> */}
-          {/* Option 2 */}
-          <DashboardGrid cardList={poolData} />
+          {!selected ? (
+            <DashboardGrid cardList={commonData} />
+          ) : (
+            <DashboardGrid cardList={poolData} />
+          )}
         </GridItem>
       </Grid>
     </Center>

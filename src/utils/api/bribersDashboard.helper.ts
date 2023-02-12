@@ -19,8 +19,9 @@ export async function roundlist() {
 }
 
 export async function commonDashData(round = 0): Promise<CardData[]> {
+  if (!round) return [];
   const data = await dashData(round);
-  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "estimated" : ""}`;
+  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "(estimated)" : ""}`;
   if (!data) return [];
   return [
     {
@@ -60,33 +61,46 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
 }
 
 export async function poolDashData(round: number, voteindex: number): Promise<CardData[]> {
+  if (!round) return [];
   const data = await bribesRoi(round, voteindex);
   if (!data) return [];
-  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "estimated" : ""}`;
+  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "(estimated)" : ""}`;
   return [
     { heading: "Pool Name", text: "", footer: data.poolname },
-    { heading: "Pool Votes", text: roundtext, footer: data.votes.toLocaleString() },
-    { heading: "Pool Votes %", text: roundtext, footer: data.votesPercent.toFixed(2) + " %" },
+    {
+      heading: "Pool Votes",
+      text: `for Round ${round}`,
+      footer: data.votes.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+    },
+    {
+      heading: "Pool Votes %",
+      text: `for Round ${round}`,
+      footer: data.votesPercent.toLocaleString(undefined, { maximumFractionDigits: 2 }) + " %",
+    },
     {
       heading: "Total Incentives",
       text: roundtext,
-      footer: "$ " + data.poolIncentivesUsd.toLocaleString(),
+      footer: "$ " + data.totalIncentivesUsd.toLocaleString(),
     },
     {
       heading: "Pool Incentives",
       text: roundtext,
       footer: "$ " + data.poolIncentivesUsd.toLocaleString(),
     },
-    { heading: "Pool Incentives ROI", text: roundtext, footer: data.roiPercent.toFixed() + " %" },
+    {
+      heading: "Pool Incentives ROI",
+      text: roundtext,
+      footer: data.roiPercent.toLocaleString(undefined, { maximumFractionDigits: 1 }) + " %",
+    },
     {
       heading: "Total Emissions value",
       text: roundtext,
-      footer: "$ " + data.totalEmissionUsd.toLocaleString(),
+      footer: "$ " + data.totalEmissionUsd.toLocaleString(undefined, { maximumFractionDigits: 0 }),
     },
     {
       heading: "Emissions to Pool",
       text: roundtext,
-      footer: "$ " + data.poolEmissionUsd.toLocaleString(),
+      footer: "$ " + data.poolEmissionUsd.toLocaleString(undefined, { maximumFractionDigits: 0 }),
     },
     { heading: "Payout Status", text: "", footer: data.payoutStatus },
   ];
@@ -144,7 +158,8 @@ export async function bribesRoi(round: number, voteindex: number): Promise<Bribe
   let poolList = await readRoundPoolentries(round);
   if (!poolList) poolList = await initialInsertFromSnapshot(round, snapshot);
   if (!poolList) return null;
-  const uncapped = poolList.find(x => x.voteindex === voteindex)?.isUncapped || false;
+  let uncapped = poolList.find(x => x.voteindex === voteindex)?.isUncapped || false;
+  if (round < 29) uncapped = true;
 
   const roundEmissions = await getEmissionForRound(round);
   const totalEmissionUsd = !roundEmissions
@@ -164,7 +179,7 @@ export async function bribesRoi(round: number, voteindex: number): Promise<Bribe
   const poolData = voteDashboard.bribelist.find(x => x.voteindex === voteindex);
   const poolIncentivesUsd = isBribed && poolData ? poolData.rewardAmount : 0;
   const poolEmissionUsd = totalEmissionUsd * (votesPercent / 100);
-  const roiPercent = (100 * poolIncentivesUsd) / poolEmissionUsd;
+  const roiPercent = (100 * poolEmissionUsd) / poolIncentivesUsd;
   const payoutStatus = !roundEmissions ? "estimated" : roundEmissions.payoutStatus;
 
   const result: BribesRoi = {
