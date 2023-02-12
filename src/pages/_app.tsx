@@ -27,7 +27,7 @@ const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps<{ session: Session }>) => {
-  const [requestedRound, requestRound] = useState<number>(undefined);
+  const [requestedRound, requestRound] = useState<number|undefined>(undefined);
   const [display, setDisplay] = useState<string>("cards");
   const [voteActive, setVoteActive] = useState<boolean>(false);
 

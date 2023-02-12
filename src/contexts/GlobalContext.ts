@@ -5,8 +5,8 @@
 import { createContext, useContext } from "react";
 
 type GlobalContext = {
-  requestedRound: number;
-  requestRound: (c: number) => void;
+  requestedRound: number|undefined;
+  requestRound: (c: number|undefined) => void;
   display: string;
   setDisplay: (c: string) => void;
   voteActive: boolean;
