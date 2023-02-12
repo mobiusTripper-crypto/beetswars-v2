@@ -22,7 +22,7 @@ const Dashboard: NextPage = () => {
   const roundlist = rounddata?.rounds ?? [];
   const latest = rounddata?.latest ?? 0;
   const { requestedRound } = useGlobalContext();
-  const [round, setRound] = useState(requestedRound || latest);
+  const [round, setRound] = useState((requestedRound as number) || latest);
   const [voteindex, setVoteindex] = useState(22);
   const [selected, setSelected] = useState(false);
 
@@ -34,7 +34,7 @@ const Dashboard: NextPage = () => {
     { round: round, voteindex },
     { enabled: !!round && selected }
   ).data?.board as CardData[];
-  const poolslist = trpc.dashboard.poolslist.useQuery({ round: round }).data
+  const poolslist = trpc.dashboard.poolslist.useQuery({ round: round }, { enabled: !!round }).data
     ?.pools as VotablePool[];
 
   const changeVoteindex = (e: React.ChangeEvent<HTMLSelectElement>) => {
