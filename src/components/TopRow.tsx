@@ -53,11 +53,13 @@ export const TopRow = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundList, rloaded, urlParam]);
 
-  const cardLink = "/round/" + requestedRound + "/cards";
-  const tableLink = "/round/" + requestedRound + "/table";
+  const dashboardLink = "/round";
+  const cardLink = dashboardLink + "/" + requestedRound + "/cards";
+  const tableLink = dashboardLink + "/" + requestedRound + "/table";
   const wdafLink = "/wdaf";
-  const bbDashLink = "/bribersDashboard";
-
+  const bribersdashLink = "/bribersDashboard";
+  const chartLink = "/chart";
+  const linkActiveColor = "limegreen";
   const iconProps = {
     size: "1.6rem",
     marginRight: "1rem",
@@ -85,49 +87,62 @@ export const TopRow = () => {
             <Box style={{ marginRight: "1rem" }}>
               <RoundSelector handleChange={changeRound} />
             </Box>
-            {display === "table" ? (
-              <Link href={cardLink}>
-                <Icon
-                  as={CardIcon}
-                  height={iconProps.size}
-                  width={iconProps.size}
-                  marginRight={iconProps.marginRight}
-                  color={display === "table" ? "limegreen" : ""}
-                />
-              </Link>
-            ) : (
-              <Link href={tableLink}>
-                <Icon
-                  as={TableIcon}
-                  height={iconProps.size}
-                  width={iconProps.size}
-                  marginRight={iconProps.marginRight}
-                  color={display === "cards" ? "limegreen" : ""}
-                />
-              </Link>
-            )}
-            <Link href={bbDashLink}>
+            <Link href={cardLink}>
               <Icon
+                title="Main Dasboard Card Display"
+                as={CardIcon}
+                height={iconProps.size}
+                width={iconProps.size}
+                marginRight={iconProps.marginRight}
+                color={
+                  asPath.includes(`${dashboardLink}`) && display === "cards"
+                    ? `${linkActiveColor}`
+                    : ""
+                }
+              />
+            </Link>
+            <Link href={tableLink}>
+              <Icon
+                title="Main Dasboard Table Display"
+                as={TableIcon}
+                height={iconProps.size}
+                width={iconProps.size}
+                marginRight={iconProps.marginRight}
+                color={
+                  asPath.includes(`${dashboardLink}`) && display === "table"
+                    ? `${linkActiveColor}`
+                    : ""
+                }
+              />
+            </Link>
+            <Link href={bribersdashLink}>
+              <Icon
+                title="Briber's Dasboard"
                 as={BribersIcon}
                 height="1.2rem"
                 width={iconProps.size}
                 marginRight={iconProps.marginRight}
+                color={asPath.includes(`${bribersdashLink}`) ? `${linkActiveColor}` : ""}
               />
             </Link>
-            <Link href="/chart">
+            <Link href={chartLink}>
               <Icon
+                title="Gauge Vote History"
                 as={ChartIcon}
                 height={iconProps.size}
                 width={iconProps.size}
                 marginRight={iconProps.marginRight}
+                color={asPath.includes(`${chartLink}`) ? `${linkActiveColor}` : ""}
               />
             </Link>
             <Link href={wdafLink}>
               <Icon
+                title="WdaF"
                 as={StatsIcon}
                 height={iconProps.size}
                 width={iconProps.size}
                 marginRight={iconProps.marginRight}
+                color={asPath.includes(`${wdafLink}`) ? `${linkActiveColor}` : ""}
               />
             </Link>
           </>
