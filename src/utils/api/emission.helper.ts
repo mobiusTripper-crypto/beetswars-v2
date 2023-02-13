@@ -1,7 +1,7 @@
 import type { Emission } from "types/emission.raw";
 import { readEmissionList } from "utils/database/beetsEmissions.db";
-import { getBlockByTs, getTsByBlock } from "utils/externalData/ftmScan";
-import { getBeetsPerBlock } from "utils/externalData/theGraph";
+import { getTsByBlockRPC } from "utils/externalData/liveRpcQueries";
+import { getBeetsPerBlock, getBlockByTsGraph } from "utils/externalData/theGraph";
 
 export async function getEmissionForBlockspan(block1: number, block2: number): Promise<number> {
   const emissionChange = await readEmissionList();
@@ -30,14 +30,14 @@ export async function checkEmissionChange(lastEmission: Emission): Promise<Emiss
   const stepwidth = 40000; // estimated between 0.5 and 1 days
   let block = lastEmission.block + stepwidth;
   const oldBeets = lastEmission.beets;
-  const currentBlock = await getBlockByTs(Math.floor(Date.now() / 1000) - 60);
+  const currentBlock = await getBlockByTsGraph(Math.floor(Date.now() / 1000) - 60);
   const data = [] as Emission[];
   while (block < currentBlock + stepwidth) {
     const beets = await getBeetsPerBlock(block);
     if (!beets) break;
     if (beets !== oldBeets) {
       const newblock = await findEmissionChangeBlock(block - stepwidth, block);
-      const timestamp = await getTsByBlock(newblock);
+      const timestamp = await getTsByBlockRPC(newblock);
       data.push({ block: newblock, beets, timestamp });
       block = newblock;
     } else {

@@ -36,7 +36,7 @@ const fbeetsAbi = [
   },
 ];
 
-export async function getTsByBlock(block: number): Promise<number> {
+export async function getTsByBlockRPC(block: number): Promise<number> {
   try {
     const provider = new ethers.providers.JsonRpcProvider(providerUrl);
     const res = await provider.getBlock(block);
@@ -51,7 +51,7 @@ export async function getTsByBlock(block: number): Promise<number> {
   }
 }
 
-export async function getBlockByTs2(ts: number): Promise<number> {
+export async function getBlockByTsRPC(ts: number): Promise<number> {
   const provider = new ethers.providers.JsonRpcProvider(providerUrl);
   const now = Math.round(Date.now() / 1000);
   let maxBlock = await provider.getBlockNumber();

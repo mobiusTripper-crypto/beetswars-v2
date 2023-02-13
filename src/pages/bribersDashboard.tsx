@@ -10,6 +10,7 @@ import {
   Card,
   VStack,
   Button,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
@@ -19,6 +20,8 @@ import type { VotablePool } from "types/votablePools.raw";
 import { DashboardGrid } from "components/DashboardGrid";
 
 const Dashboard: NextPage = () => {
+  const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
+
   const latest = trpc.dashboard.roundlist.useQuery().data?.latest ?? 0;
   const { requestedRound } = useGlobalContext();
   const [round, setRound] = useState(requestedRound as number);
@@ -54,7 +57,7 @@ const Dashboard: NextPage = () => {
         <Heading>Bribers Dashboard</Heading>
         <Grid templateColumns="200px 1fr">
           <GridItem w="100%" mt={6} mb={6}>
-            <Card p={6} border={1} minHeight="100%" alignItems="center">
+            <Card p={6} border="1px" minHeight="100%" alignItems="center" backgroundColor={bgCard}>
               <Heading as="h3" size="md" mt={6}>
                 {future ? "future prediction" : `Round ${requestedRound}`}
               </Heading>

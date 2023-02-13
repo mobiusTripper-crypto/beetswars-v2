@@ -61,24 +61,3 @@ export async function updateEmissionChange(): Promise<Emission[]> {
     return [];
   }
 }
-
-// async function checkEmissionChange(lastEmission: Emission): Promise<Emission[]> {
-//   const stepwidth = 40000; // estimated between 0.5 and 1 days
-//   let block = lastEmission.block + stepwidth;
-//   const oldBeets = lastEmission.beets;
-//   const currentBlock = await getBlockByTs(Math.floor(Date.now() / 1000) - 60);
-//   const data = [] as Emission[];
-//   while (block < currentBlock + stepwidth) {
-//     const beets = await getBeetsPerBlock(block);
-//     if (!beets) break;
-//     if (beets !== oldBeets) {
-//       const newblock = await findEmissionChangeBlock(block - stepwidth, block);
-//       const timestamp = await getTsByBlock(newblock);
-//       data.push({ block: newblock, beets, timestamp });
-//       block = newblock;
-//     } else {
-//       block += stepwidth;
-//     }
-//   }
-//   return data;
-// }

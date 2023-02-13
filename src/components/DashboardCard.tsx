@@ -10,16 +10,16 @@ export const DashboardCard: React.FC<Props> = ({ cardData }) => {
 
   return (
     <>
-      <Card p={4} border="1px" width="360px" backgroundColor={bgCard}>
+      <Card p={4} border="1px" width="320px" backgroundColor={bgCard}>
         <Box>
           {cardData.headUrl ? (
             <Link href={cardData.headUrl}>
-              <Heading as="h3" size="lg">
+              <Heading as="h3" size="md">
                 {cardData.heading}
               </Heading>
             </Link>
           ) : (
-            <Heading as="h3" size="lg">
+            <Heading as="h3" size="md">
               {cardData.heading}
             </Heading>
           )}
@@ -38,7 +38,7 @@ export const DashboardCard: React.FC<Props> = ({ cardData }) => {
             </>
           )}
           {cardData.footer && (
-            <Text mt={2} fontSize="lg" fontWeight="bold" textAlign="right">
+            <Text mt={2} fontSize="xl" fontWeight="bold" textAlign="right">
               {cardData.footer}
             </Text>
           )}
