@@ -1,4 +1,5 @@
 import type { BribeData, BribeOffer } from "types/bribelist.trpc";
+import { insertBribeDashboard, readBribeDashboard } from "utils/database/bribeDashboard.db";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { getSnapshotProposal, getSnapshotVotes } from "utils/externalData/snapshot";
@@ -13,6 +14,14 @@ function timeformat(seconds: number): string {
 }
 
 export default async function getBribeData(round = 0): Promise<BribeData | null> {
+  const fromDb = await readBribeDashboard(round);
+  if (!!fromDb) return fromDb;
+  const result = await getBribeDataCalculated(round);
+  if (!result) return null;
+  return result;
+}
+
+export async function getBribeDataCalculated(round = 0): Promise<BribeData | null> {
   const roundnumber = round || Number(await findConfigEntry("latest"));
   const bribefile = await readOneBribefile(roundnumber);
   if (!bribefile) return null;
@@ -78,6 +87,13 @@ export default async function getBribeData(round = 0): Promise<BribeData | null>
   };
 
   const strategies = snapshot.strategies;
+  const retVal = { header, bribelist, strategies, roundnumber };
 
-  return { header, bribelist, strategies };
+  // write to db one hour after vote closed
+  const now = Math.floor(Date.now() / 1000);
+  if (now > snapshot.end + 3600) {
+    await insertBribeDashboard(retVal);
+  }
+
+  return retVal;
 }
