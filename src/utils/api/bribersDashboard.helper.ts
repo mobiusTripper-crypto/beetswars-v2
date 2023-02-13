@@ -1,17 +1,111 @@
 import type { BribesRoi, DashboardData } from "types/bribersDashboard.trpc";
+import type { CardData } from "types/card.component";
 import type { VotablePool } from "types/votablePools.raw";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { readRoundPoolentries } from "utils/database/votablePools.db";
 import { getBlockByTs } from "utils/externalData/ftmScan";
 import { getTotalFbeets } from "utils/externalData/liveRpcQueries";
+import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
 import { getEmissionForRound } from "./bribeApr.helper";
+import getBribeData from "./bribedata.helper";
 import { getEmissionForBlockspan } from "./emission.helper";
 import { getRoundlistNum } from "./roundlist.helper";
+import { initialInsertFromSnapshot } from "./votablePools.helper";
 
 export async function roundlist() {
   const result = await getRoundlistNum(true);
   return result;
+}
+
+export async function commonDashData(round = 0): Promise<CardData[]> {
+  if (!round) return [];
+  const data = await dashData(round);
+  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "(estimated)" : ""}`;
+  if (!data) return [];
+  return [
+    {
+      heading: "Beets Emissions",
+      text: "last 24 hours",
+      footer: data.beetsEmissionsPerDay.toLocaleString(),
+    },
+    {
+      heading: "Fantom Blocks",
+      text: "last 24 hours",
+      footer: data.fantomBlocksPerDay.toLocaleString(),
+    },
+    {
+      heading: "Total fBEETS Supply",
+      text: "totally minted fBEETS",
+      footer: data.totalFbeetsSupply.toLocaleString(),
+    },
+    {
+      heading: "Beets Emissions for Votes",
+      text: roundtext,
+      footer: data.roundBeetsEmissions.toLocaleString(),
+    },
+    {
+      heading: "Round Emissions USD",
+      text: roundtext,
+      footer: "$ " + data.roundEmissionsUsd.toLocaleString(),
+    },
+    { heading: "Vote Incentives ROI", text: roundtext, footer: `${data.voteIncentivesRoi} %` },
+    {
+      heading: "Pools over Threshold",
+      text: roundtext,
+      footer: data.poolsOverThreshold.toString(),
+    },
+    { heading: "Total Relics", text: "up to now", footer: data.totalRelics.toString() },
+    { heading: "Payout Status", text: "", footer: data.payoutStatus },
+  ];
+}
+
+export async function poolDashData(round: number, voteindex: number): Promise<CardData[]> {
+  if (!round) return [];
+  const data = await bribesRoi(round, voteindex);
+  if (!data) return [];
+  const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "(estimated)" : ""}`;
+  return [
+    { heading: "Pool Name", text: "", footer: data.poolname },
+    {
+      heading: "Pool Votes",
+      text: `for Round ${round}`,
+      footer: data.votes.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+    },
+    {
+      heading: "Pool Votes %",
+      text: `(uncapped: ${(data.rawPercent || 0).toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      })} %)`,
+      footer: data.votesPercent.toLocaleString(undefined, { maximumFractionDigits: 2 }) + " %",
+    },
+    {
+      heading: "Total Incentives",
+      text: roundtext,
+      footer: "$ " + data.totalIncentivesUsd.toLocaleString(),
+    },
+    {
+      heading: "Pool Incentives",
+      text: roundtext,
+      footer: "$ " + data.poolIncentivesUsd.toLocaleString(),
+    },
+    {
+      heading: "Pool Incentives ROI",
+      text: roundtext,
+      footer: data.roiPercent.toLocaleString(undefined, { maximumFractionDigits: 1 }) + " %",
+    },
+    {
+      heading: "Total Emissions value",
+      text: roundtext,
+      footer: "$ " + data.totalEmissionUsd.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+    },
+    {
+      heading: "Emissions to Pool",
+      text: roundtext,
+      footer: "$ " + data.poolEmissionUsd.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+    },
+    { heading: "Payout Status", text: "", footer: data.payoutStatus },
+  ];
 }
 
 export async function dashData(round = 0): Promise<DashboardData> {
@@ -22,7 +116,6 @@ export async function dashData(round = 0): Promise<DashboardData> {
   // get blocks
   const startBlock = await getBlockByTs(tsnow - ONEDAY);
   const endBlock = await getBlockByTs(tsnow);
-
   // get emissions for round
   const roundEmissions = await getEmissionForRound(round);
   const roundEmissionsUsd = !roundEmissions
@@ -53,22 +146,54 @@ export async function dashData(round = 0): Promise<DashboardData> {
   return result;
 }
 
-export async function bribesRoi(round = 0): Promise<BribesRoi | null> {
+export async function bribesRoi(round: number, voteindex: number): Promise<BribesRoi | null> {
   if (!round) return null;
+  let isBribed = true;
 
-  const bribefile = await readOneBribefile(round);
+  const bribefile = await readOneBribefile(round); // raw data from database
   if (!bribefile) return null;
+  const voteDashboard = await getBribeData(round); // data from dashboard
+  if (!voteDashboard) return null;
+  const snapshot = bribefile.snapshot;
+
+  let poolList = await readRoundPoolentries(round);
+  if (!poolList) poolList = await initialInsertFromSnapshot(round, snapshot);
+  if (!poolList) return null;
+  let uncapped = poolList.find(x => x.voteindex === voteindex)?.isUncapped || false;
+  if (round < 29) uncapped = true;
+
+  const roundEmissions = await getEmissionForRound(round);
+  const totalEmissionUsd = !roundEmissions
+    ? 0
+    : Math.round(roundEmissions.voteEmission * roundEmissions.beetsPrice);
+
+  const bribe = bribefile.bribedata.find(x => x.voteindex === voteindex);
+  if (!bribe) isBribed = false;
+  const votesAllPools = await getSnapshotVotesPerPool(snapshot);
+  const votesThisPool = votesAllPools.find(x => x.poolId === (voteindex + 1).toString());
+  const votes = votesThisPool?.votes || 0;
+  const poolname = poolList.find(x => x.voteindex === voteindex)?.poolName || "no Name";
+  const totalvotes = votesAllPools.reduce((sum, x) => sum + x.votes, 0);
+  const rawPercent = 100 * (votes / totalvotes);
+  const votesPercent = uncapped ? rawPercent : Math.min(rawPercent, 1);
+  const totalIncentivesUsd = voteDashboard.header.totalBribes;
+  const poolData = voteDashboard.bribelist.find(x => x.voteindex === voteindex);
+  const poolIncentivesUsd = isBribed && poolData ? poolData.rewardAmount : 0;
+  const poolEmissionUsd = totalEmissionUsd * (votesPercent / 100);
+  const roiPercent = !poolIncentivesUsd ? 0 : (100 * poolEmissionUsd) / poolIncentivesUsd;
+  const payoutStatus = !roundEmissions ? "estimated" : roundEmissions.payoutStatus;
 
   const result: BribesRoi = {
-    poolname: "",
-    votes: 123,
-    votesPercent: 2.48,
-    totalIncentivesUsd: 3987.65,
-    poolIncentivesUsd: 99,
-    totalEmissionUsd: 8765.43,
-    poolEmissionUsd: 297,
-    roiPercent: 300,
-    payoutStatus: "estimated",
+    poolname,
+    votes,
+    votesPercent,
+    rawPercent,
+    totalIncentivesUsd,
+    poolIncentivesUsd,
+    totalEmissionUsd,
+    poolEmissionUsd,
+    roiPercent,
+    payoutStatus,
   };
 
   return result;
