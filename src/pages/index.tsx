@@ -55,7 +55,7 @@ const Home: NextPage = () => {
             text="Gauge Vote History"
             caption="History of previous rounds"
           />
-          <SplashItem href="/wdaf" icon={StatsIcon} text="Snapshot Times" caption="coming soon ..." />
+          <SplashItem href="/snapshotTimes" icon={StatsIcon} text="Snapshot Times" caption="coming soon ..." />
         </SimpleGrid>
       </Center>
     </>

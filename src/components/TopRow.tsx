@@ -56,7 +56,7 @@ export const TopRow = () => {
   const dashboardLink = "/round";
   const cardLink = dashboardLink + "/" + requestedRound + "/cards";
   const tableLink = dashboardLink + "/" + requestedRound + "/table";
-  const wdafLink = "/wdaf";
+  const wdafLink = "/snapshotTimes";
   const bribersdashLink = "/bribersDashboard";
   const chartLink = "/chart";
   const linkActiveColor = "limegreen";

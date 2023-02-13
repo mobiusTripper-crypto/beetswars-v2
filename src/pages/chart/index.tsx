@@ -499,7 +499,7 @@ function Chart1() {
 
   return (
     <>
-      <Text fontSize="3xl" align="center" marginBottom="20px">
+      <Text fontSize="3xl" align="center" margin="20px">
         Gauge Vote History
       </Text>
       <ReactECharts option={option} onEvents={onEvents} style={{ height: 1200 }} />

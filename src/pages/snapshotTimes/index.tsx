@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import ReactECharts from "echarts-for-react";
-import { Progress, Center, Text } from "@chakra-ui/react";
+import { useColorModeValue, Progress, Center, Text } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { request, gql } from "graphql-request";
 import { useQuery, useQueries } from "@tanstack/react-query";
+import { useGlobalContext } from "contexts/GlobalContext";
 
 const GAUGE_VOTES = gql`
   query Proposals {
@@ -48,8 +49,10 @@ const snapshots: any = [];
 const roundStart: any = [];
 
 function App() {
+  const legendColor = useColorModeValue("#222", "#EEE");
   const regex_gaugevote = new RegExp("Farming Incentive Gauge Vote");
 
+  const { requestedRound } = useGlobalContext();
   const [allLoaded, setAllLoaded] = useState(false);
   const [blocksReady, setBlocksReady] = useState(false);
   const provider = new ethers.providers.JsonRpcProvider("https://rpc.ftm.tools");
@@ -106,7 +109,7 @@ function App() {
   });
 
   useEffect(() => {
-    console.log(proposalsData);
+    // console.log(proposalsData);
     if (propSuccess) {
       // reset arrays
       snapshots.length = 0;
@@ -126,7 +129,7 @@ function App() {
   }, [propSuccess, proposalsData]);
 
   useEffect(() => {
-    console.log(blocks2);
+    // console.log(blocks2);
     let success = true;
     if (blocks2) {
       blockTime.length = 0;
@@ -150,11 +153,18 @@ function App() {
     return (
       <>
         <Center>
-          <Text fontSize="3xl" marginBottom="20px">
+          <Text fontSize="3xl" margin="20px">
             time before gauge vote start snapshot was taken
           </Text>
         </Center>
-        <ChartSnapTimes blockTime={blockTime} snapshots={snapshots} roundStart={roundStart} />;
+        <ChartSnapTimes
+          blockTime={blockTime}
+          snapshots={snapshots}
+          roundStart={roundStart}
+          requestedRound={requestedRound}
+          legendColor={legendColor}
+        />
+        ;
       </>
     );
   }
@@ -164,10 +174,12 @@ interface ChartProps {
   blockTime: number[];
   snapshots: string[];
   roundStart: number[];
+  requestedRound: number | undefined;
+  legendColor: string;
 }
 
 function ChartSnapTimes(props: ChartProps) {
-  //  console.log(props);
+  console.log(props);
 
   //  const blockTimeS = props.blockTime.sort();
   const diffs = props.snapshots.map((sn: string, index: number) => {
@@ -180,7 +192,21 @@ function ChartSnapTimes(props: ChartProps) {
   const rounds = props.roundStart.map(function (round: number, index: number) {
     return "R" + (index + 1);
   });
+
+  /*
+  const rounds2 = props.roundStart.map(function (round: number, index: number) {
+    if (index + 1 === props.requestedRound) {
+      return 1;
+    } else return 0;
+  });
+  console.log(rounds2);
+*/
+
   const option = {
+    textStyle: {
+      color: props.legendColor,
+    },
+
     title: {
       //      textStyle: { color: "#eeeeee" },
     },
@@ -213,7 +239,7 @@ function ChartSnapTimes(props: ChartProps) {
   return (
     <ReactECharts
       option={option}
-      style={{ margin: "auto", maxWidth: 900, height: 500, marginTop: 90 }}
+      style={{ margin: "auto", maxWidth: 900, height: 500, marginTop: 30 }}
     />
   );
 }
