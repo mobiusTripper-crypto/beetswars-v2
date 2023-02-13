@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ReactECharts from "echarts-for-react";
-import { Progress, Center, Text } from "@chakra-ui/react";
+import { useColorModeValue, Progress, Center, Text } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { request, gql } from "graphql-request";
 import { useQuery, useQueries } from "@tanstack/react-query";
@@ -49,6 +49,7 @@ const snapshots: any = [];
 const roundStart: any = [];
 
 function App() {
+  const legendColor = useColorModeValue("#222", "#EEE");
   const regex_gaugevote = new RegExp("Farming Incentive Gauge Vote");
 
   const { requestedRound } = useGlobalContext();
@@ -161,6 +162,7 @@ function App() {
           snapshots={snapshots}
           roundStart={roundStart}
           requestedRound={requestedRound}
+          legendColor={legendColor}
         />
         ;
       </>
@@ -173,6 +175,7 @@ interface ChartProps {
   snapshots: string[];
   roundStart: number[];
   requestedRound: number | undefined;
+  legendColor: string;
 }
 
 function ChartSnapTimes(props: ChartProps) {
@@ -190,7 +193,7 @@ function ChartSnapTimes(props: ChartProps) {
     return "R" + (index + 1);
   });
 
-/*
+  /*
   const rounds2 = props.roundStart.map(function (round: number, index: number) {
     if (index + 1 === props.requestedRound) {
       return 1;
@@ -200,6 +203,10 @@ function ChartSnapTimes(props: ChartProps) {
 */
 
   const option = {
+    textStyle: {
+      color: props.legendColor,
+    },
+
     title: {
       //      textStyle: { color: "#eeeeee" },
     },
