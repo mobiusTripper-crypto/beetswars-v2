@@ -4,9 +4,9 @@ import type { VotablePool } from "types/votablePools.raw";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { readRoundPoolentries } from "utils/database/votablePools.db";
-import { getBlockByTs } from "utils/externalData/ftmScan";
 import { getTotalFbeets } from "utils/externalData/liveRpcQueries";
 import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
+import { getBlockByTsGraph } from "utils/externalData/theGraph";
 import { getEmissionForRound } from "./bribeApr.helper";
 import getBribeData from "./bribedata.helper";
 import { getEmissionForBlockspan } from "./emission.helper";
@@ -114,8 +114,8 @@ export async function dashData(round = 0): Promise<DashboardData> {
   const ONEDAY = 24 * 60 * 60;
   const tsnow = Math.floor(Date.now() / 1000) - 60;
   // get blocks
-  const startBlock = await getBlockByTs(tsnow - ONEDAY);
-  const endBlock = await getBlockByTs(tsnow);
+  const startBlock = await getBlockByTsGraph(tsnow - ONEDAY);
+  const endBlock = await getBlockByTsGraph(tsnow);
   // get emissions for round
   const roundEmissions = await getEmissionForRound(round);
   const roundEmissionsUsd = !roundEmissions

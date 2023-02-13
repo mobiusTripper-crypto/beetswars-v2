@@ -9,66 +9,74 @@ import {
   Switch,
   Card,
   VStack,
+  Button,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import type { CardData } from "types/card.component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { VotablePool } from "types/votablePools.raw";
 import { DashboardGrid } from "components/DashboardGrid";
 
 const Dashboard: NextPage = () => {
-  const rounddata = trpc.dashboard.roundlist.useQuery().data;
-  const roundlist = rounddata?.rounds ?? [];
-  const latest = rounddata?.latest ?? 0;
+  const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
+
+  const latest = trpc.dashboard.roundlist.useQuery().data?.latest ?? 0;
   const { requestedRound } = useGlobalContext();
-  const [round, setRound] = useState((requestedRound as number) || latest);
+  const [round, setRound] = useState(requestedRound as number);
   const [voteindex, setVoteindex] = useState(22);
   const [selected, setSelected] = useState(false);
+  const [future, setFuture] = useState(false);
 
   const commonData = trpc.dashboard.list.useQuery(
-    { round: round },
-    { enabled: !!round && !selected }
+    { round: round || 0 },
+    { enabled: !!requestedRound && !selected }
   ).data?.board as CardData[];
   const poolData = trpc.dashboard.single.useQuery(
-    { round: round, voteindex },
-    { enabled: !!round && selected }
+    { round: round || 0, voteindex },
+    { enabled: !!requestedRound && selected }
   ).data?.board as CardData[];
-  const poolslist = trpc.dashboard.poolslist.useQuery({ round: round }, { enabled: !!round }).data
-    ?.pools as VotablePool[];
+  const poolslist = trpc.dashboard.poolslist.useQuery(
+    { round: round || 0 },
+    { enabled: !!requestedRound }
+  ).data?.pools as VotablePool[];
 
-  const changeVoteindex = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
-    setVoteindex(parseInt(e.target.value));
+  useEffect(() => {
+    if (!requestedRound || !latest) return;
+    setRound(future ? latest + 1 : requestedRound);
+  }, [requestedRound, voteindex, future, latest]);
+  const futureButtonHandler = () => {
+    setSelected(false);
+    setFuture(!future);
   };
 
   return (
     <Center mt={12}>
       <VStack>
         <Heading>Bribers Dashboard</Heading>
-        <Grid templateColumns="200px 3fr">
+        <Grid templateColumns="200px 1fr">
           <GridItem w="100%" mt={6} mb={6}>
-            <Card p={6} border={1} minHeight="100%">
-              <Select
-                onChange={event => setRound(Number(event.target.value))}
-                value={round}
-                defaultValue={roundlist[1]}
-              >
-                {roundlist.map((round: number, index: number) => (
-                  <option key={index} value={round}>
-                    Round {round}
-                  </option>
-                ))}
-              </Select>
-              {/* <RoundSelector handleChange={changeRound} /> */}
-              <Text mt={12}>activate single pool data for round {round}</Text>
+            <Card p={6} border="1px" minHeight="100%" alignItems="center" backgroundColor={bgCard}>
+              <Heading as="h3" size="md" mt={6}>
+                {future ? "future prediction" : `Round ${requestedRound}`}
+              </Heading>
+              {/* <RoundSelector handleChange={e => requestRound(parseInt(e.target.value))} /> */}
+              <Text mt={12} alignItems="center">
+                activate single pool data for round {requestedRound}
+              </Text>
               <Switch
                 size="lg"
                 isChecked={selected}
                 onChange={() => setSelected(!selected)}
                 m={6}
+                disabled={future}
               />
-              <Select onChange={changeVoteindex} placeholder="Select pool" disabled={!selected}>
+              <Select
+                onChange={e => setVoteindex(parseInt(e.target.value))}
+                placeholder="Select pool"
+                disabled={!selected}
+              >
                 {poolslist &&
                   poolslist.map((pool, index) => (
                     <option key={index} value={pool.voteindex}>
@@ -76,6 +84,9 @@ const Dashboard: NextPage = () => {
                     </option>
                   ))}
               </Select>
+              <Button mt={12} onClick={futureButtonHandler}>
+                {future ? "show current" : "show prediction"}
+              </Button>
             </Card>
           </GridItem>
           <GridItem w="100%">

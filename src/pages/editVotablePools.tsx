@@ -22,7 +22,8 @@ import RoundSelector from "components/RoundSelector";
 const VotablePoolForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
   const pools =
-    trpc.votepools.list.useQuery({ round: requestedRound }).data?.pools || ([] as VotablePool[]);
+    trpc.votepools.list.useQuery({ round: requestedRound as number }).data?.pools ||
+    ([] as VotablePool[]);
   const initPools = trpc.votepools.init.useMutation();
   const insertPools = trpc.votepools.insert.useMutation();
 
@@ -92,7 +93,7 @@ const VotablePoolForm: NextPage = () => {
           <HStack m={6}>
             <Text>select round</Text>
             <RoundSelector handleChange={changeRound} />
-            <Button m={6} onClick={() => initPools.mutate(requestedRound)}>
+            <Button m={6} onClick={() => initPools.mutate(requestedRound as number)}>
               initial fill for Round {requestedRound}
             </Button>
           </HStack>
