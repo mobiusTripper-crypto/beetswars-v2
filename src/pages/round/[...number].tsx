@@ -22,8 +22,6 @@ import {
   Link,
   VStack,
   Progress,
-  Grid,
-  GridItem,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -36,7 +34,7 @@ import { useAccount } from "wagmi";
 import { Summary } from "components/Summary";
 
 export default function Round() {
-  const account = useAccount();
+  //  const account = useAccount();
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";

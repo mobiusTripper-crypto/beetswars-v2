@@ -14,6 +14,7 @@ import { ColorModeScript } from "@chakra-ui/react";
 import theme from "../styles/theme";
 import { Header } from "components/Header";
 import { TopRow } from "components/TopRow";
+import { Footer } from "components/Footer";
 import { SessionProvider } from "next-auth/react";
 import { MyGlobalContext } from "contexts/GlobalContext";
 //add additional font weights here in needed
@@ -51,6 +52,7 @@ const MyApp = ({
                 <TopRow />
                 <Header />
                 <Component {...pageProps} />
+                <Footer />
               </ChakraProvider>
             </RainbowKitProvider>
           </WagmiConfig>

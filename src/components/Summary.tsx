@@ -26,7 +26,7 @@ export const Summary = (props: SummaryProps) => {
           <HStack>
             <Text>Vote Start:</Text>
             <Text>
-              {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(headerData.voteStart)}
+              {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(new Date(headerData.voteStart))}
             </Text>
           </HStack>
         </GridItem>
@@ -46,7 +46,7 @@ export const Summary = (props: SummaryProps) => {
           <HStack>
             <Text>Vote End:</Text>
             <Text>
-              {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(headerData.voteEnd)}
+              {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(new Date(headerData.voteEnd))}
             </Text>
           </HStack>
         </GridItem>

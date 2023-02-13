@@ -89,7 +89,7 @@ export const TopRow = () => {
             </Box>
             <Link href={cardLink}>
               <Icon
-                title="Main Dasboard Card Display"
+                title="Main Dashboard Card View"
                 as={CardIcon}
                 height={iconProps.size}
                 width={iconProps.size}
@@ -103,7 +103,7 @@ export const TopRow = () => {
             </Link>
             <Link href={tableLink}>
               <Icon
-                title="Main Dasboard Table Display"
+                title="Main Dashbhoard Table View"
                 as={TableIcon}
                 height={iconProps.size}
                 width={iconProps.size}
@@ -117,7 +117,7 @@ export const TopRow = () => {
             </Link>
             <Link href={bribersdashLink}>
               <Icon
-                title="Briber's Dasboard"
+                title="Briber's Dashboard"
                 as={BribersIcon}
                 height="1.2rem"
                 width={iconProps.size}
@@ -137,7 +137,7 @@ export const TopRow = () => {
             </Link>
             <Link href={wdafLink}>
               <Icon
-                title="WdaF"
+                title="Snapshot Times"
                 as={StatsIcon}
                 height={iconProps.size}
                 width={iconProps.size}
