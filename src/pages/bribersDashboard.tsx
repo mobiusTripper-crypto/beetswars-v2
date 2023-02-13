@@ -21,7 +21,7 @@ const Dashboard: NextPage = () => {
   const rounddata = trpc.dashboard.roundlist.useQuery().data;
   const roundlist = rounddata?.rounds ?? [];
   const latest = rounddata?.latest ?? 0;
-  const { requestedRound } = useGlobalContext();
+  const { requestedRound, requestRound } = useGlobalContext();
   const [round, setRound] = useState((requestedRound as number) || latest);
   const [voteindex, setVoteindex] = useState(22);
   const [selected, setSelected] = useState(false);
