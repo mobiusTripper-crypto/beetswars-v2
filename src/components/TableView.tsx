@@ -28,17 +28,19 @@ export const OfferTable: React.FC<Props> = ({ data }) => {
         <Table variant="striped">
           <Thead>
             <Tr>
-              <Th onClick={() => sortData("poolname")}>
+              <Th onClick={() => sortData("poolname")} cursor="pointer">
                 Name {sortField === "poolname" ? "♦" : ""}
               </Th>
-              <Th onClick={() => sortData("rewardAmount")}>
+              <Th onClick={() => sortData("rewardAmount")} cursor="pointer">
                 Total Offer {sortField === "rewardAmount" ? "♦" : ""}
               </Th>
-              <Th onClick={() => sortData("votes")}>Votes {sortField === "votes" ? "♦" : ""}</Th>
-              <Th onClick={() => sortData("percent")}>
+              <Th onClick={() => sortData("votes")} cursor="pointer">
+                Votes {sortField === "votes" ? "♦" : ""}
+              </Th>
+              <Th onClick={() => sortData("percent")} cursor="pointer">
                 Votes % {sortField === "percent" ? "♦" : ""}
               </Th>
-              <Th onClick={() => sortData("usdPer1000Vp")}>
+              <Th onClick={() => sortData("usdPer1000Vp")} cursor="pointer">
                 $ per 1000 VP {sortField === "usdPer1000Vp" ? "♦" : ""}
               </Th>
             </Tr>
