@@ -30,6 +30,7 @@ import { trpc } from "utils/trpc";
 import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 import type { BribeOffer } from "types/bribelist.trpc";
 import { useGetVp } from "hooks/useGetVp";
+import { useVoteState } from "hooks/useVoteState";
 import { useAccount } from "wagmi";
 import { Summary } from "components/Summary";
 import { OfferTable } from "components/TableView";
@@ -39,15 +40,17 @@ export default function Round() {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
+  const { data: voteAct, loaded: vsLoaded } = useVoteState();
+
   const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
     {
-      refetchOnWindowFocus: voteActive,
+      refetchOnWindowFocus: voteAct,
       refetchIntervalInBackground: false,
-      refetchInterval: voteActive ? 60000 : 0,
-      staleTime: voteActive ? 30000 : Infinity,
-      cacheTime: voteActive ? 120000 : Infinity,
+      refetchInterval: voteAct ? 60000 : 0,
+      staleTime: voteAct ? 30000 : Infinity,
+      cacheTime: voteAct ? 120000 : Infinity,
       enabled: requestedRound !== undefined,
     }
   ).data?.bribefile;
@@ -67,6 +70,10 @@ export default function Round() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bribeData]);
+
+  useEffect(() => {
+    console.log("vote state:", voteAct, vsLoaded, requestedRound);
+  }, [voteAct, vsLoaded, requestedRound]);
 
   useEffect(() => {
     if (number[1]) {

@@ -19,17 +19,7 @@ const Home: NextPage = () => {
   const { display } = useGlobalContext();
   const { data: voteStateActive, loaded: stateLoaded } = useVoteState();
 
-  useEffect(() => {
-    if (stateLoaded) {
-      if (voteStateActive) {
-        console.log("vote active:", voteStateActive);
-      } else {
-        console.log("vote inactive:", voteStateActive);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [voteStateActive, stateLoaded]);
-
+  console.log("vote active state:", voteStateActive);
   return (
     <>
       <Box height="2px">
@@ -55,7 +45,12 @@ const Home: NextPage = () => {
             text="Gauge Vote History"
             caption="History of previous rounds"
           />
-          <SplashItem href="/snapshotTimes" icon={StatsIcon} text="Snapshot Times" caption="coming soon ..." />
+          <SplashItem
+            href="/snapshotTimes"
+            icon={StatsIcon}
+            text="Snapshot Times"
+            caption="coming soon ..."
+          />
         </SimpleGrid>
       </Center>
     </>
