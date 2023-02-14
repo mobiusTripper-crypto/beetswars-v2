@@ -30,24 +30,25 @@ import { trpc } from "utils/trpc";
 import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 import type { BribeOffer } from "types/bribelist.trpc";
 import { useGetVp } from "hooks/useGetVp";
-import { useAccount } from "wagmi";
+import { useVoteState } from "hooks/useVoteState";
 import { Summary } from "components/Summary";
 import { OfferTable } from "components/TableView";
 
 export default function Round() {
-  //  const account = useAccount();
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
-  const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
+  const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
+
+  const { requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
     {
-      refetchOnWindowFocus: voteActive,
+      refetchOnWindowFocus: voteStateActive,
       refetchIntervalInBackground: false,
-      refetchInterval: voteActive ? 60000 : 0,
-      staleTime: voteActive ? 30000 : Infinity,
-      cacheTime: voteActive ? 120000 : Infinity,
+      refetchInterval: voteStateActive ? 60000 : 0,
+      staleTime: voteStateActive ? 30000 : Infinity,
+      cacheTime: voteStateActive ? 120000 : Infinity,
       enabled: requestedRound !== undefined,
     }
   ).data?.bribefile;
@@ -56,17 +57,8 @@ export default function Round() {
   const { data: votingPower, connected: accountConnected } = useGetVp();
 
   useEffect(() => {
-    if (bribeData?.header.voteState) {
-      switch (bribeData.header.voteState) {
-        case "active":
-          setVoteActive(true);
-          break;
-        default:
-          setVoteActive(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bribeData]);
+    console.log("vote state:", voteStateActive, voteStateLoaded, requestedRound);
+  }, [voteStateActive, voteStateLoaded, requestedRound]);
 
   useEffect(() => {
     if (number[1]) {
