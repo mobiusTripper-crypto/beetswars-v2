@@ -17,11 +17,9 @@ import { useVoteState } from "hooks/useVoteState";
 
 export const TopRow = () => {
   const { data: VoteStateActive } = useVoteState();
-  //console.log("vote active:", VoteStateActive);
   const { requestedRound, requestRound, display } = useGlobalContext();
   const { data: votingPower, connected: accountConnected } = useGetVp();
   const { data: roundList, loaded: roundListLoaded } = useRoundList();
-  //  console.log("round list:", roundList, roundListLoaded);
   const router = useRouter();
   const urlParam = router.query;
   const { asPath } = useRouter();
@@ -61,7 +59,7 @@ export const TopRow = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundList, roundListLoaded, urlParam]);
 
-  console.log("RL:", roundList.latest, requestedRound);
+  // console.log("RL:", roundList.latest, requestedRound);
 
   const dashboardLink = "/round";
   const cardLink = dashboardLink + "/" + requestedRound + "/cards";
@@ -72,7 +70,7 @@ export const TopRow = () => {
   const linkActiveColor = "limegreen";
   const iconProps = {
     size: "1.6rem",
-    marginRight: "1rem",
+    margin: "0 1rem 0 0",
   };
 
   // correct type instead of "any"
@@ -83,77 +81,80 @@ export const TopRow = () => {
 
   return (
     <>
-      <HStack p={4} justifyContent="flex-end">
+      <HStack p={4} justifyContent="flex-end" flexWrap="wrap">
         {asPath === "/" ? (
           ""
         ) : (
           <>
-            <Box style={{ marginRight: "1rem" }}>
+            <Box>
               <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
                 {accountConnected ? `VP: ${votingPower?.toFixed(0)}` : ""}
               </Text>
             </Box>
-            <Box style={{ marginRight: "1rem" }}>
+            <Box>
               <RoundSelector handleChange={changeRound} />
             </Box>
-            <Link href={cardLink}>
-              <Icon
-                title="Main Dashboard Card View"
-                as={CardIcon}
-                height={iconProps.size}
-                width={iconProps.size}
-                marginRight={iconProps.marginRight}
-                color={
-                  asPath.includes(`${dashboardLink}`) && display === "cards"
-                    ? `${linkActiveColor}`
-                    : ""
-                }
-              />
-            </Link>
-            <Link href={tableLink}>
-              <Icon
-                title="Main Dashbhoard Table View"
-                as={TableIcon}
-                height={iconProps.size}
-                width={iconProps.size}
-                marginRight={iconProps.marginRight}
-                color={
-                  asPath.includes(`${dashboardLink}`) && display === "table"
-                    ? `${linkActiveColor}`
-                    : ""
-                }
-              />
-            </Link>
-            <Link href={bribersdashLink}>
-              <Icon
-                title="Briber's Dashboard"
-                as={BribersIcon}
-                height="1.2rem"
-                width={iconProps.size}
-                marginRight={iconProps.marginRight}
-                color={asPath.includes(`${bribersdashLink}`) ? `${linkActiveColor}` : ""}
-              />
-            </Link>
-            <Link href={chartLink}>
-              <Icon
-                title="Gauge Vote History"
-                as={ChartIcon}
-                height={iconProps.size}
-                width={iconProps.size}
-                marginRight={iconProps.marginRight}
-                color={asPath.includes(`${chartLink}`) ? `${linkActiveColor}` : ""}
-              />
-            </Link>
-            <Link href={wdafLink}>
-              <Icon
-                title="Snapshot Times"
-                as={StatsIcon}
-                height={iconProps.size}
-                width={iconProps.size}
-                marginRight={iconProps.marginRight}
-                color={asPath.includes(`${wdafLink}`) ? `${linkActiveColor}` : ""}
-              />
-            </Link>
+
+            <Box>
+              <Link href={cardLink}>
+                <Icon
+                  title="Main Dashboard Card View"
+                  as={CardIcon}
+                  height={iconProps.size}
+                  width={iconProps.size}
+                  margin={iconProps.margin}
+                  color={
+                    asPath.includes(`${dashboardLink}`) && display === "cards"
+                      ? `${linkActiveColor}`
+                      : ""
+                  }
+                />
+              </Link>
+              <Link href={tableLink}>
+                <Icon
+                  title="Main Dashbhoard Table View"
+                  as={TableIcon}
+                  height={iconProps.size}
+                  width={iconProps.size}
+                  margin={iconProps.margin}
+                  color={
+                    asPath.includes(`${dashboardLink}`) && display === "table"
+                      ? `${linkActiveColor}`
+                      : ""
+                  }
+                />
+              </Link>
+              <Link href={bribersdashLink}>
+                <Icon
+                  title="Briber's Dashboard"
+                  as={BribersIcon}
+                  height="1.2rem"
+                  width={iconProps.size}
+                  margin={iconProps.margin}
+                  color={asPath.includes(`${bribersdashLink}`) ? `${linkActiveColor}` : ""}
+                />
+              </Link>
+              <Link href={chartLink}>
+                <Icon
+                  title="Gauge Vote History"
+                  as={ChartIcon}
+                  height={iconProps.size}
+                  width={iconProps.size}
+                  margin={iconProps.margin}
+                  color={asPath.includes(`${chartLink}`) ? `${linkActiveColor}` : ""}
+                />
+              </Link>
+              <Link href={wdafLink}>
+                <Icon
+                  title="Snapshot Times"
+                  as={StatsIcon}
+                  height={iconProps.size}
+                  width={iconProps.size}
+                  margin={iconProps.margin}
+                  color={asPath.includes(`${wdafLink}`) ? `${linkActiveColor}` : ""}
+                />
+              </Link>
+            </Box>
           </>
         )}
         <CustomConnectButton />
