@@ -59,7 +59,7 @@ export const Summary = (props: SummaryProps) => {
         <GridItem>
           {" "}
           <HStack>
-            <Text>avg/1kfB:</Text>
+            <Text>avg $/1kVP:</Text>
             <Text>{headerData.avgPer1000}</Text>
           </HStack>
         </GridItem>
