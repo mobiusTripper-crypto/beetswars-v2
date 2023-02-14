@@ -6,6 +6,7 @@ interface SplashItemProps {
   caption: string;
   href: string;
   icon: any;
+  indicator?: boolean;
 }
 
 export function SplashItem(props: SplashItemProps) {
@@ -39,7 +40,10 @@ export function SplashItem(props: SplashItemProps) {
           </Center>
         </Link>
         <Center>
-          <Text fontSize="1xl">{props.caption}</Text>
+          <Text fontSize="1xl">
+            {props.caption}
+            {props?.indicator ? " active" : ""}
+          </Text>
         </Center>
       </Box>
     </>
