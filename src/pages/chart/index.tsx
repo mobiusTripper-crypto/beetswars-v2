@@ -52,7 +52,7 @@ function Chart1() {
       "red",
       whiteColor,
       yellowColor,
-     limeColor,
+      limeColor,
       "green",
       "grey",
     ],
@@ -505,7 +505,12 @@ function Chart1() {
 
   return (
     <>
-      <Text fontSize="3xl" align="center" margin="20px">
+      <Text
+        fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+        fontWeight="600"
+        margin="20px"
+        textAlign="center"
+      >
         Gauge Vote History
       </Text>
       <ReactECharts option={option} onEvents={onEvents} style={{ height: 1200 }} />
