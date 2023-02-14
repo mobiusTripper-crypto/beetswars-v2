@@ -149,7 +149,7 @@ export default function Round() {
                         </Text>
                       </HStack>
                       <HStack>
-                        <Text>$/1000fBeets:</Text>
+                        <Text>$/1kVP:</Text>
                         <Text as="b">{bribe.usdPer1000Vp.toFixed(2)}</Text>
                       </HStack>
                     </VStack>

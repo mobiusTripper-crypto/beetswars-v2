@@ -35,7 +35,7 @@ const Home: NextPage = () => {
             href="/bribersDashboard"
             icon={BribersIcon}
             text="Briber Dashboard"
-            caption="coming soon ..."
+            caption="Incentives ROI"
           />
           <SplashItem
             href="/chart"
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
             href="/snapshotTimes"
             icon={StatsIcon}
             text="Snapshot Times"
-            caption="coming soon ..."
+            caption="add fBEETS in time"
           />
         </SimpleGrid>
       </Center>

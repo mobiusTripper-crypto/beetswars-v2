@@ -31,17 +31,17 @@ export const OfferTable: React.FC<Props> = ({ data }) => {
               <Th onClick={() => sortData("poolname")} cursor="pointer">
                 Name {sortField === "poolname" ? "♦" : ""}
               </Th>
-              <Th onClick={() => sortData("rewardAmount")} cursor="pointer">
-                Total Offer {sortField === "rewardAmount" ? "♦" : ""}
+              <Th isNumeric onClick={() => sortData("rewardAmount")} cursor="pointer">
+                Total Offer ${sortField === "rewardAmount" ? "♦" : ""}
               </Th>
-              <Th onClick={() => sortData("votes")} cursor="pointer">
+              <Th isNumeric onClick={() => sortData("votes")} cursor="pointer">
                 Votes {sortField === "votes" ? "♦" : ""}
               </Th>
-              <Th onClick={() => sortData("percent")} cursor="pointer">
+              <Th isNumeric onClick={() => sortData("percent")} cursor="pointer">
                 Votes % {sortField === "percent" ? "♦" : ""}
               </Th>
-              <Th onClick={() => sortData("usdPer1000Vp")} cursor="pointer">
-                $ per 1000 VP {sortField === "usdPer1000Vp" ? "♦" : ""}
+              <Th isNumeric onClick={() => sortData("usdPer1000Vp")} cursor="pointer">
+                $/1kVP {sortField === "usdPer1000Vp" ? "♦" : ""}
               </Th>
             </Tr>
           </Thead>
@@ -54,10 +54,10 @@ export const OfferTable: React.FC<Props> = ({ data }) => {
                       {row.poolname}
                     </Link>
                   </Td>
-                  <Td>$ {row.rewardAmount.toLocaleString()}</Td>
-                  <Td>{row.votes.toLocaleString()}</Td>
-                  <Td>{row.percent.toFixed(2)}</Td>
-                  <Td>$ {row.usdPer1000Vp.toFixed(2)}</Td>
+                  <Td isNumeric>{row.rewardAmount.toLocaleString()}</Td>
+                  <Td isNumeric>{row.votes.toLocaleString()}</Td>
+                  <Td isNumeric>{row.percent.toFixed(2)}</Td>
+                  <Td isNumeric>{row.usdPer1000Vp.toFixed(2)}</Td>
                 </Tr>
               )
             )}
