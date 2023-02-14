@@ -19,7 +19,7 @@ export const useVoteState = () => {
 
   if (bribeData?.header.voteState) {
     switch (bribeData.header.voteState) {
-      case "closed":
+      case "active":
         result = true;
         break;
       default:

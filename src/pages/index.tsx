@@ -13,14 +13,14 @@ import { useRoundList } from "hooks/useRoundList";
 const Home: NextPage = () => {
   const { data: roundList, loaded: roundsLoaded } = useRoundList();
   const { display } = useGlobalContext();
-  const { data: voteStateActive, loaded: stateLoaded } = useVoteState();
+  const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
 
 //  console.log("vote active state:", voteStateActive);
 
   return (
     <>
       <Box height="2px">
-        {stateLoaded && roundsLoaded ? "" : <Progress size="xs" isIndeterminate />}
+        {voteStateLoaded && roundsLoaded ? "" : <Progress size="xs" isIndeterminate />}
       </Box>
       <Center>
         <SimpleGrid columns={[1, null, 2]} spacing={6} mt={6}>

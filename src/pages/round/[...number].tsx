@@ -38,17 +38,17 @@ export default function Round() {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
-  const { data: voteActive, loaded: voteStateLoaded } = useVoteState();
+  const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
 
   const { requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
     {
-      refetchOnWindowFocus: voteActive,
+      refetchOnWindowFocus: voteStateActive,
       refetchIntervalInBackground: false,
-      refetchInterval: voteActive ? 60000 : 0,
-      staleTime: voteActive ? 30000 : Infinity,
-      cacheTime: voteActive ? 120000 : Infinity,
+      refetchInterval: voteStateActive ? 60000 : 0,
+      staleTime: voteStateActive ? 30000 : Infinity,
+      cacheTime: voteStateActive ? 120000 : Infinity,
       enabled: requestedRound !== undefined,
     }
   ).data?.bribefile;
@@ -57,8 +57,8 @@ export default function Round() {
   const { data: votingPower, connected: accountConnected } = useGetVp();
 
   useEffect(() => {
-    console.log("vote state:", voteActive, voteStateLoaded, requestedRound);
-  }, [voteActive, voteStateLoaded, requestedRound]);
+    console.log("vote state:", voteStateActive, voteStateLoaded, requestedRound);
+  }, [voteStateActive, voteStateLoaded, requestedRound]);
 
   useEffect(() => {
     if (number[1]) {
