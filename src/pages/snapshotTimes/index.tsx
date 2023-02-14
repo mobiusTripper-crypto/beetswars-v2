@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ReactECharts from "echarts-for-react";
-import { useColorModeValue, Progress, Center, Text } from "@chakra-ui/react";
+import { useColorModeValue, Progress, Text } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { request, gql } from "graphql-request";
 import { useQuery, useQueries } from "@tanstack/react-query";
@@ -152,11 +152,14 @@ function App() {
   } else {
     return (
       <>
-        <Center>
-          <Text fontSize="3xl" margin="20px">
-            time before gauge vote start snapshot was taken
-          </Text>
-        </Center>
+        <Text
+          fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+          fontWeight="600"
+          margin="20px"
+          textAlign="center"
+        >
+          time before gauge vote start snapshot was taken
+        </Text>
         <ChartSnapTimes
           blockTime={blockTime}
           snapshots={snapshots}
