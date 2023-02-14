@@ -3,13 +3,13 @@
 // TODO: redo route parameter handling
 
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
+  // Table,
+  // Thead,
+  // Tbody,
+  // Tr,
+  // Th,
+  // Td,
+  // TableContainer,
   Wrap,
   Text,
   Box,
@@ -32,6 +32,7 @@ import type { BribeOffer } from "types/bribelist.trpc";
 import { useGetVp } from "hooks/useGetVp";
 import { useAccount } from "wagmi";
 import { Summary } from "components/Summary";
+import { OfferTable } from "components/TableView";
 
 export default function Round() {
   //  const account = useAccount();
@@ -167,34 +168,35 @@ export default function Round() {
           </Wrap>
         </Center>
       ) : (
-        <Center>
-          <TableContainer>
-            <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th isNumeric>voteindex</Th>
-                  <Th>poolname</Th>
-                  <Th>description</Th>
-                  <Th>Link</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {bribeData?.bribelist.map(
-                  (bribe: BribeOffer, i: number): JSX.Element => (
-                    <Tr key={i}>
-                      <Td isNumeric> {bribe.voteindex}</Td>
-                      <Td>{bribe.poolname}</Td>
-                      <Td>{bribe.rewarddescription}</Td>
-                      <Td>
-                        <Link href={bribe.poolurl}>link</Link>
-                      </Td>
-                    </Tr>
-                  )
-                )}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </Center>
+        <OfferTable data={bribeData.bribelist} />
+        // <Center>
+        //   <TableContainer>
+        //     <Table variant="striped">
+        //       <Thead>
+        //         <Tr>
+        //           <Th isNumeric>voteindex</Th>
+        //           <Th>poolname</Th>
+        //           <Th>description</Th>
+        //           <Th>Link</Th>
+        //         </Tr>
+        //       </Thead>
+        //       <Tbody>
+        //         {bribeData?.bribelist.map(
+        //           (bribe: BribeOffer, i: number): JSX.Element => (
+        //             <Tr key={i}>
+        //               <Td isNumeric> {bribe.voteindex}</Td>
+        //               <Td>{bribe.poolname}</Td>
+        //               <Td>{bribe.rewarddescription}</Td>
+        //               <Td>
+        //                 <Link href={bribe.poolurl}>link</Link>
+        //               </Td>
+        //             </Tr>
+        //           )
+        //         )}
+        //       </Tbody>
+        //     </Table>
+        //   </TableContainer>
+        // </Center>
       )}
     </>
   );
