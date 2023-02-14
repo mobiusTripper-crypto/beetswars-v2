@@ -153,7 +153,7 @@ function App() {
     return (
       <>
         <Text
-          fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+          fontSize={["sm", "xl", "3xl", "4xl", "4xl"]}
           fontWeight="600"
           margin="20px"
           textAlign="center"
@@ -167,7 +167,6 @@ function App() {
           requestedRound={requestedRound}
           legendColor={legendColor}
         />
-        ;
       </>
     );
   }
