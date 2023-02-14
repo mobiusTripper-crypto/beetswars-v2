@@ -2,7 +2,7 @@ import type { Echarts } from "types/echarts.trpc";
 import { trpc } from "utils/trpc";
 import ReactECharts from "echarts-for-react";
 import { useGlobalContext } from "contexts/GlobalContext";
-import { Progress, Text } from "@chakra-ui/react";
+import { useColorModeValue, Progress, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 const RefetchOptions = {
@@ -37,21 +37,27 @@ function Chart1() {
   const opacity = "0.04";
   const areastyle = { opacity: opacity };
 
+  const legendColor = useColorModeValue("#222", "#EEE");
+  const cyanColor = useColorModeValue("darkcyan", "cyan");
+  const whiteColor = useColorModeValue("black", "white");
+  const yellowColor = useColorModeValue("darkred", "yellow");
+  const limeColor = useColorModeValue("seagreen", "lime");
+
   const option = {
     color: [
       "magenta",
-      "cyan",
+      cyanColor,
       "cornflowerblue",
       "orange",
       "red",
-      "white",
-      "yellow",
-      "lime",
+      whiteColor,
+      yellowColor,
+     limeColor,
       "green",
       "grey",
     ],
     textStyle: {
-      color: "#ffffff",
+      color: legendColor,
     },
 
     title: {
@@ -246,10 +252,10 @@ function Chart1() {
       },
       {
         name: "Total Incentives $",
-        nameTextStyle: { color: "cyan", fontSize: "0.9em" },
+        nameTextStyle: { color: cyanColor, fontSize: "0.9em" },
         type: "log",
         splitLine: { lineStyle: { type: "dotted", color: "#555555" } },
-        axisLabel: { color: "cyan", align: "right" },
+        axisLabel: { color: cyanColor, align: "right" },
         gridIndex: 0,
         max: 1200000,
       },
@@ -285,30 +291,30 @@ function Chart1() {
       },
       {
         name: "Voting APR %",
-        nameTextStyle: { color: "white", fontSize: "0.9em" },
+        nameTextStyle: { color: whiteColor, fontSize: "0.9em" },
         type: "value",
         splitLine: { lineStyle: { type: "dotted", color: "#55555500" } },
         gridIndex: 1,
         position: "right",
-        axisLabel: { color: "white", align: "left" },
+        axisLabel: { color: whiteColor, align: "left" },
         nameLocation: "start",
       },
       {
         name: "Total Voter",
-        nameTextStyle: { color: "yellow", fontSize: "0.9em" },
+        nameTextStyle: { color: yellowColor, fontSize: "0.9em" },
         type: "value",
         splitLine: { lineStyle: { type: "dotted", color: "#55555500" } },
         gridIndex: 2,
-        axisLabel: { color: "yellow", align: "left" },
+        axisLabel: { color: yellowColor, align: "left" },
         position: "right",
       },
       {
         name: "Total Votes - Incentivised Votes",
         type: "value",
-        nameTextStyle: { color: "lime", fontSize: "0.9em" },
+        nameTextStyle: { color: limeColor, fontSize: "0.9em" },
         splitLine: { lineStyle: { type: "dotted", color: "#555555" } },
         gridIndex: 2,
-        axisLabel: { color: "lime", align: "right" },
+        axisLabel: { color: limeColor, align: "right" },
         position: "left",
         max: 70000000,
       },
@@ -362,7 +368,7 @@ function Chart1() {
         smooth: "true",
         stack: "",
         areaStyle: { opacity: opacity },
-        lineStyle: { color: "cyan", width: linewidth },
+        lineStyle: { color: cyanColor, width: linewidth },
         data: chartData.totalBribes,
         xAxisIndex: 1,
         yAxisIndex: 1,
@@ -417,7 +423,7 @@ function Chart1() {
         smooth: "true",
         stack: "",
         areaStyle: { opacity: opacity },
-        lineStyle: { color: "white", width: linewidth },
+        lineStyle: { color: whiteColor, width: linewidth },
         data: chartData.votingApr,
         xAxisIndex: 5,
         yAxisIndex: 5,
@@ -431,7 +437,7 @@ function Chart1() {
         smooth: "true",
         stack: "",
         areaStyle: { opacity: opacity },
-        lineStyle: { color: "yellow", width: linewidth },
+        lineStyle: { color: yellowColor, width: linewidth },
         data: chartData.totalVoter,
         xAxisIndex: 6,
         yAxisIndex: 6,
@@ -445,7 +451,7 @@ function Chart1() {
         smooth: "true",
         stack: "",
         areaStyle: areastyle,
-        lineStyle: { color: "lime", width: linewidth },
+        lineStyle: { color: limeColor, width: linewidth },
         data: chartData.totalVotes,
         xAxisIndex: 7,
         yAxisIndex: 7,
