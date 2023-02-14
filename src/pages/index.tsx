@@ -1,6 +1,5 @@
 // TODO: if vote active probably redirect -> /round/{roundList.latest}
 import type { NextPage } from "next";
-import { useEffect } from "react";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useVoteState } from "hooks/useVoteState";
 import { SimpleGrid, Box, Progress, Center } from "@chakra-ui/react";

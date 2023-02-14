@@ -31,26 +31,24 @@ import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
 import type { BribeOffer } from "types/bribelist.trpc";
 import { useGetVp } from "hooks/useGetVp";
 import { useVoteState } from "hooks/useVoteState";
-import { useAccount } from "wagmi";
 import { Summary } from "components/Summary";
 import { OfferTable } from "components/TableView";
 
 export default function Round() {
-  //  const account = useAccount();
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
   const number = router.query.number || "";
-  const { data: voteAct, loaded: vsLoaded } = useVoteState();
+  const { data: voteActive, loaded: voteStateLoaded } = useVoteState();
 
-  const { voteActive, setVoteActive, requestedRound, display, setDisplay } = useGlobalContext();
+  const { requestedRound, display, setDisplay } = useGlobalContext();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
     {
-      refetchOnWindowFocus: voteAct,
+      refetchOnWindowFocus: voteActive,
       refetchIntervalInBackground: false,
-      refetchInterval: voteAct ? 60000 : 0,
-      staleTime: voteAct ? 30000 : Infinity,
-      cacheTime: voteAct ? 120000 : Infinity,
+      refetchInterval: voteActive ? 60000 : 0,
+      staleTime: voteActive ? 30000 : Infinity,
+      cacheTime: voteActive ? 120000 : Infinity,
       enabled: requestedRound !== undefined,
     }
   ).data?.bribefile;
@@ -59,21 +57,8 @@ export default function Round() {
   const { data: votingPower, connected: accountConnected } = useGetVp();
 
   useEffect(() => {
-    if (bribeData?.header.voteState) {
-      switch (bribeData.header.voteState) {
-        case "active":
-          setVoteActive(true);
-          break;
-        default:
-          setVoteActive(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bribeData]);
-
-  useEffect(() => {
-    console.log("vote state:", voteAct, vsLoaded, requestedRound);
-  }, [voteAct, vsLoaded, requestedRound]);
+    console.log("vote state:", voteActive, voteStateLoaded, requestedRound);
+  }, [voteActive, voteStateLoaded, requestedRound]);
 
   useEffect(() => {
     if (number[1]) {
