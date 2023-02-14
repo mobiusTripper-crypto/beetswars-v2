@@ -271,7 +271,7 @@ function Chart1() {
         offset: 23,
       },
       {
-        name: "Avg $/1000 fB",
+        name: "Avg $/1kVP",
         nameTextStyle: { color: "orange", fontSize: "0.9em" },
         type: "log",
         splitLine: { lineStyle: { type: "dotted", color: "#55555500" } },
@@ -388,7 +388,7 @@ function Chart1() {
       },
       {
         animation: false,
-        name: "Avg $/1000 fB",
+        name: "Avg $/1kVP",
         type: "line",
         symbolSize: 3,
         showSymbol: false,
