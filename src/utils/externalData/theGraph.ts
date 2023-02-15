@@ -1,4 +1,5 @@
 import { request, gql } from "graphql-request";
+import { getBlockByTsRPC } from "./liveRpcQueries";
 
 interface Blocks {
   blocks: {
@@ -49,8 +50,7 @@ export async function getBlockByTsGraph(ts: number): Promise<number> {
   try {
     const { blocks } = (await request(queryUrl, query)) as Blocks;
     if (!blocks) {
-      console.error("failed query theGraph getBlockByTsGraph");
-      return 0;
+      return await getBlockByTsRPC(ts);
     }
     const closest = blocks.reduce((a, b) => {
       return Math.abs(+b.timestamp - ts) < Math.abs(+a.timestamp - ts) ? b : a;

@@ -6,6 +6,7 @@ export const DashboardData = z.object({
   totalFbeetsSupply: z.number(),
   roundBeetsEmissions: z.number(),
   roundEmissionsUsd: z.number(),
+  totalVoteIncentives: z.number(),
   voteIncentivesRoi: z.number(),
   poolsOverThreshold: z.number(),
   totalRelics: z.number(),

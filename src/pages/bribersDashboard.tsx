@@ -2,15 +2,16 @@ import type { NextPage } from "next";
 import {
   Heading,
   Text,
-  Grid,
-  GridItem,
-  Center,
   Select,
   Switch,
   Card,
   VStack,
   Button,
   useColorModeValue,
+  Container,
+  Flex,
+  Box,
+  Progress,
 } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
@@ -52,53 +53,62 @@ const Dashboard: NextPage = () => {
   };
 
   return (
-    <Center mt={12}>
-      <VStack>
+    <Container maxW="container.xl" centerContent>
+      <VStack align="center">
         <Heading>Bribers Dashboard</Heading>
-        <Grid templateColumns="200px 1fr">
-          <GridItem w="100%" mt={6} mb={6}>
-            <Card p={6} border="1px" minHeight="100%" alignItems="center" backgroundColor={bgCard}>
-              <Heading as="h3" size="md" mt={6}>
-                {future ? "future prediction" : `Round ${requestedRound}`}
-              </Heading>
-              {/* <RoundSelector handleChange={e => requestRound(parseInt(e.target.value))} /> */}
-              <Text mt={12} alignItems="center">
-                activate single pool data for round {requestedRound}
-              </Text>
-              <Switch
-                size="lg"
-                isChecked={selected}
-                onChange={() => setSelected(!selected)}
-                m={6}
-                disabled={future}
-              />
-              <Select
-                onChange={e => setVoteindex(parseInt(e.target.value))}
-                placeholder="Select pool"
-                disabled={!selected}
-              >
-                {poolslist &&
-                  poolslist.map((pool, index) => (
-                    <option key={index} value={pool.voteindex}>
-                      {pool.poolName}
-                    </option>
-                  ))}
-              </Select>
-              <Button mt={12} onClick={futureButtonHandler}>
-                {future ? "show current" : "show prediction"}
-              </Button>
-            </Card>
-          </GridItem>
-          <GridItem w="100%">
-            {!selected ? (
+        <Flex justifyContent="center" p={6} gap={6} flexDir={["column", null, null, "row"]}>
+          <Card
+            p={6}
+            border="1px"
+            minH="100%"
+            w={["300px", null, "616px", "200px"]}
+            alignItems="center"
+            backgroundColor={bgCard}
+            borderRadius={20}
+          >
+            <Heading as="h3" size="md" mt={6}>
+              {future ? "future prediction" : `Round ${requestedRound}`}
+            </Heading>
+            <Text mt={12} alignItems="center">
+              activate single pool data for round {requestedRound}
+            </Text>
+            <Switch
+              size="lg"
+              isChecked={selected}
+              onChange={() => setSelected(!selected)}
+              m={6}
+              disabled={future}
+            />
+            <Select
+              onChange={e => setVoteindex(parseInt(e.target.value))}
+              placeholder="Select pool"
+              disabled={!selected}
+            >
+              {poolslist &&
+                poolslist.map((pool, index) => (
+                  <option key={index} value={pool.voteindex}>
+                    {pool.poolName}
+                  </option>
+                ))}
+            </Select>
+            <Button mt={12} border="1px" onClick={futureButtonHandler}>
+              {future ? "show current" : "show prediction"}
+            </Button>
+          </Card>
+          <Box>
+            {!commonData || (selected && !poolData) ? (
+              <Box w={["300px", null, "616px", null, "932px"]} mr={6}>
+                <Progress size="xs" isIndeterminate />
+              </Box>
+            ) : !selected ? (
               <DashboardGrid cardList={commonData} />
             ) : (
               <DashboardGrid cardList={poolData} />
             )}
-          </GridItem>
-        </Grid>
+          </Box>
+        </Flex>
       </VStack>
-    </Center>
+    </Container>
   );
 };
 

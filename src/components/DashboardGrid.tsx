@@ -1,4 +1,4 @@
-import { Grid } from "@chakra-ui/react";
+import { SimpleGrid } from "@chakra-ui/react";
 import type { CardData } from "types/card.component";
 import { DashboardCard } from "./DashboardCard";
 
@@ -7,13 +7,12 @@ interface Props {
   columns?: number;
 }
 
-export const DashboardGrid: React.FC<Props> = ({ cardList, columns = 3 }) => {
-  const templatestring = `repeat(${columns}, 1fr)`;
+export const DashboardGrid: React.FC<Props> = ({ cardList }) => {
   return (
-    <Grid margin={6} templateColumns={templatestring} gap={6}>
+    <SimpleGrid spacing={6} columns={[1, null, 2, null, 3]} w="max-content">
       {cardList &&
         cardList.length > 0 &&
         cardList.map((item, index) => <DashboardCard cardData={item} key={index} />)}
-    </Grid>
+    </SimpleGrid>
   );
 };
