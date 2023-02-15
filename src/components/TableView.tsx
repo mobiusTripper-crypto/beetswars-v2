@@ -12,14 +12,15 @@ export const OfferTable: React.FC<Props> = ({ data }) => {
   const [sortAscending, setSortAscending] = useState(true);
 
   const sortData = (field: string) => {
-    setSortAscending(sortField === field ? !sortAscending : true);
-    const i = sortAscending ? 1 : -1;
+    const sortdir = sortField === field ? !sortAscending : true;
+    const i = sortdir ? 1 : -1;
     const sorted = [...data].sort((a, b) => {
       // eslint-disable-next-line
       return (a as any)[field] > (b as any)[field] ? i : -i;
     });
     setSortField(field);
     setSortedData(sorted);
+    setSortAscending(sortdir);
   };
 
   return (
