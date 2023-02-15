@@ -80,6 +80,7 @@ export default function Round() {
     }
   }, [number]);
 
+
   if (!bribeData) {
     return (
       <>
