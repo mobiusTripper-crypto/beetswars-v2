@@ -11,6 +11,7 @@ import {
   Container,
   Flex,
   Box,
+  Progress,
 } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
@@ -94,17 +95,17 @@ const Dashboard: NextPage = () => {
               {future ? "show current" : "show prediction"}
             </Button>
           </Card>
-          {/* </GridItem>
-          <GridItem w="100%"> */}
           <Box>
-            {!selected ? (
+            {!commonData || (selected && !poolData) ? (
+              <Box w={["300px", null, "616px", null, "932px"]} mr={6}>
+                <Progress size="xs" isIndeterminate />
+              </Box>
+            ) : !selected ? (
               <DashboardGrid cardList={commonData} />
             ) : (
               <DashboardGrid cardList={poolData} />
             )}
           </Box>
-          {/* </GridItem> */}
-          {/* </Grid> */}
         </Flex>
       </VStack>
     </Container>
