@@ -10,7 +10,7 @@ export const DashboardCard: React.FC<Props> = ({ cardData }) => {
 
   return (
     <>
-      <Card p={4} border="1px" width="320px" backgroundColor={bgCard}>
+      <Card p={5} border="1px" width="300px" backgroundColor={bgCard} borderRadius={20}>
         <Box>
           {cardData.headUrl ? (
             <Link href={cardData.headUrl}>
@@ -25,14 +25,18 @@ export const DashboardCard: React.FC<Props> = ({ cardData }) => {
           )}
           <Divider h="2px" bg="#ED1200" my={3} />
           <Text>{cardData.text}</Text>
-          {cardData.subtext && <Text fontSize="sm">{cardData.subtext}</Text>}
+          {cardData.subtext && (
+            <Text fontSize="sm" as="i">
+              {cardData.subtext}
+            </Text>
+          )}
           {(cardData.text || cardData.subtext) && <Divider h="2px" bg="#ED1200" my={3} />}
           {cardData.data && cardData.data.length > 0 && (
             <>
               {cardData.data.map(item => (
                 <Box key="{item.key}">
-                  <Text fontWeight="bold">{item.key}:</Text>
-                  <Text>{item.value}</Text>
+                  <Text>{item.key}:</Text>
+                  <Text as="b">{item.value}</Text>
                 </Box>
               ))}
             </>
