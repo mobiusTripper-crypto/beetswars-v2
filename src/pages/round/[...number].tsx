@@ -22,15 +22,25 @@ import {
   Link,
   VStack,
   Progress,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
+  IconButton,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { trpc } from "utils/trpc";
 import { ImArrowUpRight2 as ArrowIcon } from "react-icons/im";
+import { GoQuestion as QuestionIcon } from "react-icons/go";
 import type { BribeOffer } from "types/bribelist.trpc";
 import { useGetVp } from "hooks/useGetVp";
 import { useVoteState } from "hooks/useVoteState";
+import { useRoundList } from "hooks/useRoundList";
 import { Summary } from "components/Summary";
 import { OfferTable } from "components/TableView";
 
@@ -39,8 +49,9 @@ export default function Round() {
   const router = useRouter();
   const number = router.query.number || "";
   const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
-
+  const { data: roundList, loaded: roundListLoaded } = useRoundList();
   const { requestedRound, display, setDisplay } = useGlobalContext();
+  const { data: votingPower, connected: accountConnected } = useGetVp();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
     {
@@ -54,11 +65,8 @@ export default function Round() {
   ).data?.bribefile;
 
   const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
-  const { data: votingPower, connected: accountConnected } = useGetVp();
 
-  useEffect(() => {
-    console.log("vote state:", voteStateActive, voteStateLoaded, requestedRound);
-  }, [voteStateActive, voteStateLoaded, requestedRound]);
+  console.log("vote state:", voteStateActive, requestedRound, roundList.latest);
 
   useEffect(() => {
     if (number[1]) {
@@ -70,8 +78,8 @@ export default function Round() {
           setDisplay("cards");
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [number]);
+
 
   if (!bribeData) {
     return (
@@ -151,7 +159,55 @@ export default function Round() {
                       <HStack>
                         <Text>$/1kVP:</Text>
                         <Text as="b">{bribe.usdPer1000Vp.toFixed(2)}</Text>
+                        <Popover placement="auto-start">
+                          <PopoverTrigger>
+                            <IconButton
+                              isRound
+                              height="0"
+                              minWidth="0"
+                              aria-label="Explain Item"
+                              icon={<Icon as={QuestionIcon} />}
+                            />
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <PopoverHeader fontWeight="semibold">$/1kVP</PopoverHeader>
+                            <PopoverBody>
+                              Value in $ received for voting on this pool with 1k votes
+                              voting power
+                            </PopoverBody>
+                          </PopoverContent>
+                        </Popover>
                       </HStack>
+                      {accountConnected &&
+                      voteStateActive &&
+                      requestedRound === roundList.latest ? (
+                        <HStack marginTop="auto">
+                          <Text>$/accountVP:</Text>
+                          <Text as="b">
+                            {((bribe.usdPer1000Vp * votingPower) / 1000).toFixed(2)}
+                          </Text>
+                          <Popover placement="auto-start">
+                            <PopoverTrigger>
+                              <IconButton
+                                isRound
+                                height="0"
+                                minWidth="0"
+                                aria-label="Explain Item"
+                                icon={<Icon as={QuestionIcon} />}
+                              />
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <PopoverHeader fontWeight="semibold">$/accountVP</PopoverHeader>
+                              <PopoverBody>
+                                Value in $ received for voting on this pool with current voting balance
+                                of the connected account
+                              </PopoverBody>
+                            </PopoverContent>
+                          </Popover>
+                        </HStack>
+                      ) : (
+                        ""
+                      )}
                     </VStack>
                   </Box>
                 </Box>
@@ -191,7 +247,7 @@ export default function Round() {
         // </Center>
       )}
       <Text fontSize="sm" align="right" mr={5}>
-        data: v{bribeData?.header.bribefileVersion}
+        {bribeData.header.bribefileVersion ? bribeData?.header.bribefileVersion : ""}
       </Text>
     </>
   );
