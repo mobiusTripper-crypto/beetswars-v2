@@ -21,6 +21,7 @@ export interface BribeHeader {
   avgPer1000: number;
   proposal: string;
   voteState: string;
+  bribefileVersion: string;
 }
 
 export interface BribeOffer extends SingleOffer {

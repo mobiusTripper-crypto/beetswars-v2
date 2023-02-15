@@ -190,6 +190,9 @@ export default function Round() {
         //   </TableContainer>
         // </Center>
       )}
+      <Text fontSize="sm" align="right" mr={5}>
+        data: v{bribeData?.header.bribefileVersion}
+      </Text>
     </>
   );
 }
