@@ -42,12 +42,20 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
 
   const emission = factor * (await getEmissionForBlockspan(block1, block2));
 
-  const beetsPrice = await findBeetsPrice(round);
+  const chartdata = await readOneChartdata(round);
+  const beetsPrice = !chartdata
+    ? await getCoingeckoCurrentPrice("beethoven-x")
+    : chartdata.priceBeets;
   const usdValue = emission * beetsPrice;
   const voteEmissionPercent = round < 29 ? 0.3 : 0.5;
   const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
   const percentUsdValue = (voteEmission * beetsPrice) / 100;
-  const avgBribeRoiInPercent = await findRoi(round, voteEmission * beetsPrice);
+
+  const bribedEmissions = !chartdata
+    ? 0
+    : (chartdata.bribedVotes / chartdata.totalVotes) * voteEmission * beetsPrice;
+  const totalBribes = chartdata?.totalBribes || 0;
+  const avgBribeRoiInPercent = !chartdata ? 0 : (bribedEmissions / chartdata.totalBribes) * 100;
   return {
     round,
     emission,
@@ -55,27 +63,8 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
     usdValue,
     voteEmission,
     percentUsdValue,
+    totalBribes,
     avgBribeRoiInPercent,
     payoutStatus,
   } as EmissionData;
-}
-
-// find BEETS price from database or from live source
-async function findBeetsPrice(round: number): Promise<number> {
-  const chartdata = await readOneChartdata(round);
-  if (!!chartdata) {
-    // console.log(chartdata);
-    return chartdata.priceBeets;
-  }
-  const cg = await getCoingeckoCurrentPrice("beethoven-x");
-  return cg;
-}
-
-// find ROI from chartdata
-async function findRoi(round: number, voteEmissionUsd: number) {
-  const chartdata = await readOneChartdata(round);
-  if (!chartdata) return 0;
-  const bribedEmissions = (chartdata.bribedVotes / chartdata.totalVotes) * voteEmissionUsd;
-  const bribeRoiPercent = (bribedEmissions / chartdata.totalBribes) * 100;
-  return bribeRoiPercent;
 }

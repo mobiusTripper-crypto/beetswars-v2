@@ -35,9 +35,9 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
       footer: data.fantomBlocksPerDay.toLocaleString(),
     },
     {
-      heading: "Total fBEETS Supply",
-      text: "totally minted fBEETS",
-      footer: data.totalFbeetsSupply.toLocaleString(),
+      heading: "Pools over Threshold",
+      text: `for Round ${round}`,
+      footer: data.poolsOverThreshold.toString(),
     },
     {
       heading: "Beets Emissions for Votes",
@@ -51,11 +51,16 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
     },
     { heading: "Vote Incentives ROI", text: roundtext, footer: `${data.voteIncentivesRoi} %` },
     {
-      heading: "Pools over Threshold",
-      text: roundtext,
-      footer: data.poolsOverThreshold.toString(),
+      heading: "Total Incentives USD",
+      text: `for Round ${round}`,
+      footer: "$ " + data.totalVoteIncentives.toLocaleString(),
     },
-    { heading: "Total Relics", text: "up to now", footer: data.totalRelics.toString() },
+    {
+      heading: "Total fBEETS Supply",
+      text: "totally minted fBEETS",
+      footer: data.totalFbeetsSupply.toLocaleString(),
+    },
+    // { heading: "Total Relics", text: "up to now", footer: data.totalRelics.toString() },
     { heading: "Payout Status", text: "", footer: data.payoutStatus },
   ];
 }
@@ -130,6 +135,7 @@ export async function dashData(round = 0): Promise<DashboardData> {
   const fantomBlocksPerDay = endBlock - startBlock;
   const totalFbeetsSupply = await getTotalFbeets();
   const roundBeetsEmissions = Math.round(roundEmissions?.voteEmission || 0);
+  const totalVoteIncentives = roundEmissions?.totalBribes || 0;
   const voteIncentivesRoi = Math.round(roundEmissions?.avgBribeRoiInPercent || 0);
 
   const result: DashboardData = {
@@ -138,6 +144,7 @@ export async function dashData(round = 0): Promise<DashboardData> {
     totalFbeetsSupply,
     roundBeetsEmissions,
     roundEmissionsUsd,
+    totalVoteIncentives,
     voteIncentivesRoi,
     poolsOverThreshold,
     totalRelics: 0,
