@@ -1,4 +1,4 @@
-import { Card, Center, Flex, Text } from "@chakra-ui/react";
+import { Card, Center, Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import type { BribeHeader } from "types/bribelist.trpc";
 
 interface SummaryProps {
@@ -7,6 +7,8 @@ interface SummaryProps {
 
 export const Summary = (props: SummaryProps) => {
   const { headerData } = props;
+
+  const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
 
   const dateFormatOptions: Intl.DateTimeFormatOptions = {
     year: "2-digit",
@@ -22,7 +24,7 @@ export const Summary = (props: SummaryProps) => {
   return (
     <Center>
       <Flex align="center" justify="center" wrap="wrap" gap={4}>
-        <Card p={3} align="center">
+        <Card p={3} align="center" bgColor={bgCard}>
           <Text>
             Vote Start:{" "}
             {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(
@@ -37,12 +39,12 @@ export const Summary = (props: SummaryProps) => {
           </Text>
           <Text>Time Left: {headerData.timeRemaining}</Text>
         </Card>
-        <Card p={3} align="center">
+        <Card p={3} align="center" bgColor={bgCard}>
           <Text>Votes Total: {headerData.totalVotes.toLocaleString("en-us")}</Text>
           <Text>On Incentivized Pools: {headerData.bribedVotes.toLocaleString("en-us")}</Text>
           <Text>Total Voter: {headerData.totalVoter}</Text>
         </Card>
-        <Card p={3} align="center">
+        <Card p={3} align="center" bgColor={bgCard}>
           <Text>Total Incentives: {headerData.totalBribes.toLocaleString("en-us")}</Text>
           <Text>avg $/1kVP: {headerData.avgPer1000}</Text>
           <Text>Bribed Voter: {headerData.bribedVoter}</Text>
