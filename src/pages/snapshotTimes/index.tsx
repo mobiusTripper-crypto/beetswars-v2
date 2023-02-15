@@ -153,12 +153,12 @@ function App() {
     return (
       <>
         <Text
-          fontSize={["sm", "xl", "3xl", "4xl", "4xl"]}
+          fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
           fontWeight="600"
           margin="20px"
           textAlign="center"
         >
-          time before gauge vote start snapshot was taken
+          Snapshot Times
         </Text>
         <ChartSnapTimes
           blockTime={blockTime}
@@ -239,10 +239,13 @@ function ChartSnapTimes(props: ChartProps) {
     ],
   };
   return (
-    <ReactECharts
-      option={option}
-      style={{ margin: "auto", maxWidth: 900, height: 500, marginTop: 30 }}
-    />
+    <>
+      <ReactECharts
+        option={option}
+        style={{ margin: "auto", maxWidth: 900, height: 500, marginTop: 30 }}
+      />
+      <Text align="center">time before gauge vote start snapshot was taken</Text>
+    </>
   );
 }
 

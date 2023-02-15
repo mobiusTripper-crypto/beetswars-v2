@@ -506,7 +506,7 @@ function Chart1() {
   return (
     <>
       <Text
-        fontSize={["sm", "xl", "3xl", "4xl", "4xl"]}
+        fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
         fontWeight="600"
         margin="20px"
         textAlign="center"
