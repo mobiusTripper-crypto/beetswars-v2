@@ -55,7 +55,14 @@ const Dashboard: NextPage = () => {
   return (
     <Container maxW="container.xl" centerContent>
       <VStack align="center">
-        <Heading>Bribers Dashboard</Heading>
+        <Text
+          fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+          fontWeight="600"
+          margin="20px"
+          textAlign="center"
+        >
+          Bribers Dashboard
+        </Text>
         <Flex justifyContent="center" p={6} gap={6} flexDir={["column", null, null, "row"]}>
           <Card
             p={6}
