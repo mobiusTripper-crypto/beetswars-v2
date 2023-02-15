@@ -172,7 +172,7 @@ export default function Round() {
                           <PopoverContent>
                             <PopoverHeader fontWeight="semibold">$/1kVP</PopoverHeader>
                             <PopoverBody>
-                              Amount of $ in return for voting on this pool with 1k full mature
+                              Value in $ received for voting on this pool with 1k votes
                               voting power
                             </PopoverBody>
                           </PopoverContent>
@@ -199,8 +199,8 @@ export default function Round() {
                             <PopoverContent>
                               <PopoverHeader fontWeight="semibold">$/accountVP</PopoverHeader>
                               <PopoverBody>
-                                Amount of $ in return for voting on this pool with full voting power
-                                of connected account
+                                Value in $ received for voting on this pool with current voting balance
+                                of the connected account
                               </PopoverBody>
                             </PopoverContent>
                           </Popover>
