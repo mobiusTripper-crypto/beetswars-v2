@@ -51,6 +51,7 @@ export default function Round() {
   const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
   const { data: roundList, loaded: roundListLoaded } = useRoundList();
   const { requestedRound, display, setDisplay } = useGlobalContext();
+  const { data: votingPower, connected: accountConnected } = useGetVp();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
     {
@@ -64,11 +65,8 @@ export default function Round() {
   ).data?.bribefile;
 
   const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
-  const { data: votingPower, connected: accountConnected } = useGetVp();
 
-  useEffect(() => {
-    console.log("vote state:", voteStateActive, voteStateLoaded, requestedRound, roundList.latest);
-  }, [voteStateActive, voteStateLoaded, requestedRound,roundListLoaded]);
+  console.log("vote state:", voteStateActive, requestedRound, roundList.latest);
 
   useEffect(() => {
     if (number[1]) {
@@ -80,9 +78,7 @@ export default function Round() {
           setDisplay("cards");
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [number]);
-
 
   if (!bribeData) {
     return (
@@ -175,14 +171,17 @@ export default function Round() {
                           <PopoverContent>
                             <PopoverHeader fontWeight="semibold">$/1kVP</PopoverHeader>
                             <PopoverBody>
-                              Amount of $ in return for voting with 1k full mature voting power
+                              Amount of $ in return for voting on this pool with 1k full mature
+                              voting power
                             </PopoverBody>
                           </PopoverContent>
                         </Popover>
                       </HStack>
-                      {accountConnected && voteStateActive && requestedRound === roundList.latest ? (
+                      {accountConnected &&
+                      voteStateActive &&
+                      requestedRound === roundList.latest ? (
                         <HStack marginTop="auto">
-                          <Text>$/Account VP:</Text>
+                          <Text>$/accountVP:</Text>
                           <Text as="b">
                             {((bribe.usdPer1000Vp * votingPower) / 1000).toFixed(2)}
                           </Text>
@@ -197,10 +196,10 @@ export default function Round() {
                               />
                             </PopoverTrigger>
                             <PopoverContent>
-                              <PopoverHeader fontWeight="semibold">$/Account VP</PopoverHeader>
+                              <PopoverHeader fontWeight="semibold">$/accountVP</PopoverHeader>
                               <PopoverBody>
-                                Amount of $ in return for voting with full voting power of connected
-                                wallet account
+                                Amount of $ in return for voting on this pool with full voting power
+                                of connected account
                               </PopoverBody>
                             </PopoverContent>
                           </Popover>
