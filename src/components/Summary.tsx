@@ -1,4 +1,4 @@
-import { Center, Grid, GridItem, HStack, Text } from "@chakra-ui/react";
+import { Card, Center, Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import type { BribeHeader } from "types/bribelist.trpc";
 
 interface SummaryProps {
@@ -7,6 +7,8 @@ interface SummaryProps {
 
 export const Summary = (props: SummaryProps) => {
   const { headerData } = props;
+
+  const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
 
   const dateFormatOptions: Intl.DateTimeFormatOptions = {
     year: "2-digit",
@@ -21,67 +23,33 @@ export const Summary = (props: SummaryProps) => {
   console.log("headerData", headerData);
   return (
     <Center>
-      <Grid mt={5} templateColumns="1fr 1fr 1fr" fontSize="lg" gap={5}>
-        <GridItem>
-          <HStack>
-            <Text>Vote Start:</Text>
-            <Text>
-              {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(new Date(headerData.voteStart))}
-            </Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <HStack>
-            <Text>Votes Total:</Text>
-            <Text>{headerData.totalVotes.toLocaleString("en-us")}</Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <HStack>
-            <Text>Total Incentives:</Text>
-            <Text>{headerData.totalBribes.toLocaleString("en-us")}</Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <HStack>
-            <Text>Vote End:</Text>
-            <Text>
-              {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(new Date(headerData.voteEnd))}
-            </Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <HStack>
-            <Text>Incentivized Pools:</Text>
-            <Text>{headerData.bribedVotes.toLocaleString("en-us")}</Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          {" "}
-          <HStack>
-            <Text>avg $/1kVP:</Text>
-            <Text>{headerData.avgPer1000}</Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <HStack>
-            <Text>Time Left:</Text>
-            <Text>{headerData.timeRemaining}</Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <HStack>
-            <Text>Total Voter:</Text>
-            <Text>{headerData.totalVoter}</Text>
-          </HStack>
-        </GridItem>
-        <GridItem>
-          <HStack>
-            <Text>Bribed Voter:</Text>
-            <Text>{headerData.bribedVoter}</Text>
-          </HStack>
-        </GridItem>
-      </Grid>
+      <Flex align="center" justify="center" wrap="wrap" gap={4}>
+        <Card p={3} align="center" bgColor={bgCard}>
+          <Text>
+            Vote Start:{" "}
+            {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(
+              new Date(headerData.voteStart)
+            )}
+          </Text>
+          <Text>
+            Vote End:{" "}
+            {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(
+              new Date(headerData.voteEnd)
+            )}
+          </Text>
+          <Text>Time Left: {headerData.timeRemaining}</Text>
+        </Card>
+        <Card p={3} align="center" bgColor={bgCard}>
+          <Text>Votes Total: {headerData.totalVotes.toLocaleString("en-us")}</Text>
+          <Text>On Incentivized Pools: {headerData.bribedVotes.toLocaleString("en-us")}</Text>
+          <Text>Total Voter: {headerData.totalVoter}</Text>
+        </Card>
+        <Card p={3} align="center" bgColor={bgCard}>
+          <Text>Total Incentives: {headerData.totalBribes.toLocaleString("en-us")}</Text>
+          <Text>avg $/1kVP: {headerData.avgPer1000}</Text>
+          <Text>Bribed Voter: {headerData.bribedVoter}</Text>
+        </Card>
+      </Flex>
     </Center>
   );
 };
