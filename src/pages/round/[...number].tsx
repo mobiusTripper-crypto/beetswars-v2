@@ -173,7 +173,6 @@ export default function Round() {
                             <PopoverHeader fontWeight="semibold">$/1kVP</PopoverHeader>
                             <PopoverBody>
                               Value in $ received for voting on this pool with 1k votes
-                              voting power
                             </PopoverBody>
                           </PopoverContent>
                         </Popover>
