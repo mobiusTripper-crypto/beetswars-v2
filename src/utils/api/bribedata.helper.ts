@@ -32,6 +32,7 @@ export async function getBribeDataCalculated(round = 0): Promise<BribeData | nul
   const snapshot = await getSnapshotProposal(proposal);
   if (!snapshot) return null;
 
+  const bribefileVersion = bribefile.version;
   const roundName = bribefile.description;
   const voteStart = Number(snapshot.start) * 1000;
   const voteEnd = Number(snapshot.end) * 1000;
@@ -84,6 +85,7 @@ export async function getBribeDataCalculated(round = 0): Promise<BribeData | nul
     avgPer1000,
     proposal,
     voteState,
+    bribefileVersion,
   };
 
   const strategies = snapshot.strategies;
