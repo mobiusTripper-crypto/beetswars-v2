@@ -8,7 +8,7 @@ import { getTotalFbeets } from "utils/externalData/liveRpcQueries";
 import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
 import { getBlockByTsGraph } from "utils/externalData/theGraph";
 import { getEmissionForRound } from "./bribeApr.helper";
-import getBribeData from "./bribedata.helper";
+import getBribeData, { getBribeDataCalculated } from "./bribedata.helper";
 import { getEmissionForBlockspan } from "./emission.helper";
 import { getRoundlistNum } from "./roundlist.helper";
 import { initialInsertFromSnapshot } from "./votablePools.helper";
@@ -135,8 +135,18 @@ export async function dashData(round = 0): Promise<DashboardData> {
   const fantomBlocksPerDay = endBlock - startBlock;
   const totalFbeetsSupply = await getTotalFbeets();
   const roundBeetsEmissions = Math.round(roundEmissions?.voteEmission || 0);
-  const totalVoteIncentives = roundEmissions?.totalBribes || 0;
-  const voteIncentivesRoi = Math.round(roundEmissions?.avgBribeRoiInPercent || 0);
+  // divert to live data, if round eq latest
+  let totalVoteIncentives = roundEmissions?.totalBribes || 0;
+  let voteIncentivesRoi = Math.round(roundEmissions?.avgBribeRoiInPercent || 0);
+  if (round === latest) {
+    const calcBribe = await getBribeDataCalculated(round);
+    if (!!calcBribe) {
+      totalVoteIncentives = calcBribe.header.totalBribes;
+      const bribedEmissions =
+        (calcBribe.header.bribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd;
+      voteIncentivesRoi = Math.round((bribedEmissions / totalVoteIncentives) * 100);
+    }
+  }
 
   const result: DashboardData = {
     beetsEmissionsPerDay,
