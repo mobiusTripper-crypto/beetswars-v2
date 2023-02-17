@@ -1,5 +1,5 @@
 import { Center, Link, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { BribeOffer } from "types/bribelist.trpc";
 
 interface Props {
@@ -10,6 +10,10 @@ export const OfferTable: React.FC<Props> = ({ data }) => {
   const [sortedData, setSortedData] = useState(data);
   const [sortField, setSortField] = useState<string>("");
   const [sortAscending, setSortAscending] = useState(true);
+
+  useEffect(() => {
+    setSortedData(data);
+  }, [data]);
 
   const sortData = (field: string) => {
     const sortdir = sortField === field ? !sortAscending : true;
