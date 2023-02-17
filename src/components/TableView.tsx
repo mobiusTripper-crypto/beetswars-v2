@@ -1,7 +1,5 @@
 import { Center, Link, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { useState } from "react";
-import { useEffect } from "react";
-
+import { useState, useEffect } from "react";
 import type { BribeOffer } from "types/bribelist.trpc";
 
 interface Props {
