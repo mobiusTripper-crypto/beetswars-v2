@@ -17,21 +17,24 @@ import {
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
-import RoundSelector from "components/RoundSelector";
+// import RoundSelector from "components/RoundSelector";
 import { EditRoundModal } from "components/EditRound/EditRound";
 import { DeleteOfferModal } from "components/DeleteOfferModal";
 import { EditOfferModal } from "components/EditOffer/EditOfferModal";
 
 const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
-  const round = requestedRound ? +requestedRound || 0 : 0;
+  // const round = requestedRound ? +requestedRound || 0 : 0;
   const { data: session, status } = useSession();
-  const bribedata = trpc.bribes.list_raw.useQuery({ round }).data?.bribefile;
+  const bribedata = trpc.bribes.list_raw.useQuery(
+    { round: requestedRound },
+    { enabled: !!requestedRound }
+  ).data?.bribefile;
 
-  const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
-    requestRound(parseInt(e.target.value));
-  };
+  // const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   console.log(e.target.value);
+  //   requestRound(parseInt(e.target.value));
+  // };
 
   //This doesn't actually work for new or edit ....
   const refreshRound = (round: string) => {
@@ -63,8 +66,8 @@ const BribeForm: NextPage = () => {
         <Card m={6}>
           <CardHeader>
             <HStack spacing={4} justify="space-between">
-              <Heading size="md">Edit Round {round}</Heading>
-              <RoundSelector handleChange={changeRound} />
+              <Heading size="md">Edit Round {requestedRound}</Heading>
+              {/* <RoundSelector handleChange={changeRound} /> */}
               <EditRoundModal isNew refresh={refreshRound} />
             </HStack>
           </CardHeader>
@@ -82,7 +85,7 @@ const BribeForm: NextPage = () => {
                   </Text>
                 </GridItem>
               </Grid>
-              <EditRoundModal roundNumber={round} isNew={false} refresh={refreshRound} />
+              <EditRoundModal roundNumber={requestedRound} isNew={false} refresh={refreshRound} />
             </HStack>
           </CardBody>
         </Card>
@@ -122,7 +125,7 @@ const BribeForm: NextPage = () => {
             <Flex>
               <Heading size="md">Offers:</Heading>
               <Spacer />
-              <EditOfferModal isNew round={round} />
+              {requestedRound && <EditOfferModal isNew round={requestedRound} />}
             </Flex>
           </CardHeader>
           <CardBody>
@@ -134,8 +137,16 @@ const BribeForm: NextPage = () => {
                   <GridItem>{bribe.rewarddescription}</GridItem>
                   <GridItem>
                     <HStack spacing={3}>
-                      <EditOfferModal round={round} offerId={bribe.offerId} isNew={false} />
-                      <DeleteOfferModal round={round} offerId={bribe.offerId} />
+                      {requestedRound && (
+                        <EditOfferModal
+                          round={requestedRound}
+                          offerId={bribe.offerId}
+                          isNew={false}
+                        />
+                      )}
+                      {requestedRound && (
+                        <DeleteOfferModal round={requestedRound} offerId={bribe.offerId} />
+                      )}
                     </HStack>
                   </GridItem>
                 </Grid>
@@ -149,15 +160,7 @@ const BribeForm: NextPage = () => {
     <VStack>
       <HStack>
         <Text>Not signed in</Text>
-        <Button
-          onClick={() =>
-            //I think setting callbackUrl will do dynamic redirect, but not working just yet. so we can have just a single OAuth Github app
-            //signIn("GitHubProvider", {callbackUrl: "http://localhost:3000/api/auth/callback/github",})
-            signIn()
-          }
-        >
-          Sign in
-        </Button>
+        <Button onClick={() => signIn()}>Sign in</Button>
       </HStack>
     </VStack>
   );
