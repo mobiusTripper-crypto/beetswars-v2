@@ -5,7 +5,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  HStack,
   Input,
   Modal,
   ModalBody,
@@ -14,62 +13,36 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
-  Text,
   Textarea,
   useDisclosure,
-  VStack,
 } from "@chakra-ui/react";
-import { trpc } from "utils/trpc";
+// import { trpc } from "utils/trpc";
 import { useState } from "react";
 import { Reward } from "./Reward";
-import type { Reward as RewardType } from "types/bribedata.raw";
+import type { Bribedata, Reward as RewardType } from "types/bribedata.raw";
 
 interface modalProps {
-  round: number;
+  roundNo: number;
   isNew: boolean;
-  offerId?: number;
+  data: Bribedata;
+  tokens: string[];
+  onSubmit: (payload: Bribedata) => void;
 }
 
 export function EditOfferModal(props: modalProps) {
-  const { round, isNew, offerId } = props;
+  const { roundNo, isNew, data, tokens, onSubmit } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const bribedata = trpc.bribes.list_raw.useQuery({ round: round }).data?.bribefile;
-  const offerData = bribedata?.bribedata?.find(item => item.offerId === offerId);
-  //const tokenData = bribedata?.tokendata;
-  const tokens = bribedata?.tokendata.map(t => t.token);
-
-  const addOffer = trpc.bribes.addOffer.useMutation();
-  const editOffer = trpc.bribes.editOffer.useMutation();
-  const [rewardCap, setRewardCap] = useState<number | undefined>(undefined);
-  const [voteIndex, setVoteIndex] = useState(0);
-  const [payoutThreshold, setPayoutThreshold] = useState<number | undefined>(undefined);
-  const [percentageThreshold, setPercentageThreshold] = useState<number | undefined>(undefined);
-  const [poolName, setPoolName] = useState("");
-  const [poolURL, setPoolURL] = useState("");
-  const [description, setDescription] = useState("");
-  const [assumption, setAssumption] = useState("");
-  const [rewards, setRewards] = useState(offerData?.reward);
-
-  const openModal = () => {
-    if (!isNew && offerData) {
-      console.log("set values");
-      setVoteIndex(offerData.voteindex);
-      setRewardCap(offerData.rewardcap || undefined); //TODO, sometimes this is set to null, the || will make sure it's undefined
-      setPayoutThreshold(offerData.payoutthreshold || undefined);
-      setPercentageThreshold(offerData.percentagethreshold || undefined);
-      setPoolName(offerData.poolname || "");
-      setPoolURL(offerData.poolurl || "");
-      setDescription(offerData.rewarddescription || "");
-      setAssumption(offerData.assumption || "");
-      setRewards(offerData?.reward);
-
-      console.log(offerData.rewardcap, rewardCap);
-    }
-
-    onOpen();
-  };
+  const [voteIndex, setVoteIndex] = useState(data.voteindex);
+  const [poolName, setPoolName] = useState(data.poolname);
+  const [poolURL, setPoolURL] = useState(data.poolurl);
+  const [description, setDescription] = useState(data.rewarddescription);
+  const [assumption, setAssumption] = useState(data.assumption);
+  const [percentageThreshold, setPercentageThreshold] = useState(data.percentagethreshold);
+  const [rewardCap, setRewardCap] = useState(data.rewardcap);
+  const [rewards, setRewards] = useState(data.reward);
+  const [payoutThreshold, setPayoutThreshold] = useState(data.payoutthreshold);
+  const [offerId] = useState(data.offerId);
 
   const updateReward = (rewardData: RewardType, rewardNumber: number) => {
     const rewardArray = rewards ? [...rewards] : [];
@@ -79,11 +52,12 @@ export function EditOfferModal(props: modalProps) {
     setRewards(rewardArray);
   };
 
-  const maxRewardId =
-    rewards?.length === 0
-      ? 0
-      : rewards?.reduce((prev, current) => (prev.rewardId > current.rewardId ? prev : current))
-          .rewardId || 0;
+  const maxRewardId = rewards.reduce(
+    (prev, current) => (prev.rewardId > current.rewardId ? prev : current),
+    {
+      rewardId: 0,
+    }
+  ).rewardId;
 
   const defaultReward: RewardType = {
     type: "fixed",
@@ -104,36 +78,27 @@ export function EditOfferModal(props: modalProps) {
   };
 
   const save = () => {
-    const data = {
-      round: round,
-      payload: {
-        offerId: offerId || 0,
-        voteindex: voteIndex,
-        poolname: poolName,
-        poolurl: poolURL,
-        rewarddescription: description,
-        assumption: assumption,
-        percentagethreshold: percentageThreshold,
-        rewardcap: rewardCap,
-        payoutthreshold: payoutThreshold,
-        reward: rewards || [],
-        additionalrewards: [],
-      },
+    const payload = {
+      offerId: offerId || 0,
+      voteindex: voteIndex,
+      poolname: poolName,
+      poolurl: poolURL,
+      rewarddescription: description,
+      assumption: assumption || undefined,
+      percentagethreshold: percentageThreshold || undefined,
+      rewardcap: rewardCap || undefined,
+      payoutthreshold: payoutThreshold || undefined,
+      reward: rewards || [],
+      additionalrewards: [] || undefined,
     };
 
-    if (isNew) {
-      addOffer.mutate(data);
-    } else {
-      console.log("rewardcap", rewardCap);
-      console.log("save edit", data);
-      editOffer.mutate(data);
-    }
+    onSubmit(payload);
     onClose();
   };
 
   return (
     <>
-      <Button onClick={openModal}>{isNew ? "Add New Offer" : "Edit"}</Button>
+      <Button onClick={onOpen}>{isNew ? "Add New Offer" : "Edit"}</Button>
 
       <Modal
         size="4xl"
@@ -144,20 +109,20 @@ export function EditOfferModal(props: modalProps) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Edit Round</ModalHeader>
+          <ModalHeader>Edit Offer</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Grid templateColumns="1fr 1fr" gap={4}>
               <GridItem>
                 <FormControl isDisabled>
                   <FormLabel>Round</FormLabel>
-                  <Input value={bribedata?.round} />
+                  <Input value={roundNo} />
                 </FormControl>
               </GridItem>
               <GridItem>
                 <FormControl isDisabled>
                   <FormLabel>Offer ID</FormLabel>
-                  <Input value={offerData?.offerId} />
+                  <Input value={data?.offerId} />
                 </FormControl>
               </GridItem>
               <GridItem>
@@ -182,7 +147,7 @@ export function EditOfferModal(props: modalProps) {
               </GridItem>
               <GridItem>
                 <FormControl>
-                  <FormLabel>Payout Threshold</FormLabel>
+                  <FormLabel>Payout Threshold (-1 to disable 0.15% cap)</FormLabel>
                   <Input
                     value={payoutThreshold}
                     onChange={e => setPayoutThreshold(Number(e.target.value))}

@@ -10,6 +10,7 @@ interface RewardProps {
 
 export function Reward(props: RewardProps) {
   const { reward, tokens, updateReward, deleteReward } = props;
+  const selectList = ["", ...tokens]; // for select to always trigger an update
 
   const handleRewardTypeChange = (value: string) => {
     //TODO: make this type an enum, and make a better enum to string conversion, because this code is terrible
@@ -47,7 +48,7 @@ export function Reward(props: RewardProps) {
               updateReward(rewardCopy, reward.rewardId);
             }}
           >
-            {tokens?.map((t, index) => (
+            {selectList.map((t, index) => (
               <option key={index} value={t}>
                 {t}
               </option>

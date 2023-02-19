@@ -17,31 +17,53 @@ import {
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
-// import RoundSelector from "components/RoundSelector";
 import { EditRoundModal } from "components/EditRound/EditRound";
 import { DeleteOfferModal } from "components/DeleteOfferModal";
 import { EditOfferModal } from "components/EditOffer/EditOfferModal";
+import type { Bribedata } from "types/bribedata.raw";
+import { useEffect, useState } from "react";
 
 const BribeForm: NextPage = () => {
   const { requestedRound, requestRound } = useGlobalContext();
-  // const round = requestedRound ? +requestedRound || 0 : 0;
   const { data: session, status } = useSession();
-  const bribedata = trpc.bribes.list_raw.useQuery(
+  const bribedataRaw = trpc.bribes.list_raw.useQuery(
     { round: requestedRound },
     { enabled: !!requestedRound }
   ).data?.bribefile;
+  const addOfferMut = trpc.bribes.addOffer.useMutation();
+  const editOfferMut = trpc.bribes.editOffer.useMutation();
+  const setlatest = trpc.rounds.setLatest.useMutation();
 
-  // const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   console.log(e.target.value);
-  //   requestRound(parseInt(e.target.value));
-  // };
+  const [bribedata, setBribedata] = useState(bribedataRaw);
+  useEffect(() => {
+    setBribedata(bribedataRaw);
+  }, [requestedRound, bribedataRaw]);
 
+  const emptyround: Bribedata = {
+    voteindex: 0,
+    poolname: "",
+    poolurl: "",
+    rewarddescription: "",
+    reward: [],
+    offerId: 0,
+  };
   //This doesn't actually work for new or edit ....
-  const refreshRound = (round: string) => {
+  const refreshRound = (round: string | number) => {
     console.log("refresh", round);
-    requestRound(parseInt(round));
+    requestRound(Number(round));
   };
 
+  const saveNewOffer = (payload: Bribedata) => {
+    requestedRound && addOfferMut.mutate({ round: requestedRound, payload });
+    refreshRound(requestedRound || 0);
+  };
+  const saveEditOffer = (payload: Bribedata) => {
+    requestedRound && editOfferMut.mutate({ round: requestedRound, payload });
+    refreshRound(requestedRound || 0);
+  };
+  const setLatest = () => {
+    requestedRound && setlatest.mutate({ latest: requestedRound });
+  };
   // this function shows toast message - just for testing button function
   // TODO: remove after testing
   const toast = useToast();
@@ -85,7 +107,10 @@ const BribeForm: NextPage = () => {
                   </Text>
                 </GridItem>
               </Grid>
-              <EditRoundModal roundNumber={requestedRound} isNew={false} refresh={refreshRound} />
+              <VStack>
+                <Button onClick={setLatest}>Set Round {requestedRound} as latest</Button>
+                <EditRoundModal roundNumber={requestedRound} isNew={false} refresh={refreshRound} />
+              </VStack>
             </HStack>
           </CardBody>
         </Card>
@@ -125,7 +150,15 @@ const BribeForm: NextPage = () => {
             <Flex>
               <Heading size="md">Offers:</Heading>
               <Spacer />
-              {requestedRound && <EditOfferModal isNew round={requestedRound} />}
+              {requestedRound && (
+                <EditOfferModal
+                  isNew
+                  roundNo={requestedRound}
+                  data={emptyround}
+                  tokens={bribedata?.tokendata.map(x => x.token) ?? []}
+                  onSubmit={saveNewOffer}
+                />
+              )}
             </Flex>
           </CardHeader>
           <CardBody>
@@ -139,9 +172,11 @@ const BribeForm: NextPage = () => {
                     <HStack spacing={3}>
                       {requestedRound && (
                         <EditOfferModal
-                          round={requestedRound}
-                          offerId={bribe.offerId}
+                          roundNo={requestedRound}
                           isNew={false}
+                          data={bribe}
+                          tokens={bribedata.tokendata.map(x => x.token)}
+                          onSubmit={saveEditOffer}
                         />
                       )}
                       {requestedRound && (
