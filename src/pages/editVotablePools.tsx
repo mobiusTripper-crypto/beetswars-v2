@@ -13,36 +13,50 @@ import {
   Tbody,
   Td,
   Card,
+  useToast,
 } from "@chakra-ui/react";
 import { HStack, VStack } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
-import RoundSelector from "components/RoundSelector";
+import { useEffect, useState } from "react";
 
 const VotablePoolForm: NextPage = () => {
-  const { requestedRound, requestRound } = useGlobalContext();
-  const pools =
-    trpc.votepools.list.useQuery({ round: requestedRound as number }).data?.pools ||
-    ([] as VotablePool[]);
+  const { requestedRound } = useGlobalContext();
+
+  const dbpools = trpc.votepools.list.useQuery(
+    { round: requestedRound as number },
+    { enabled: !!requestedRound }
+  ).data?.pools;
   const initPools = trpc.votepools.init.useMutation();
   const insertPools = trpc.votepools.insert.useMutation();
 
-  // const [pools, setPools] = useState(votablePools);
+  const [pools, setPools] = useState(dbpools);
   const { data: session, status } = useSession();
 
-  const handleCheckboxChange = (index: number, checked: boolean) => {
-    const votablePools = [...pools];
-    (votablePools[index] as VotablePool).isUncapped = checked;
-    // setPools(votablePools);
+  useEffect(() => {
+    setPools(dbpools);
+  }, [requestedRound, dbpools]);
+
+  const handleCheckboxChange = (index: number, isChecked: boolean) => {
+    const votablePools = !pools ? [] : [...pools];
+    (votablePools[index] as VotablePool).isUncapped = isChecked;
+    setPools(votablePools);
   };
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    insertPools.mutate(pools);
+    pools && insertPools.mutate(pools);
+    showToast();
   };
-  const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newRound = parseInt(e.target.value);
-    requestRound(newRound);
-  };
+  const toast = useToast();
+  function showToast() {
+    toast({
+      title: "Data submitted.",
+      description: "data successfully sent to database",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+  }
 
   if (session && status === "authenticated") {
     return (
@@ -51,7 +65,7 @@ const VotablePoolForm: NextPage = () => {
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
-        <Card m={6}>
+        <Card m={6} p={6}>
           <Table variant="striped" colorScheme="teal" size="sm">
             <Thead>
               <Tr>
@@ -62,25 +76,26 @@ const VotablePoolForm: NextPage = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {pools.map((votablePool, index) => (
-                <Tr key={index}>
-                  <Td>{votablePool.poolName}</Td>
-                  <Td>{votablePool.voteindex}</Td>
-                  <Td>{votablePool.round}</Td>
-                  <Td>
-                    <FormControl>
-                      <Checkbox
-                        id={`isUncapped-${index}`}
-                        name={`isUncapped-${index}`}
-                        isChecked={votablePool.isUncapped}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                          handleCheckboxChange(index, event.target.checked)
-                        }
-                      />
-                    </FormControl>
-                  </Td>
-                </Tr>
-              ))}
+              {pools &&
+                pools.map((votablePool, index) => (
+                  <Tr key={index}>
+                    <Td>{votablePool.poolName}</Td>
+                    <Td>{votablePool.voteindex}</Td>
+                    <Td>{votablePool.round}</Td>
+                    <Td>
+                      <FormControl>
+                        <Checkbox
+                          id={`isUncapped-${index}`}
+                          name={`isUncapped-${index}`}
+                          isChecked={votablePool.isUncapped}
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                            handleCheckboxChange(index, event.target.checked)
+                          }
+                        />
+                      </FormControl>
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
           <HStack>
@@ -90,13 +105,9 @@ const VotablePoolForm: NextPage = () => {
           </HStack>
         </Card>
         <Card m={6}>
-          <HStack m={6}>
-            <Text>select round</Text>
-            <RoundSelector handleChange={changeRound} />
-            <Button m={6} onClick={() => initPools.mutate(requestedRound as number)}>
-              initial fill for Round {requestedRound}
-            </Button>
-          </HStack>
+          <Button m={6} onClick={() => initPools.mutate(requestedRound as number)}>
+            initial fill for Round {requestedRound}
+          </Button>
         </Card>
       </>
     );
@@ -105,15 +116,7 @@ const VotablePoolForm: NextPage = () => {
     <VStack>
       <HStack>
         <Text>Not signed in</Text>
-        <Button
-          onClick={() =>
-            //I think setting callbackUrl will do dynamic redirect, but not working just yet. so we can have just a single OAuth Github app
-            //signIn("GitHubProvider", {callbackUrl: "http://localhost:3000/api/auth/callback/github",})
-            signIn()
-          }
-        >
-          Sign in
-        </Button>
+        <Button onClick={() => signIn()}>Sign in</Button>
       </HStack>
     </VStack>
   );
