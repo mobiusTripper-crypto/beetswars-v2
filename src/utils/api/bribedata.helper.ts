@@ -14,8 +14,10 @@ function timeformat(seconds: number): string {
 }
 
 export default async function getBribeData(round = 0): Promise<BribeData | null> {
-  const fromDb = await readBribeDashboard(round);
-  if (!!fromDb) return fromDb;
+  if (process.env.NODE_ENV !== "development") {
+    const fromDb = await readBribeDashboard(round);
+    if (!!fromDb) return fromDb;
+  }
   const result = await getBribeDataCalculated(round);
   if (!result) return null;
   return result;
