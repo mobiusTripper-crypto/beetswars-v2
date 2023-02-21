@@ -1,6 +1,6 @@
 // DONE: switch API v1 to TRPC
 // DONE: remove unused vars
-// TODO: redo route parameter handling
+// DONE: redo route parameter handling
 
 import {
   // Table,
@@ -50,7 +50,7 @@ export default function Round() {
   const number = router.query.number || "";
   const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
   const { data: roundList, loaded: roundListLoaded } = useRoundList();
-  const { requestedRound, display, setDisplay } = useGlobalContext();
+  const { requestedRound, display } = useGlobalContext();
   const { data: votingPower, connected: accountConnected } = useGetVp();
   const bribeData = trpc.bribes.list.useQuery(
     { round: requestedRound },
@@ -66,20 +66,7 @@ export default function Round() {
 
   const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
 
-  console.log("vote state:", voteStateActive, requestedRound, roundList.latest);
-
-  useEffect(() => {
-    if (number[1]) {
-      switch (number[1]) {
-        case "table":
-          setDisplay("table");
-          break;
-        default:
-          setDisplay("cards");
-      }
-    }
-  }, [number]);
-
+  console.log("vote state:", voteStateActive, requestedRound, roundList.latest, router.isReady);
 
   if (!bribeData) {
     return (
@@ -198,8 +185,8 @@ export default function Round() {
                             <PopoverContent>
                               <PopoverHeader fontWeight="semibold">$/accountVP</PopoverHeader>
                               <PopoverBody>
-                                Value in $ received for voting on this pool with current voting balance
-                                of the connected account
+                                Value in $ received for voting on this pool with current voting
+                                balance of the connected account
                               </PopoverBody>
                             </PopoverContent>
                           </Popover>
