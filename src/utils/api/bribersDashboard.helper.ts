@@ -144,7 +144,9 @@ export async function dashData(round = 0): Promise<DashboardData> {
       totalVoteIncentives = calcBribe.header.totalBribes;
       const bribedEmissions =
         (calcBribe.header.bribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd;
-      voteIncentivesRoi = Math.round((bribedEmissions / totalVoteIncentives) * 100);
+      voteIncentivesRoi = !totalVoteIncentives
+        ? 0
+        : Math.round((bribedEmissions / totalVoteIncentives) * 100);
     }
   }
 

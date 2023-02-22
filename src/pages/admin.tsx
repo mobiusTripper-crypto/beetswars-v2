@@ -8,6 +8,7 @@ import {
   Heading,
   HStack,
   Input,
+  Link,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -24,17 +25,32 @@ const Admin: NextPage = () => {
 
   const { data: session, status } = useSession();
 
+  const saveUsernameHandler = () => {
+    addUser.mutate({ key: username });
+    setUsername("");
+  };
+  const saveApikeyHandler = () => {
+    addApikey.mutate({ key: apikey });
+    setApikey("");
+  };
+
   if (session && status === "authenticated") {
     return (
       <>
-        <HStack
-          m={6}
-          justifyContent="flex-end"
-        >
+        <HStack m={6} justifyContent="flex-end">
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
-
+        <Card m={6} p={6}>
+          <HStack gap={6}>
+            <Link href="/bribeform">
+              <Button>Bribe Forms</Button>
+            </Link>
+            <Link href="/editVotablePools">
+              <Button>Edit votable Pools</Button>
+            </Link>
+          </HStack>
+        </Card>
         <Card m={6}>
           <CardHeader>
             <Heading size="md">Add user</Heading>
@@ -43,12 +59,15 @@ const Admin: NextPage = () => {
             <Box>
               <HStack gap={4}>
                 <Text>Insert Github Username for admin user to add:</Text>
-                <Input width='auto'
+                <Input
+                  width="auto"
                   type="text"
                   value={username}
                   onChange={event => setUsername(event.target.value)}
                 />
-                <Button onClick={() => addUser.mutate({ key: username })}>Add user</Button>
+                <Button disabled={username.length < 1} onClick={saveUsernameHandler}>
+                  Add user
+                </Button>
               </HStack>
             </Box>
           </CardBody>
@@ -62,12 +81,15 @@ const Admin: NextPage = () => {
             <Box>
               <HStack gap={4}>
                 <Text>Insert random string to add (minimum 12 characters):</Text>
-                <Input width='auto'
+                <Input
+                  width="auto"
                   type="text"
                   value={apikey}
                   onChange={event => setApikey(event.target.value)}
                 />
-                <Button disabled={apikey.length < 12} onClick={() => addApikey.mutate({ key: apikey })}>Add API key</Button>
+                <Button disabled={apikey.length < 12} onClick={saveApikeyHandler}>
+                  Add API key
+                </Button>
               </HStack>
             </Box>
           </CardBody>

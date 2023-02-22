@@ -13,56 +13,58 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { trpc } from "utils/trpc";
+// import { trpc } from "utils/trpc";
 import { useState } from "react";
+import type { Bribefile } from "types/bribedata.raw";
 
 interface modalProps {
   roundNumber?: number;
+  data: Bribefile;
   isNew: boolean;
-  refresh: (round: string) => void;
+  onSubmit: (payload: Bribefile) => void;
 }
 
 export function EditRoundModal(props: modalProps) {
-  const { roundNumber, isNew, refresh } = props;
+  const { roundNumber, data, isNew, onSubmit } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const editRound = trpc.bribes.editRound.useMutation();
-  const addRound = trpc.bribes.addRound.useMutation();
-  const [description, setDescription] = useState("");
-  const [snapshotId, setSnapshotId] = useState("");
-  const [round, setRound] = useState("");
-  const bribedata = trpc.bribes.list_raw.useQuery({ round: roundNumber }).data?.bribefile;
+  // const editRound = trpc.bribes.editRound.useMutation();
+  // const addRound = trpc.bribes.addRound.useMutation();
+  const [description, setDescription] = useState(data.description);
+  const [snapshotId, setSnapshotId] = useState(data.snapshot);
+  const [round, setRound] = useState(roundNumber?.toString() || "");
+  // const bribedata = trpc.bribes.list_raw.useQuery({ round: roundNumber }).data?.bribefile;
 
-  const openModal = () => {
-    if (!isNew) {
-      setDescription(bribedata?.description || "");
-      setSnapshotId(bribedata?.snapshot || "");
-      setRound(bribedata?.round.toString() || "");
-    }
-    onOpen();
-  };
+  // const openModal = () => {
+  // if (!isNew) {
+  //   setDescription(bribedata?.description || "");
+  //   setSnapshotId(bribedata?.snapshot || "");
+  //   setRound(bribedata?.round.toString() || "");
+  // }
+  //   onOpen();
+  // };
 
   const save = () => {
-    if (isNew) {
-      const bribefile = {
-        version: round + ".0.0",
-        snapshot: snapshotId,
-        description: description,
-        round: Number(round),
-        tokendata: [],
-        bribedata: [],
-      };
-      addRound.mutate(bribefile);
-      refresh(round);
-    } else if (bribedata) {
-      editRound.mutate({ ...bribedata, description: description, snapshot: snapshotId });
-      refresh(bribedata.round.toString());
-    }
+    const payload = {
+      version: isNew ? round + ".0.0" : data.version,
+      snapshot: snapshotId,
+      description: description,
+      round: Number(round),
+      tokendata: isNew ? [] : data.tokendata,
+      bribedata: isNew ? [] : data.bribedata,
+    };
+    //   addRound.mutate(bribefile);
+    //   refresh(round);
+    // } else if (bribedata) {
+    //   editRound.mutate({ ...bribedata, description: description, snapshot: snapshotId });
+    //   refresh(bribedata.round.toString());
+    // }
+    onSubmit(payload);
     onClose();
   };
 
   return (
     <>
-      <Button onClick={openModal}>{isNew ? "Add New Round" : "Edit Round"}</Button>
+      <Button onClick={onOpen}>{isNew ? "Add New Round" : "Edit Round"}</Button>
 
       <Modal closeOnOverlayClick={false} blockScrollOnMount isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -74,7 +76,7 @@ export function EditRoundModal(props: modalProps) {
               <VStack align="left">
                 <FormControl isDisabled>
                   <FormLabel>Version</FormLabel>
-                  <Input value={bribedata?.version} />
+                  <Input value={data.version} />
                 </FormControl>
                 <FormControl isDisabled={!isNew}>
                   <FormLabel>Round</FormLabel>

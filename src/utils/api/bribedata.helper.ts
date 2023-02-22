@@ -14,8 +14,10 @@ function timeformat(seconds: number): string {
 }
 
 export default async function getBribeData(round = 0): Promise<BribeData | null> {
-  const fromDb = await readBribeDashboard(round);
-  if (!!fromDb) return fromDb;
+  if (process.env.NODE_ENV !== "development") {
+    const fromDb = await readBribeDashboard(round);
+    if (!!fromDb) return fromDb;
+  }
   const result = await getBribeDataCalculated(round);
   if (!result) return null;
   return result;
@@ -91,10 +93,12 @@ export async function getBribeDataCalculated(round = 0): Promise<BribeData | nul
   const strategies = snapshot.strategies;
   const retVal = { header, bribelist, strategies, roundnumber };
 
-  // write to db one hour after vote closed
-  const now = Math.floor(Date.now() / 1000);
-  if (now > snapshot.end + 3600) {
-    await insertBribeDashboard(retVal);
+  // write to db one hour after vote closed if not in dev mode
+  if (process.env.NODE_ENV !== "development") {
+    const now = Math.floor(Date.now() / 1000);
+    if (now > snapshot.end + 3600) {
+      await insertBribeDashboard(retVal);
+    }
   }
 
   return retVal;
