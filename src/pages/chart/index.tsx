@@ -31,7 +31,7 @@ const emptyEcharts: Echarts = {
 function Chart1() {
   const chartData: Echarts =
     trpc.chart.chartdata.useQuery(undefined, RefetchOptions).data?.chartdata ?? emptyEcharts;
-  const { requestRound } = useGlobalContext();
+  const { requestRound, display } = useGlobalContext();
   const router = useRouter();
   const linewidth = "2";
   const opacity = "0.04";
@@ -490,7 +490,7 @@ function Chart1() {
       const selectedRound = (params.dataIndex + offset) as number;
       requestRound(selectedRound);
       console.log("click", params.dataIndex, "->", "request " + selectedRound);
-      const roundPage = "/round/" + selectedRound;
+      const roundPage = "/round/" + selectedRound + "/" + display
       router.push(roundPage);
     }
   };

@@ -20,7 +20,7 @@ export const Summary = (props: SummaryProps) => {
     hour12: false,
   };
 
-  console.log("headerData", headerData);
+//  console.log("headerData", headerData);
   return (
     <Center>
       <Flex align="center" justify="center" wrap="wrap" gap={4}>

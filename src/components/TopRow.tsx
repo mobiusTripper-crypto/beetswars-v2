@@ -13,53 +13,72 @@ import React from "react";
 import { useEffect } from "react";
 import { useGetVp } from "hooks/useGetVp";
 import { useRoundList } from "hooks/useRoundList";
-import { useVoteState } from "hooks/useVoteState";
 
 export const TopRow = () => {
-  const { data: VoteStateActive } = useVoteState();
-  const { requestedRound, requestRound, display } = useGlobalContext();
+  const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
   const { data: votingPower, connected: accountConnected } = useGetVp();
   const { data: roundList, loaded: roundListLoaded } = useRoundList();
   const router = useRouter();
   const urlParam = router.query;
   const { asPath } = useRouter();
-  console.log(asPath);
+  const numOnly = new RegExp(/^\d+$/);
+  const parsedNumber: number =
+    urlParam.number && numOnly.test(urlParam.number[0] as string)
+      ? Number(parseInt(urlParam.number[0] as string))
+      : NaN;
+
+  useEffect(() => {
+    console.log(
+      "ap:",
+      asPath,
+      "rll:",
+      roundListLoaded,
+      "lr:",
+      roundList?.latest,
+      "pn:",
+      parsedNumber,
+      "rr:",
+      requestedRound
+    );
+    if (
+      asPath.includes("/round") &&
+      roundListLoaded &&
+      roundList.rounds.includes(requestedRound as number) &&
+      (parsedNumber !== requestedRound || parsedNumber === 0 || isNaN(parsedNumber))
+    ) {
+      console.log("push:", parsedNumber, "->", requestedRound, display);
+      router.push("/round/" + requestedRound + "/" + display, undefined, { shallow: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedRound, parsedNumber]);
 
   useEffect(() => {
     if (urlParam.number && roundListLoaded) {
-      const parsedNumber: number = urlParam.number ? parseInt(urlParam.number[0] as string) : NaN;
-      console.log("0 urlparm num:", parsedNumber);
-
-      if (parsedNumber === requestedRound) {
-        console.log("01 no change:", parsedNumber);
-      } else if (parsedNumber && roundListLoaded) {
-        console.log("02 number:", parsedNumber);
+      if (parsedNumber !== requestedRound) {
         if (roundList.rounds.includes(parsedNumber)) {
-          console.log("021 number valid:", parsedNumber);
           requestRound(parsedNumber);
         } else {
-          console.log("022 invalid -> latest:", parsedNumber);
           requestRound(roundList.latest);
-        }
-      } else {
-        if (roundListLoaded) {
-          console.log("02 set to latest", roundList.latest);
-          requestRound(roundList.latest);
-          //          if (!VoteStateActive) {
-          //            router.push("/round/" + roundList.latest, undefined, { shallow: true });
-          //          }
         }
       }
-    } else if (roundListLoaded && requestedRound === undefined) {
-      console.log("1 set default:", roundList.latest, requestedRound);
+    } else if (requestedRound === undefined || parsedNumber === undefined) {
       requestRound(roundList.latest);
-    } else {
-      console.log("2 nothing to do:", roundList.latest, requestedRound);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roundList, roundListLoaded, urlParam]);
+  }, [roundListLoaded, urlParam]);
 
-  // console.log("RL:", roundList.latest, requestedRound);
+  useEffect(() => {
+    if (urlParam.number && urlParam.number[1]) {
+      switch (urlParam.number[1]) {
+        case "table":
+          setDisplay("table");
+          break;
+        default:
+          setDisplay("cards");
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlParam]);
 
   const dashboardLink = "/round";
   const cardLink = dashboardLink + "/" + requestedRound + "/cards";
@@ -75,7 +94,7 @@ export const TopRow = () => {
 
   // correct type instead of "any"
   const changeRound = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
+    //console.log(e.target.value);
     requestRound(parseInt(e.target.value));
   };
 
