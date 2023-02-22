@@ -20,26 +20,12 @@ import { useGlobalContext } from "contexts/GlobalContext";
 import { EditRoundModal } from "components/EditRound/EditRound";
 import { DeleteOfferModal } from "components/DeleteOfferModal";
 import { EditOfferModal } from "components/EditOffer/EditOfferModal";
-import type { Bribedata } from "types/bribedata.raw";
-import { useEffect, useState } from "react";
+import type { Bribedata, Bribefile } from "types/bribedata.raw";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const BribeForm: NextPage = () => {
-  const { requestedRound, requestRound } = useGlobalContext();
-  const { data: session, status } = useSession();
-  const bribedataRaw = trpc.bribes.list_raw.useQuery(
-    { round: requestedRound },
-    { enabled: !!requestedRound }
-  ).data?.bribefile;
-  const addOfferMut = trpc.bribes.addOffer.useMutation();
-  const editOfferMut = trpc.bribes.editOffer.useMutation();
-  const setlatest = trpc.rounds.setLatest.useMutation();
-
-  const [bribedata, setBribedata] = useState(bribedataRaw);
-  useEffect(() => {
-    setBribedata(bribedataRaw);
-  }, [requestedRound, bribedataRaw]);
-
-  const emptyround: Bribedata = {
+  const emptyoffer: Bribedata = {
     voteindex: 0,
     poolname: "",
     poolurl: "",
@@ -47,19 +33,52 @@ const BribeForm: NextPage = () => {
     reward: [],
     offerId: 0,
   };
-  //This doesn't actually work for new or edit ....
-  const refreshRound = (round: string | number) => {
-    console.log("refresh", round);
-    requestRound(Number(round));
+  const emptyround: Bribefile = {
+    round: 0,
+    version: "",
+    description: "",
+    snapshot: "",
+    tokendata: [],
+    bribedata: [],
   };
 
+  const queryClient = useQueryClient();
+  const { requestedRound } = useGlobalContext();
+  const { data: session, status } = useSession();
+
+  const bribedataQuery = trpc.bribes.list_raw.useQuery(
+    { round: requestedRound },
+    { enabled: !!requestedRound }
+  );
+  const addOfferMut = trpc.bribes.addOffer.useMutation();
+  const editOfferMut = trpc.bribes.editOffer.useMutation();
+  const setlatest = trpc.rounds.setLatest.useMutation();
+  const editRound = trpc.bribes.editRound.useMutation();
+  const addRound = trpc.bribes.addRound.useMutation();
+
+  useEffect(() => {
+    queryClient.invalidateQueries();
+    queryClient.refetchQueries();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedRound]);
+
   const saveNewOffer = (payload: Bribedata) => {
-    requestedRound && addOfferMut.mutate({ round: requestedRound, payload });
-    refreshRound(requestedRound || 0);
+    requestedRound &&
+      addOfferMut.mutate(
+        { round: requestedRound, payload },
+        { onSuccess: () => queryClient.invalidateQueries() }
+      );
   };
   const saveEditOffer = (payload: Bribedata) => {
-    requestedRound && editOfferMut.mutate({ round: requestedRound, payload });
-    refreshRound(requestedRound || 0);
+    requestedRound && editOfferMut.mutate({ round: requestedRound, payload }),
+      { onSuccess: () => queryClient.invalidateQueries() };
+  };
+  const saveNewRound = (payload: Bribefile) => {
+    addRound.mutate(payload), { onSuccess: () => queryClient.invalidateQueries() };
+  };
+  const saveEditRound = (payload: Bribefile) => {
+    editRound.mutate(payload), { onSuccess: () => queryClient.invalidateQueries() };
   };
   const setLatest = () => {
     requestedRound && setlatest.mutate({ latest: requestedRound });
@@ -79,6 +98,9 @@ const BribeForm: NextPage = () => {
   //////////////////////////////
 
   if (session && status === "authenticated") {
+    if (bribedataQuery.isLoading) return <Heading>Loading ...</Heading>;
+    if (bribedataQuery.isError || !bribedataQuery.data || !bribedataQuery.data.bribefile)
+      return <Heading>Error</Heading>;
     return (
       <>
         <HStack m={6} justifyContent="flex-end">
@@ -89,27 +111,31 @@ const BribeForm: NextPage = () => {
           <CardHeader>
             <HStack spacing={4} justify="space-between">
               <Heading size="md">Edit Round {requestedRound}</Heading>
-              {/* <RoundSelector handleChange={changeRound} /> */}
-              <EditRoundModal isNew refresh={refreshRound} />
+              <EditRoundModal isNew data={emptyround} onSubmit={saveNewRound} />
             </HStack>
           </CardHeader>
           <CardBody>
             <HStack justify="space-between">
               <Grid gap={4} templateColumns="1fr 3fr">
                 <GridItem fontWeight="800">Version</GridItem>
-                <GridItem>{bribedata?.version}</GridItem>
+                <GridItem>{bribedataQuery.data.bribefile.version}</GridItem>
                 <GridItem fontWeight="800">Description</GridItem>
-                <GridItem>{bribedata?.description}</GridItem>
+                <GridItem>{bribedataQuery.data.bribefile.description}</GridItem>
                 <GridItem fontWeight="800">Snapshot</GridItem>
                 <GridItem>
                   <Text noOfLines={1} maxW="300px">
-                    {bribedata?.snapshot}
+                    {bribedataQuery.data.bribefile.snapshot}
                   </Text>
                 </GridItem>
               </Grid>
               <VStack>
                 <Button onClick={setLatest}>Set Round {requestedRound} as latest</Button>
-                <EditRoundModal roundNumber={requestedRound} isNew={false} refresh={refreshRound} />
+                <EditRoundModal
+                  roundNumber={requestedRound}
+                  isNew={false}
+                  data={bribedataQuery.data.bribefile}
+                  onSubmit={saveEditRound}
+                />
               </VStack>
             </HStack>
           </CardBody>
@@ -124,24 +150,23 @@ const BribeForm: NextPage = () => {
             </Flex>
           </CardHeader>
           <CardBody>
-            {!bribedata ||
-              bribedata?.tokendata.map((token, index) => (
-                <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr" key={index}>
-                  <GridItem>{token.tokenId}</GridItem>
-                  <GridItem>{token.token}</GridItem>
-                  <GridItem>{token.tokenaddress}</GridItem>
-                  <GridItem>
-                    <Flex justifyContent="flex-end">
-                      <Spacer />
-                      <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>Edit</Button>
-                      <Spacer />
-                      <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>
-                        Delete
-                      </Button>
-                    </Flex>
-                  </GridItem>
-                </Grid>
-              ))}
+            {bribedataQuery.data.bribefile.tokendata.map((token, index) => (
+              <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr" key={index}>
+                <GridItem>{token.tokenId}</GridItem>
+                <GridItem>{token.token}</GridItem>
+                <GridItem>{token.tokenaddress}</GridItem>
+                <GridItem>
+                  <Flex justifyContent="flex-end">
+                    <Spacer />
+                    <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>Edit</Button>
+                    <Spacer />
+                    <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>
+                      Delete
+                    </Button>
+                  </Flex>
+                </GridItem>
+              </Grid>
+            ))}
           </CardBody>
         </Card>
 
@@ -154,38 +179,37 @@ const BribeForm: NextPage = () => {
                 <EditOfferModal
                   isNew
                   roundNo={requestedRound}
-                  data={emptyround}
-                  tokens={bribedata?.tokendata.map(x => x.token) ?? []}
+                  data={emptyoffer}
+                  tokens={bribedataQuery.data.bribefile.tokendata.map(x => x.token) ?? []}
                   onSubmit={saveNewOffer}
                 />
               )}
             </Flex>
           </CardHeader>
           <CardBody>
-            {!bribedata ||
-              bribedata.bribedata.map((bribe, index) => (
-                <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr" key={index} my={2}>
-                  <GridItem>{bribe.offerId}</GridItem>
-                  <GridItem>{bribe.poolname}</GridItem>
-                  <GridItem>{bribe.rewarddescription}</GridItem>
-                  <GridItem>
-                    <HStack spacing={3}>
-                      {requestedRound && (
-                        <EditOfferModal
-                          roundNo={requestedRound}
-                          isNew={false}
-                          data={bribe}
-                          tokens={bribedata.tokendata.map(x => x.token)}
-                          onSubmit={saveEditOffer}
-                        />
-                      )}
-                      {requestedRound && (
-                        <DeleteOfferModal round={requestedRound} offerId={bribe.offerId} />
-                      )}
-                    </HStack>
-                  </GridItem>
-                </Grid>
-              ))}
+            {bribedataQuery.data.bribefile.bribedata.map((bribe, index) => (
+              <Grid gap={4} templateColumns="1fr 3fr 3fr 1fr" key={index} my={2}>
+                <GridItem>{bribe.offerId}</GridItem>
+                <GridItem>{bribe.poolname}</GridItem>
+                <GridItem>{bribe.rewarddescription}</GridItem>
+                <GridItem>
+                  <HStack spacing={3}>
+                    {requestedRound && bribedataQuery.data.bribefile && (
+                      <EditOfferModal
+                        roundNo={requestedRound}
+                        isNew={false}
+                        data={bribe}
+                        tokens={bribedataQuery.data.bribefile.tokendata.map(x => x.token)}
+                        onSubmit={saveEditOffer}
+                      />
+                    )}
+                    {requestedRound && (
+                      <DeleteOfferModal round={requestedRound} offerId={bribe.offerId} />
+                    )}
+                  </HStack>
+                </GridItem>
+              </Grid>
+            ))}
           </CardBody>
         </Card>
       </>
