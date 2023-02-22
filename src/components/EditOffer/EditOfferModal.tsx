@@ -33,16 +33,16 @@ export function EditOfferModal(props: modalProps) {
   const { roundNo, isNew, data, tokens, onSubmit } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [voteIndex, setVoteIndex] = useState(data.voteindex);
-  const [poolName, setPoolName] = useState(data.poolname);
-  const [poolURL, setPoolURL] = useState(data.poolurl);
-  const [description, setDescription] = useState(data.rewarddescription);
-  const [assumption, setAssumption] = useState(data.assumption);
-  const [percentageThreshold, setPercentageThreshold] = useState(data.percentagethreshold);
-  const [rewardCap, setRewardCap] = useState(data.rewardcap);
+  const [offerId, setOfferId] = useState(0);
+  const [rewardCap, setRewardCap] = useState<number | undefined>(undefined);
+  const [voteIndex, setVoteIndex] = useState(0);
+  const [payoutThreshold, setPayoutThreshold] = useState<number | undefined>(undefined);
+  const [percentageThreshold, setPercentageThreshold] = useState<number | undefined>(undefined);
+  const [poolName, setPoolName] = useState("");
+  const [poolURL, setPoolURL] = useState("");
+  const [description, setDescription] = useState("");
+  const [assumption, setAssumption] = useState<string | undefined>(undefined);
   const [rewards, setRewards] = useState(data.reward);
-  const [payoutThreshold, setPayoutThreshold] = useState(data.payoutthreshold);
-  const [offerId] = useState(data.offerId);
 
   const updateReward = (rewardData: RewardType, rewardNumber: number) => {
     const rewardArray = rewards ? [...rewards] : [];
@@ -96,9 +96,29 @@ export function EditOfferModal(props: modalProps) {
     onClose();
   };
 
+  const openModal = () => {
+    if (data) {
+      console.log("set values");
+      setOfferId(data.offerId);
+      setVoteIndex(data.voteindex);
+      setRewardCap(data.rewardcap);
+      setPayoutThreshold(data.payoutthreshold);
+      setPercentageThreshold(data.percentagethreshold);
+      setPoolName(data.poolname);
+      setPoolURL(data.poolurl);
+      setDescription(data.rewarddescription);
+      setAssumption(data.assumption);
+      setRewards(data.reward);
+
+      //console.log(offerData.rewardcap, rewardCap);
+    }
+
+    onOpen();
+  };
+
   return (
     <>
-      <Button onClick={onOpen}>{isNew ? "Add New Offer" : "Edit"}</Button>
+      <Button onClick={openModal}>{isNew ? "Add New Offer" : "Edit"}</Button>
 
       <Modal
         size="4xl"

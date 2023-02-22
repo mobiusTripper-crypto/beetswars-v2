@@ -50,11 +50,21 @@ const BribeForm: NextPage = () => {
     { round: requestedRound },
     { enabled: !!requestedRound }
   );
-  const addOfferMut = trpc.bribes.addOffer.useMutation();
-  const editOfferMut = trpc.bribes.editOffer.useMutation();
+  const addOfferMut = trpc.bribes.addOffer.useMutation({
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+  const editOfferMut = trpc.bribes.editOffer.useMutation({
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
   const setlatest = trpc.rounds.setLatest.useMutation();
-  const editRound = trpc.bribes.editRound.useMutation();
-  const addRound = trpc.bribes.addRound.useMutation();
+  const editRound = trpc.bribes.editRound.useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+  const addRound = trpc.bribes.addRound.useMutation({
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
 
   useEffect(() => {
     queryClient.invalidateQueries();
@@ -64,21 +74,17 @@ const BribeForm: NextPage = () => {
   }, [requestedRound]);
 
   const saveNewOffer = (payload: Bribedata) => {
-    requestedRound &&
-      addOfferMut.mutate(
-        { round: requestedRound, payload },
-        { onSuccess: () => queryClient.invalidateQueries() }
-      );
+    requestedRound && addOfferMut.mutate({ round: requestedRound, payload });
   };
   const saveEditOffer = (payload: Bribedata) => {
-    requestedRound && editOfferMut.mutate({ round: requestedRound, payload }),
-      { onSuccess: () => queryClient.invalidateQueries() };
+    requestedRound && editOfferMut.mutate({ round: requestedRound, payload });
   };
   const saveNewRound = (payload: Bribefile) => {
-    addRound.mutate(payload), { onSuccess: () => queryClient.invalidateQueries() };
+    addRound.mutate(payload);
   };
   const saveEditRound = (payload: Bribefile) => {
-    editRound.mutate(payload), { onSuccess: () => queryClient.invalidateQueries() };
+    console.log('edit save"');
+    editRound.mutate(payload);
   };
   const setLatest = () => {
     requestedRound && setlatest.mutate({ latest: requestedRound });
