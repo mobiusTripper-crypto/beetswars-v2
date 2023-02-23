@@ -27,11 +27,9 @@ const Admin: NextPage = () => {
   const editReward = trpc.bribes.editReward.useMutation();
   const deleteReward = trpc.bribes.deleteReward.useMutation();
 
-
   const bribeCalculated = trpc.bribes.list.useQuery({ round: 29 }).data?.bribefile;
 
   const round = 99;
-  const snapshot = "0xae9c3b86ea25fe5635b0ba6de94985fa946d87631c2ac24fc4309923750c05ef";
 
   const bribefile = {
     version: "99.1.1",
@@ -84,10 +82,7 @@ const Admin: NextPage = () => {
   if (session && status === "authenticated") {
     return (
       <>
-        <HStack
-          m={6}
-          justifyContent="flex-end"
-        >
+        <HStack m={6} justifyContent="flex-end">
           <Text>Signed in as {session?.user?.name}</Text>
           <Button onClick={() => signOut()}>Sign out</Button>
         </HStack>
@@ -143,7 +138,7 @@ const Admin: NextPage = () => {
                 <Button onClick={() => deleteOffer.mutate({ round, offerId: 1 })}>
                   Delete offer
                 </Button>
-                <Button onClick={() => trpc.bribes.suggest.useQuery({ snapshot, round: 29 }).data?.votelist}>
+                <Button onClick={() => trpc.bribes.suggest.useQuery({ round: 29 }).data?.votelist}>
                   get Suggestions
                 </Button>
               </HStack>
@@ -172,9 +167,7 @@ const Admin: NextPage = () => {
           </CardBody>
         </Card>
         <Card m={6}>
-          <Box m={4}>
-            {JSON.stringify(bribeCalculated)}
-          </Box>
+          <Box m={4}>{JSON.stringify(bribeCalculated)}</Box>
         </Card>
       </>
     );
