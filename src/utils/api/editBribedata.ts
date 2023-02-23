@@ -262,3 +262,14 @@ export async function suggestData(round: number): Promise<Suggestion[]> {
   });
   return result;
 }
+
+export async function suggestToken(round: number): Promise<Tokendata[]> {
+  const lastRound = await readOneBribefile(round - 1);
+  if (!lastRound) return [];
+  const result = lastRound.tokendata.map(token => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { tokenId, lastprice, ...rest } = token;
+    return { ...rest, tokenId: 0 };
+  });
+  return result;
+}
