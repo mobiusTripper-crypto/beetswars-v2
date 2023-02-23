@@ -247,8 +247,10 @@ export async function deleteReward(round: number, offer: number, reward: number)
   }
 }
 
-export async function suggestData(snapshot: string, round: number): Promise<Suggestion[]> {
-  const snapData = await getSnapshotProposal(snapshot);
+export async function suggestData(round: number): Promise<Suggestion[]> {
+  const thisRound = await readOneBribefile(round);
+  if (!thisRound) return [];
+  const snapData = await getSnapshotProposal(thisRound.snapshot);
   if (!snapData) return [];
   const lastRound = await readOneBribefile(round - 1);
   const result = snapData.choices.map(poolName => {
@@ -257,6 +259,17 @@ export async function suggestData(snapshot: string, round: number): Promise<Sugg
     const voteIndex = snapData.choices.indexOf(poolName);
     if (!previousData) return { round, poolName, voteIndex } as Suggestion;
     return { round, poolName, voteIndex, previousData } as Suggestion;
+  });
+  return result;
+}
+
+export async function suggestToken(round: number): Promise<Tokendata[]> {
+  const lastRound = await readOneBribefile(round - 1);
+  if (!lastRound) return [];
+  const result = lastRound.tokendata.map(token => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { tokenId, lastprice, ...rest } = token;
+    return { ...rest, tokenId: 0 };
   });
   return result;
 }

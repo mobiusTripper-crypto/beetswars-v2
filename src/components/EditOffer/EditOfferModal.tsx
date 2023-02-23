@@ -13,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -20,17 +21,19 @@ import {
 import { useState } from "react";
 import { Reward } from "./Reward";
 import type { Bribedata, Reward as RewardType } from "types/bribedata.raw";
+import type { Suggestion } from "types/offerSuggestions.trpc";
 
 interface modalProps {
   roundNo: number;
   isNew: boolean;
   data: Bribedata;
+  suggestions?: Suggestion[];
   tokens: string[];
   onSubmit: (payload: Bribedata) => void;
 }
 
 export function EditOfferModal(props: modalProps) {
-  const { roundNo, isNew, data, tokens, onSubmit } = props;
+  const { roundNo, isNew, data, suggestions, tokens, onSubmit } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [offerId, setOfferId] = useState(0);
@@ -43,6 +46,7 @@ export function EditOfferModal(props: modalProps) {
   const [description, setDescription] = useState("");
   const [assumption, setAssumption] = useState<string | undefined>(undefined);
   const [rewards, setRewards] = useState(data.reward);
+  const [poolList, setPoolList] = useState<Suggestion[] | undefined>(undefined);
 
   const updateReward = (rewardData: RewardType, rewardNumber: number) => {
     const rewardArray = rewards ? [...rewards] : [];
@@ -77,6 +81,17 @@ export function EditOfferModal(props: modalProps) {
     setRewards(filteredRewards);
   };
 
+  const autoFill = (prevData: Bribedata) => {
+    console.log("autofill");
+    setPoolURL(prevData.poolurl);
+    setDescription(prevData.rewarddescription);
+    setAssumption(prevData.assumption);
+    setRewards(prevData.reward);
+    setRewardCap(prevData.rewardcap); // || undefined ???
+    setPayoutThreshold(prevData.payoutthreshold);
+    setPercentageThreshold(prevData.percentagethreshold);
+  };
+
   const save = () => {
     const payload = {
       offerId: offerId || 0,
@@ -91,7 +106,6 @@ export function EditOfferModal(props: modalProps) {
       reward: rewards || [],
       additionalrewards: [] || undefined,
     };
-
     onSubmit(payload);
     onClose();
   };
@@ -109,10 +123,12 @@ export function EditOfferModal(props: modalProps) {
       setDescription(data.rewarddescription);
       setAssumption(data.assumption);
       setRewards(data.reward);
-
       //console.log(offerData.rewardcap, rewardCap);
     }
-
+    if (suggestions) {
+      console.log("set suggestions");
+      setPoolList(suggestions);
+    }
     onOpen();
   };
 
@@ -148,11 +164,34 @@ export function EditOfferModal(props: modalProps) {
               <GridItem>
                 <FormControl>
                   <FormLabel>Vote Index</FormLabel>
-                  <Input
-                    value={voteIndex}
-                    onChange={e => setVoteIndex(Number(e.target.value))}
-                    type="number"
-                  />
+                  {isNew ? (
+                    <Select
+                      value={voteIndex || ""}
+                      onChange={e => {
+                        const pool = poolList?.find(p => p.voteIndex === Number(e.target.value));
+                        if (!pool) return;
+                        setVoteIndex(pool.voteIndex);
+                        setPoolName(pool.poolName);
+                        // next can be extracted to a button click, if wanted
+                        pool.previousData && autoFill(pool.previousData);
+                      }}
+                      disabled={!poolList}
+                    >
+                      {[{ voteIndex: "", poolName: "", round: 0 }, ...(poolList || [])].map(
+                        (pool, index) => (
+                          <option key={index} value={pool.voteIndex}>
+                            {index + " - " + pool.poolName}
+                          </option>
+                        )
+                      )}
+                    </Select>
+                  ) : (
+                    <Input
+                      value={voteIndex}
+                      onChange={e => setVoteIndex(Number(e.target.value))}
+                      type="number"
+                    />
+                  )}
                 </FormControl>
               </GridItem>
               <GridItem>

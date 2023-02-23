@@ -15,6 +15,7 @@ import {
   editReward,
   deleteReward,
   suggestData,
+  suggestToken,
 } from "utils/api/editBribedata";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { z } from "zod";
@@ -37,6 +38,7 @@ import { router, publicProcedure } from "../trpc";
 // - deleteReward: delete reward for given round, offer and reward id, except of last
 // Helper for form data:
 // - suggest: retrieve a list of vote options, add previous round data if available
+// - suggestToken: retrieve a list of tokens from previous round
 
 export const bribedataRouter = router({
   list: publicProcedure
@@ -76,7 +78,7 @@ export const bribedataRouter = router({
       if (!session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      const result = await addToken(input.payload, input.round);
+      const result: Tokendata[] | null = await addToken(input.payload, input.round);
       return result;
     }),
   editToken: publicProcedure
@@ -86,7 +88,7 @@ export const bribedataRouter = router({
       if (!session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      const result = await editToken(input.payload, input.round);
+      const result: Tokendata[] | null = await editToken(input.payload, input.round);
       return result;
     }),
   deleteToken: publicProcedure
@@ -116,7 +118,7 @@ export const bribedataRouter = router({
       if (!session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      const result = await editOffer(input.payload, input.round);
+      const result: Bribedata[] | null = await editOffer(input.payload, input.round);
       return result;
     }),
   deleteOffer: publicProcedure
@@ -126,7 +128,7 @@ export const bribedataRouter = router({
       if (!session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      const result = await deleteOffer(input.offerId, input.round);
+      const result: boolean = await deleteOffer(input.offerId, input.round);
       return result;
     }),
   addReward: publicProcedure
@@ -159,11 +161,14 @@ export const bribedataRouter = router({
       const result = await deleteReward(input.round, input.offer, input.reward);
       return result;
     }),
-  suggest: publicProcedure
-    .input(z.object({ snapshot: z.string(), round: z.number() }))
-    .query(async ({ input }) => {
-      return {
-        votelist: await suggestData(input.snapshot, input.round),
-      };
-    }),
+  suggest: publicProcedure.input(z.object({ round: z.number() })).query(async ({ input }) => {
+    return {
+      votelist: await suggestData(input.round),
+    };
+  }),
+  suggestToken: publicProcedure.input(z.object({ round: z.number() })).query(async ({ input }) => {
+    return {
+      tokenlist: await suggestToken(input.round),
+    };
+  }),
 });
