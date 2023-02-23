@@ -76,7 +76,7 @@ export const bribedataRouter = router({
       if (!session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      const result = await addToken(input.payload, input.round);
+      const result: Tokendata[] | null = await addToken(input.payload, input.round);
       return result;
     }),
   editToken: publicProcedure
@@ -116,7 +116,7 @@ export const bribedataRouter = router({
       if (!session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      const result = await editOffer(input.payload, input.round);
+      const result: Bribedata[] | null = await editOffer(input.payload, input.round);
       return result;
     }),
   deleteOffer: publicProcedure
@@ -159,11 +159,9 @@ export const bribedataRouter = router({
       const result = await deleteReward(input.round, input.offer, input.reward);
       return result;
     }),
-  suggest: publicProcedure
-    .input(z.object({ snapshot: z.string(), round: z.number() }))
-    .query(async ({ input }) => {
-      return {
-        votelist: await suggestData(input.snapshot, input.round),
-      };
-    }),
+  suggest: publicProcedure.input(z.object({ round: z.number() })).query(async ({ input }) => {
+    return {
+      votelist: await suggestData(input.round),
+    };
+  }),
 });

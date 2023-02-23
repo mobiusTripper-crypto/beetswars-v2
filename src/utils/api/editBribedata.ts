@@ -247,8 +247,10 @@ export async function deleteReward(round: number, offer: number, reward: number)
   }
 }
 
-export async function suggestData(snapshot: string, round: number): Promise<Suggestion[]> {
-  const snapData = await getSnapshotProposal(snapshot);
+export async function suggestData(round: number): Promise<Suggestion[]> {
+  const thisRound = await readOneBribefile(round);
+  if (!thisRound) return [];
+  const snapData = await getSnapshotProposal(thisRound.snapshot);
   if (!snapData) return [];
   const lastRound = await readOneBribefile(round - 1);
   const result = snapData.choices.map(poolName => {

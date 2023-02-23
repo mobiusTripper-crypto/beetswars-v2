@@ -50,6 +50,10 @@ const BribeForm: NextPage = () => {
     { round: requestedRound },
     { enabled: !!requestedRound }
   );
+  const suggestionQuery = trpc.bribes.suggest.useQuery(
+    { round: requestedRound || 0 },
+    { enabled: !!requestedRound }
+  );
   const addOfferMut = trpc.bribes.addOffer.useMutation({
     onSuccess: () => queryClient.invalidateQueries(),
   });
@@ -186,6 +190,7 @@ const BribeForm: NextPage = () => {
                   isNew
                   roundNo={requestedRound}
                   data={emptyoffer}
+                  suggestions={suggestionQuery.data?.votelist || []}
                   tokens={bribedataQuery.data.bribefile.tokendata.map(x => x.token) ?? []}
                   onSubmit={saveNewOffer}
                 />
