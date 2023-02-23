@@ -85,7 +85,7 @@ export const TopRow = () => {
   const tableLink = dashboardLink + "/" + requestedRound + "/table";
   const wdafLink = "/snapshotTimes";
   const bribersdashLink = "/bribersDashboard";
-  const chartLink = "/chart";
+  const chartLink = "/gaugeVoteHistory";
   const linkActiveColor = "limegreen";
   const iconProps = {
     size: "1.6rem",

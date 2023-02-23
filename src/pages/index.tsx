@@ -38,7 +38,7 @@ const Home: NextPage = () => {
             caption="Incentives ROI"
           />
           <SplashItem
-            href="/chart"
+            href="/gaugeVoteHistory"
             icon={ChartIcon}
             text="Gauge Vote History"
             caption="History of previous rounds"
