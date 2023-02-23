@@ -11,7 +11,7 @@ import {
   HStack,
   Spacer,
   Text,
-  useToast,
+  // useToast,
   VStack,
 } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -20,9 +20,11 @@ import { useGlobalContext } from "contexts/GlobalContext";
 import { EditRoundModal } from "components/EditRound/EditRound";
 import { DeleteOfferModal } from "components/DeleteOfferModal";
 import { EditOfferModal } from "components/EditOffer/EditOfferModal";
-import type { Bribedata, Bribefile } from "types/bribedata.raw";
+import type { Bribedata, Bribefile, Tokendata } from "types/bribedata.raw";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { EditTokenModal } from "components/EditToken/EditToken";
+import { DeleteTokenModal } from "components/EditToken/DeleteTokenModal";
 
 const BribeForm: NextPage = () => {
   const emptyoffer: Bribedata = {
@@ -41,7 +43,10 @@ const BribeForm: NextPage = () => {
     tokendata: [],
     bribedata: [],
   };
-
+  const emptyToken: Tokendata = {
+    token: "",
+    tokenId: 0,
+  };
   const queryClient = useQueryClient();
   const { requestedRound } = useGlobalContext();
   const { data: session, status } = useSession();
@@ -54,6 +59,10 @@ const BribeForm: NextPage = () => {
     { round: requestedRound || 0 },
     { enabled: !!requestedRound }
   );
+  const tokenlistQuery = trpc.bribes.suggestToken.useQuery(
+    { round: requestedRound || 0 },
+    { enabled: !!requestedRound }
+  );
   const addOfferMut = trpc.bribes.addOffer.useMutation({
     onSuccess: () => queryClient.invalidateQueries(),
   });
@@ -62,18 +71,21 @@ const BribeForm: NextPage = () => {
   });
   const setlatest = trpc.rounds.setLatest.useMutation();
   const editRound = trpc.bribes.editRound.useMutation({
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-    },
+    onSuccess: () => queryClient.invalidateQueries(),
   });
   const addRound = trpc.bribes.addRound.useMutation({
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+  const editToken = trpc.bribes.editToken.useMutation({
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+  const addToken = trpc.bribes.addToken.useMutation({
     onSuccess: () => queryClient.invalidateQueries(),
   });
 
   useEffect(() => {
     queryClient.invalidateQueries();
     queryClient.refetchQueries();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestedRound]);
 
@@ -90,22 +102,28 @@ const BribeForm: NextPage = () => {
     console.log('edit save"');
     editRound.mutate(payload);
   };
+  const saveNewToken = (payload: Tokendata) => {
+    addToken.mutate({ round: requestedRound || 0, payload });
+  };
+  const saveEditToken = (payload: Tokendata) => {
+    editToken.mutate({ round: requestedRound || 0, payload });
+  };
   const setLatest = () => {
     requestedRound && setlatest.mutate({ latest: requestedRound });
   };
-  // this function shows toast message - just for testing button function
-  // TODO: remove after testing
-  const toast = useToast();
-  function showToast(action: string) {
-    toast({
-      title: "Button clicked.",
-      description: action,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-  }
-  //////////////////////////////
+  // // this function shows toast message - just for testing button function
+  // // TODO: remove after testing
+  // const toast = useToast();
+  // function showToast(action: string) {
+  //   toast({
+  //     title: "Button clicked.",
+  //     description: action,
+  //     status: "success",
+  //     duration: 5000,
+  //     isClosable: true,
+  //   });
+  // }
+  // //////////////////////////////
 
   if (session && status === "authenticated") {
     if (bribedataQuery.isLoading) return <Heading>Loading ...</Heading>;
@@ -156,7 +174,12 @@ const BribeForm: NextPage = () => {
             <Flex>
               <Heading size="md">Tokens:</Heading>
               <Spacer />
-              <Button onClick={() => showToast(`add new token`)}>add new token</Button>
+              <EditTokenModal
+                data={emptyToken}
+                lasttokens={tokenlistQuery.data?.tokenlist || []}
+                isNew
+                onSubmit={saveNewToken}
+              />
             </Flex>
           </CardHeader>
           <CardBody>
@@ -168,11 +191,11 @@ const BribeForm: NextPage = () => {
                 <GridItem>
                   <Flex justifyContent="flex-end">
                     <Spacer />
-                    <Button onClick={() => showToast(`edit token ${token.tokenId}`)}>Edit</Button>
+                    <EditTokenModal data={token} isNew={false} onSubmit={saveEditToken} />
                     <Spacer />
-                    <Button onClick={() => showToast(`delete token ${token.tokenId}`)}>
-                      Delete
-                    </Button>
+                    {requestedRound && (
+                      <DeleteTokenModal round={requestedRound} tokenId={token.tokenId} />
+                    )}
                   </Flex>
                 </GridItem>
               </Grid>
