@@ -15,33 +15,29 @@ import { trpc } from "utils/trpc";
 
 interface modalProps {
   round: number;
-  offerId: number;
+  tokenId: number;
 }
 
-export function DeleteOfferModal(props: modalProps) {
+export function DeleteTokenModal(props: modalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { round, offerId } = props;
+  const { round, tokenId } = props;
   const queryClient = useQueryClient();
 
-  const deleteOffer = trpc.bribes.deleteOffer.useMutation({
+  const deleteToken = trpc.bribes.deleteToken.useMutation({
     onSuccess: () => queryClient.invalidateQueries(),
   });
 
-  const openModal = () => {
-    onOpen();
-  };
-
   return (
     <>
-      <Button onClick={openModal}>Delete</Button>
+      <Button onClick={onOpen}>Delete</Button>
 
       <Modal closeOnOverlayClick={false} blockScrollOnMount isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Edit Round</ModalHeader>
+          <ModalHeader>Delete Token</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>Delete offer number: {offerId}?</Text>
+            <Text>Delete token number: {tokenId}?</Text>
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
@@ -49,7 +45,7 @@ export function DeleteOfferModal(props: modalProps) {
             </Button>
             <Button
               onClick={() => {
-                deleteOffer.mutate({ round, offerId });
+                deleteToken.mutate({ round, tokenId });
                 onClose();
               }}
             >

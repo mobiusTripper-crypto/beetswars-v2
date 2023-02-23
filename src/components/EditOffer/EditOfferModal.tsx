@@ -112,7 +112,6 @@ export function EditOfferModal(props: modalProps) {
 
   const openModal = () => {
     if (data) {
-      console.log("set values");
       setOfferId(data.offerId);
       setVoteIndex(data.voteindex);
       setRewardCap(data.rewardcap);
@@ -123,10 +122,8 @@ export function EditOfferModal(props: modalProps) {
       setDescription(data.rewarddescription);
       setAssumption(data.assumption);
       setRewards(data.reward);
-      //console.log(offerData.rewardcap, rewardCap);
     }
     if (suggestions) {
-      console.log("set suggestions");
       setPoolList(suggestions);
     }
     onOpen();
