@@ -37,10 +37,10 @@ export function EditOfferModal(props: modalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [offerId, setOfferId] = useState(0);
-  const [rewardCap, setRewardCap] = useState<number | undefined>(undefined);
+  const [rewardCap, setRewardCap] = useState<string | undefined>(undefined);
   const [voteIndex, setVoteIndex] = useState(0);
-  const [payoutThreshold, setPayoutThreshold] = useState<number | undefined>(undefined);
-  const [percentageThreshold, setPercentageThreshold] = useState<number | undefined>(undefined);
+  const [payoutThreshold, setPayoutThreshold] = useState<string | undefined>(undefined);
+  const [percentageThreshold, setPercentageThreshold] = useState<string | undefined>(undefined);
   const [poolName, setPoolName] = useState("");
   const [poolURL, setPoolURL] = useState("");
   const [description, setDescription] = useState("");
@@ -87,9 +87,9 @@ export function EditOfferModal(props: modalProps) {
     setDescription(prevData.rewarddescription);
     setAssumption(prevData.assumption);
     setRewards(prevData.reward);
-    setRewardCap(prevData.rewardcap); // || undefined ???
-    setPayoutThreshold(prevData.payoutthreshold);
-    setPercentageThreshold(prevData.percentagethreshold);
+    setRewardCap(prevData.rewardcap?.toString() || undefined);
+    setPayoutThreshold(prevData.payoutthreshold?.toString() || undefined);
+    setPercentageThreshold(prevData.percentagethreshold?.toString() || undefined);
   };
 
   const save = () => {
@@ -100,9 +100,9 @@ export function EditOfferModal(props: modalProps) {
       poolurl: poolURL,
       rewarddescription: description,
       assumption: assumption || undefined,
-      percentagethreshold: percentageThreshold || undefined,
-      rewardcap: rewardCap || undefined,
-      payoutthreshold: payoutThreshold || undefined,
+      percentagethreshold: Number(percentageThreshold) || undefined,
+      rewardcap: Number(rewardCap) || undefined,
+      payoutthreshold: Number(payoutThreshold) || undefined,
       reward: rewards || [],
       additionalrewards: [] || undefined,
     };
@@ -114,13 +114,13 @@ export function EditOfferModal(props: modalProps) {
     if (data) {
       setOfferId(data.offerId);
       setVoteIndex(data.voteindex);
-      setRewardCap(data.rewardcap);
-      setPayoutThreshold(data.payoutthreshold);
-      setPercentageThreshold(data.percentagethreshold);
+      setRewardCap(data.rewardcap?.toString() || undefined);
+      setPayoutThreshold(data.payoutthreshold?.toString() || undefined);
+      setPercentageThreshold(data.percentagethreshold?.toString() || undefined);
       setPoolName(data.poolname);
       setPoolURL(data.poolurl);
       setDescription(data.rewarddescription);
-      setAssumption(data.assumption);
+      setAssumption(data.assumption || undefined);
       setRewards(data.reward);
     }
     if (suggestions) {
@@ -195,8 +195,8 @@ export function EditOfferModal(props: modalProps) {
                 <FormControl>
                   <FormLabel>Reward Cap</FormLabel>
                   <Input
-                    value={rewardCap}
-                    onChange={e => setRewardCap(Number(e.target.value))}
+                    value={rewardCap || ""}
+                    onChange={e => setRewardCap(e.target.value)}
                     type="number"
                   />
                 </FormControl>
@@ -205,8 +205,8 @@ export function EditOfferModal(props: modalProps) {
                 <FormControl>
                   <FormLabel>Payout Threshold (-1 to disable 0.15% cap)</FormLabel>
                   <Input
-                    value={payoutThreshold}
-                    onChange={e => setPayoutThreshold(Number(e.target.value))}
+                    value={payoutThreshold || ""}
+                    onChange={e => setPayoutThreshold(e.target.value)}
                     type="number"
                   />
                 </FormControl>
@@ -215,8 +215,8 @@ export function EditOfferModal(props: modalProps) {
                 <FormControl>
                   <FormLabel>Percentage Threshhold</FormLabel>
                   <Input
-                    value={percentageThreshold}
-                    onChange={e => setPercentageThreshold(Number(e.target.value))}
+                    value={percentageThreshold || ""}
+                    onChange={e => setPercentageThreshold(e.target.value)}
                     type="number"
                   />
                 </FormControl>
@@ -242,7 +242,10 @@ export function EditOfferModal(props: modalProps) {
               <GridItem colSpan={2}>
                 <FormControl>
                   <FormLabel>Assumptions</FormLabel>
-                  <Textarea value={assumption} onChange={e => setAssumption(e.target.value)} />
+                  <Textarea
+                    value={assumption || ""}
+                    onChange={e => setAssumption(e.target.value)}
+                  />
                 </FormControl>
               </GridItem>
             </Grid>

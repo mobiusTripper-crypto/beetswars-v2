@@ -34,20 +34,20 @@ export function EditTokenModal(props: modalProps) {
   const [coingeckoid, setCoingeckoid] = useState<string | undefined>(undefined);
   const [bptpoolid, setBptpoolid] = useState<string | undefined>(undefined);
   const [isbpt, setIsbpt] = useState<boolean | undefined>(undefined);
-  const [lastprice, setLastprice] = useState<number | undefined>(undefined);
+  const [lastprice, setLastprice] = useState<string | undefined>(undefined);
   const [token, setToken] = useState("");
   const [tokenId, setTokenId] = useState(0);
   const [tokenList, setTokenList] = useState<Tokendata[] | undefined>(undefined);
 
   const save = () => {
     const payload = {
-      tokenaddress,
-      coingeckoid,
-      bptpoolid,
-      isbpt,
-      lastprice,
-      token,
-      tokenId,
+      tokenaddress: tokenaddress || undefined,
+      coingeckoid: coingeckoid || undefined,
+      bptpoolid: bptpoolid || undefined,
+      isbpt: !!isbpt,
+      lastprice: Number(lastprice) || undefined,
+      token: token,
+      tokenId: tokenId || 0,
     };
     onSubmit(payload);
     onClose();
@@ -60,7 +60,7 @@ export function EditTokenModal(props: modalProps) {
       setCoingeckoid(data.coingeckoid);
       setBptpoolid(data.bptpoolid);
       setIsbpt(data.isbpt);
-      setLastprice(data.lastprice);
+      setLastprice((data.lastprice || "").toString());
       setToken(data.token);
       setTokenId(data.tokenId);
     }
@@ -108,7 +108,7 @@ export function EditTokenModal(props: modalProps) {
                 )}
                 <FormControl isDisabled>
                   <FormLabel>Token ID</FormLabel>
-                  <Input value={tokenId} />
+                  <Input value={tokenId || ""} />
                 </FormControl>
                 <FormControl isDisabled={!isNew}>
                   <FormLabel>Token</FormLabel>
@@ -118,13 +118,13 @@ export function EditTokenModal(props: modalProps) {
                   <FormLabel>Token Address</FormLabel>
                   <Input
                     placeholder="0x..."
-                    value={tokenaddress}
+                    value={tokenaddress || ""}
                     onChange={e => setTokenaddress(e.target.value)}
                   />
                 </FormControl>
                 <FormControl>
                   <FormLabel>CoinGecko ID</FormLabel>
-                  <Input value={coingeckoid} onChange={e => setCoingeckoid(e.target.value)} />
+                  <Input value={coingeckoid || ""} onChange={e => setCoingeckoid(e.target.value)} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>BPT Pool-ID</FormLabel>
@@ -132,14 +132,18 @@ export function EditTokenModal(props: modalProps) {
                     <Checkbox isChecked={isbpt} onChange={() => setIsbpt(!isbpt)} />
                     <Input
                       isDisabled={!isbpt}
-                      value={bptpoolid}
+                      value={bptpoolid || ""}
                       onChange={e => setBptpoolid(e.target.value)}
                     />
                   </HStack>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Last Price</FormLabel>
-                  <Input value={lastprice} onChange={e => setLastprice(Number(e.target.value))} />
+                  <Input
+                    type="number"
+                    value={lastprice || ""}
+                    onChange={e => setLastprice(e.target.value)}
+                  />
                 </FormControl>
               </VStack>
             </FormControl>

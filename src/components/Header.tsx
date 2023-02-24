@@ -1,5 +1,5 @@
 import { Link, Heading, Center, chakra } from "@chakra-ui/react";
-import { Box, useColorModeValue, Text } from "@chakra-ui/react";
+import { useColorModeValue } from "@chakra-ui/react";
 import NextLink from "next/link";
 
 export const Header = () => {
