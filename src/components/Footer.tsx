@@ -18,7 +18,7 @@ export function Footer() {
         <Link as={NextLink} href={beetsLink} isExternal>
           BeethovenX <Icon as={ArrowIcon} boxSize="0.8em" />
         </Link>{" "}
-        and please do your own research. This is not investment advice!
+        and please do your <Link as={NextLink} href="/admin">own</Link> research. This is not investment advice!
       </Text>
     </>
   );

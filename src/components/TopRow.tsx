@@ -1,4 +1,4 @@
-import { Box, HStack, Icon, Text } from "@chakra-ui/react";
+import { Image, Button, Box, HStack, Icon, Text } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "components/ColorModeSwitcher";
 import { CustomConnectButton } from "components/CustomConnectButton";
 import { useGlobalContext } from "contexts/GlobalContext";
@@ -13,8 +13,10 @@ import React from "react";
 import { useEffect } from "react";
 import { useGetVp } from "hooks/useGetVp";
 import { useRoundList } from "hooks/useRoundList";
+import { useSession, signOut } from "next-auth/react";
 
 export const TopRow = () => {
+  const { data: session, status } = useSession();
   const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
   const { data: votingPower, connected: accountConnected } = useGetVp();
   const { data: roundList, loaded: roundListLoaded } = useRoundList();
@@ -26,6 +28,8 @@ export const TopRow = () => {
     urlParam.number && numOnly.test(urlParam.number[0] as string)
       ? Number(parseInt(urlParam.number[0] as string))
       : NaN;
+
+  console.log(session?.user?.image, status);
 
   useEffect(() => {
     console.log(
@@ -101,6 +105,18 @@ export const TopRow = () => {
   return (
     <>
       <HStack p={4} justifyContent="flex-end" flexWrap="wrap">
+        <HStack flex="1">
+          {session && status === "authenticated" ? (
+            <>
+              <Link href="/admin">Signed in as {session?.user?.name}</Link>
+              <Image src={session?.user?.image as string|undefined} alt="gh avatar" boxSize="24px" borderRadius="full" />
+              <Button onClick={() => signOut({})}>Sign out</Button>
+            </>
+          ) : (
+            ""
+          )}
+        </HStack>
+
         {asPath === "/" ? (
           ""
         ) : (

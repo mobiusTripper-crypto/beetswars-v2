@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import {
   Button,
   Card,
@@ -13,8 +13,9 @@ import {
   Text,
   // useToast,
   VStack,
+  Progress,
 } from "@chakra-ui/react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { EditRoundModal } from "components/EditRound/EditRound";
@@ -126,15 +127,11 @@ const BribeForm: NextPage = () => {
   // //////////////////////////////
 
   if (session && status === "authenticated") {
-    if (bribedataQuery.isLoading) return <Heading>Loading ...</Heading>;
+    if (bribedataQuery.isLoading) return <Progress size="xs" isIndeterminate />;
     if (bribedataQuery.isError || !bribedataQuery.data || !bribedataQuery.data.bribefile)
       return <Heading>Error</Heading>;
     return (
       <>
-        <HStack m={6} justifyContent="flex-end">
-          <Text>Signed in as {session?.user?.name}</Text>
-          <Button onClick={() => signOut()}>Sign out</Button>
-        </HStack>
         <Card m={6}>
           <CardHeader>
             <HStack spacing={4} justify="space-between">
