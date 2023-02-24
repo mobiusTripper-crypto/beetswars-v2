@@ -29,7 +29,7 @@ export const TopRow = () => {
       ? Number(parseInt(urlParam.number[0] as string))
       : NaN;
 
-  console.log(session?.user?.image, status);
+  console.log(session, status);
 
   useEffect(() => {
     console.log(
@@ -109,8 +109,14 @@ export const TopRow = () => {
           {session && status === "authenticated" ? (
             <>
               <Link href="/admin">Signed in as {session?.user?.name}</Link>
-              <Image src={session?.user?.image as string|undefined} alt="gh avatar" boxSize="24px" borderRadius="full" />
+              <Image
+                src={session?.user?.image as string}
+                alt="gh avatar"
+                boxSize="24px"
+                borderRadius="full"
+              />
               <Button onClick={() => signOut({})}>Sign out</Button>
+              {asPath.includes("/round/") ? <Link href="/bribeform">Edit Round</Link> : ""}
             </>
           ) : (
             ""
@@ -200,4 +206,3 @@ export const TopRow = () => {
 };
 
 export default TopRow;
-
