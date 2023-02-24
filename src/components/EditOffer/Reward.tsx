@@ -59,11 +59,12 @@ export function Reward(props: RewardProps) {
       <GridItem>
         <Input
           type="number"
-          value={reward.amount}
+          value={(reward.amount || "").toString()}
           onChange={e => {
+            const newVal = e.target.value;
             const rewardCopy = {
               ...reward,
-              ["amount"]: Number(e.target.value),
+              ["amount"]: Number(newVal),
             };
             updateReward(rewardCopy, reward.rewardId);
           }}
