@@ -13,15 +13,24 @@ export const AdminNav = () => {
     <>
       <Card m={6} p={2}>
         <HStack gap={6}>
-          <Link as={NextLink} href={adminPath}>
-            <Button isActive={currentPath === adminPath ? true : false}>Admin</Button>
-          </Link>
-          <Link as={NextLink} href={bribeformPath}>
-            <Button isActive={currentPath === bribeformPath ? true : false}>Bribe Forms</Button>
-          </Link>
-          <Link as={NextLink} href={poolPath}>
-            <Button isActive={currentPath === poolPath ? true : false}>Edit votable Pools</Button>
-          </Link>
+          <Button
+            onClick={() => router.push(adminPath)}
+            isActive={currentPath === adminPath ? true : false}
+          >
+            Admin
+          </Button>
+          <Button
+            onClick={() => router.push(bribeformPath)}
+            isActive={currentPath === bribeformPath ? true : false}
+          >
+            Bribe Forms
+          </Button>
+          <Button
+            onClick={() => router.push(poolPath)}
+            isActive={currentPath === poolPath ? true : false}
+          >
+            Edit votable Pools
+          </Button>
         </HStack>
       </Card>
     </>
