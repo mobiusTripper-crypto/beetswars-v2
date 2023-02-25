@@ -23,21 +23,22 @@ import Router from "next/router";
 import AdminNav from "components/AdminNav";
 
 const VotablePoolForm: NextPage = () => {
+
+  const { data: session, status } = useSession();
+  useEffect(() => {
+    if (!session) Router.push("/admin");
+  });
   const { requestedRound } = useGlobalContext();
+
 
   const dbpools = trpc.votepools.list.useQuery(
     { round: requestedRound as number },
-    { enabled: !!requestedRound }
+    { enabled: !!requestedRound && !!session}
   ).data?.pools;
   const initPools = trpc.votepools.init.useMutation();
   const insertPools = trpc.votepools.insert.useMutation();
 
   const [pools, setPools] = useState(dbpools);
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (!session) Router.push("/admin");
-  });
 
   useEffect(() => {
     setPools(dbpools);
