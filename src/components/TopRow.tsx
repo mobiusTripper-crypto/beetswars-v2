@@ -29,21 +29,22 @@ export const TopRow = () => {
       ? Number(parseInt(urlParam.number[0] as string))
       : NaN;
 
-  console.log(session, status);
+  //  console.log(session, status);
 
+  console.log(
+    "ap:",
+    asPath,
+    "rll:",
+    roundListLoaded,
+    "lr:",
+    roundList?.latest,
+    "pn:",
+    parsedNumber,
+    "rr:",
+    requestedRound
+  );
   useEffect(() => {
-    console.log(
-      "ap:",
-      asPath,
-      "rll:",
-      roundListLoaded,
-      "lr:",
-      roundList?.latest,
-      "pn:",
-      parsedNumber,
-      "rr:",
-      requestedRound
-    );
+    console.log("eff1");
     if (
       asPath.includes("/round") &&
       roundListLoaded &&
@@ -57,6 +58,7 @@ export const TopRow = () => {
   }, [requestedRound, parsedNumber]);
 
   useEffect(() => {
+    console.log("eff2");
     if (urlParam.number && roundListLoaded) {
       if (parsedNumber !== requestedRound) {
         if (roundList.rounds.includes(parsedNumber)) {
@@ -65,7 +67,11 @@ export const TopRow = () => {
           requestRound(roundList.latest);
         }
       }
-    } else if (requestedRound === undefined || parsedNumber === undefined) {
+    } else if (
+      requestedRound === undefined ||
+      parsedNumber === undefined ||
+      (asPath === "/" && requestedRound !== roundList.latest)
+    ) {
       requestRound(roundList.latest);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +96,7 @@ export const TopRow = () => {
   const wdafLink = "/snapshotTimes";
   const bribersdashLink = "/bribersDashboard";
   const chartLink = "/gaugeVoteHistory";
-  const linkActiveColor = "limegreen";
+  const linkActiveColor = "bw_green";
   const iconProps = {
     size: "1.6rem",
     margin: "0 1rem 0 0",
@@ -142,6 +148,7 @@ export const TopRow = () => {
                 <Icon
                   title="Main Dashboard Card View"
                   as={CardIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -156,6 +163,7 @@ export const TopRow = () => {
                 <Icon
                   title="Main Dashbhoard Table View"
                   as={TableIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -170,6 +178,7 @@ export const TopRow = () => {
                 <Icon
                   title="Briber's Dashboard"
                   as={BribersIcon}
+                  _hover={{ color: "bw_red" }}
                   height="1.2rem"
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -180,6 +189,7 @@ export const TopRow = () => {
                 <Icon
                   title="Gauge Vote History"
                   as={ChartIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -190,6 +200,7 @@ export const TopRow = () => {
                 <Icon
                   title="Snapshot Times"
                   as={StatsIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}

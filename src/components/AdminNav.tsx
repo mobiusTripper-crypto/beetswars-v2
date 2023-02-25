@@ -1,5 +1,4 @@
-import { Link, Card, Button, HStack } from "@chakra-ui/react";
-import NextLink from "next/link";
+import { Card, Button, HStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 export const AdminNav = () => {
