@@ -14,6 +14,7 @@ import {
   Td,
   Card,
   useToast,
+  Progress,
 } from "@chakra-ui/react";
 import { HStack, VStack } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
@@ -23,17 +24,15 @@ import Router from "next/router";
 import AdminNav from "components/AdminNav";
 
 const VotablePoolForm: NextPage = () => {
-
   const { data: session, status } = useSession();
   useEffect(() => {
     if (!session) Router.push("/admin");
   });
   const { requestedRound } = useGlobalContext();
 
-
   const dbpools = trpc.votepools.list.useQuery(
     { round: requestedRound as number },
-    { enabled: !!requestedRound && !!session}
+    { enabled: !!requestedRound && !!session }
   ).data?.pools;
   const initPools = trpc.votepools.init.useMutation();
   const insertPools = trpc.votepools.insert.useMutation();
@@ -66,6 +65,7 @@ const VotablePoolForm: NextPage = () => {
   }
 
   if (session && status === "authenticated") {
+    if (!dbpools) return <Progress size="xs" isIndeterminate />;
     return (
       <>
         <AdminNav />
