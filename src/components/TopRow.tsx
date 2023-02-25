@@ -109,8 +109,17 @@ export const TopRow = () => {
   };
 
   return (
-    <>
-      <HStack p={4} justifyContent="flex-end" flexWrap="wrap">
+    <Box
+      position="sticky"
+      top="0"
+      width="100%"
+      p={2}
+      mb={2}
+      opacity="97%"
+      bgColor="bg_toprow"
+      zIndex="1"
+    >
+      <HStack justifyContent="flex-end" flexWrap="wrap">
         <HStack flex="1">
           {session && status === "authenticated" ? (
             <>
@@ -213,7 +222,7 @@ export const TopRow = () => {
         <CustomConnectButton />
         <ColorModeSwitcher />
       </HStack>
-    </>
+    </Box>
   );
 };
 

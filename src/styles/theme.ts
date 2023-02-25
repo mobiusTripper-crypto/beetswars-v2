@@ -21,6 +21,7 @@ export const siteTheme: Partial<ChakraTheme> = {
       bw_green: { default: "#308e61", _dark: "#4be39c" },
       bw_red: { default: "#ed1200", _dark: "#ed1200" },
       bg_card: { default: "#D5E0EC", _dark: "#1C2635" },
+      bg_toprow: { default: "#F4F7FF", _dark: "#0d081c" },
     },
   },
   components: {
