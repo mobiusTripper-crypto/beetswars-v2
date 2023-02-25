@@ -112,8 +112,9 @@ export const TopRow = () => {
               <Image
                 src={session?.user?.image as string}
                 alt="gh avatar"
-                boxSize="24px"
+                boxSize="25px"
                 borderRadius="full"
+                border="1px solid black"
               />
               <Button onClick={() => signOut({})}>Sign out</Button>
               {asPath.includes("/round/") ? <Link href="/bribeform">Edit Round</Link> : ""}

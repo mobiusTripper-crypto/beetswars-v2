@@ -15,7 +15,7 @@ import {
   VStack,
   Progress,
 } from "@chakra-ui/react";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { EditRoundModal } from "components/EditRound/EditRound";
@@ -26,6 +26,9 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { EditTokenModal } from "components/EditToken/EditToken";
 import { DeleteTokenModal } from "components/EditToken/DeleteTokenModal";
+
+import Router from "next/router";
+import AdminNav from "components/AdminNav";
 
 const BribeForm: NextPage = () => {
   const emptyoffer: Bribedata = {
@@ -52,17 +55,21 @@ const BribeForm: NextPage = () => {
   const { requestedRound } = useGlobalContext();
   const { data: session, status } = useSession();
 
+  useEffect(() => {
+    if (!session) Router.push("/admin");
+  });
+
   const bribedataQuery = trpc.bribes.list_raw.useQuery(
     { round: requestedRound },
-    { enabled: !!requestedRound }
+    { enabled: !!requestedRound && !!session }
   );
   const suggestionQuery = trpc.bribes.suggest.useQuery(
     { round: requestedRound || 0 },
-    { enabled: !!requestedRound }
+    { enabled: !!requestedRound && !!session }
   );
   const tokenlistQuery = trpc.bribes.suggestToken.useQuery(
     { round: requestedRound || 0 },
-    { enabled: !!requestedRound }
+    { enabled: !!requestedRound && !!session }
   );
   const addOfferMut = trpc.bribes.addOffer.useMutation({
     onSuccess: () => queryClient.invalidateQueries(),
@@ -132,6 +139,7 @@ const BribeForm: NextPage = () => {
       return <Heading>Error</Heading>;
     return (
       <>
+        <AdminNav />
         <Card m={6}>
           <CardHeader>
             <HStack spacing={4} justify="space-between">
@@ -250,7 +258,6 @@ const BribeForm: NextPage = () => {
     <VStack>
       <HStack>
         <Text>Not signed in</Text>
-        <Button onClick={() => signIn()}>Sign in</Button>
       </HStack>
     </VStack>
   );

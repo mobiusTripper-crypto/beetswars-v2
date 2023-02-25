@@ -8,14 +8,13 @@ import {
   Heading,
   HStack,
   Input,
-  Link,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useSession, signIn } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
-import NextLink from "next/link";
+import AdminNav from "components/AdminNav";
 
 const Admin: NextPage = () => {
   const addUser = trpc.login.addUser.useMutation();
@@ -38,16 +37,7 @@ const Admin: NextPage = () => {
   if (session && status === "authenticated") {
     return (
       <>
-        <Card m={6} p={6}>
-          <HStack gap={6}>
-            <Link as={NextLink} href="/bribeform">
-              <Button>Bribe Forms</Button>
-            </Link>
-            <Link href="/editVotablePools">
-              <Button>Edit votable Pools</Button>
-            </Link>
-          </HStack>
-        </Card>
+        <AdminNav />
         <Card m={6}>
           <CardHeader>
             <Heading size="md">Add user</Heading>

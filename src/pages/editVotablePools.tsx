@@ -1,6 +1,6 @@
 import type { VotablePool } from "types/votablePools.raw";
-import { type NextPage } from "next";
-import { useSession, signIn, signOut } from "next-auth/react";
+import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import {
   Text,
   Checkbox,
@@ -19,6 +19,8 @@ import { HStack, VStack } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useEffect, useState } from "react";
+import Router from "next/router";
+import AdminNav from "components/AdminNav";
 
 const VotablePoolForm: NextPage = () => {
   const { requestedRound } = useGlobalContext();
@@ -32,6 +34,10 @@ const VotablePoolForm: NextPage = () => {
 
   const [pools, setPools] = useState(dbpools);
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (!session) Router.push("/admin");
+  });
 
   useEffect(() => {
     setPools(dbpools);
@@ -61,10 +67,7 @@ const VotablePoolForm: NextPage = () => {
   if (session && status === "authenticated") {
     return (
       <>
-        <HStack m={6} justifyContent="flex-end">
-          <Text>Signed in as {session?.user?.name}</Text>
-          <Button onClick={() => signOut()}>Sign out</Button>
-        </HStack>
+        <AdminNav />
         <Card m={6} p={6}>
           <Table variant="striped" colorScheme="teal" size="sm">
             <Thead>
@@ -116,7 +119,6 @@ const VotablePoolForm: NextPage = () => {
     <VStack>
       <HStack>
         <Text>Not signed in</Text>
-        <Button onClick={() => signIn()}>Sign in</Button>
       </HStack>
     </VStack>
   );

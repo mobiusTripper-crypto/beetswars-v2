@@ -33,6 +33,13 @@ export const authOptions: AuthOptions = {
       },
     },
   },
+
+  theme: {
+    colorScheme: "auto", // "auto" | "dark" | "light"
+//    brandColor: "#404b6a", // Hex color code
+    logo: "", // Absolute URL to image
+    buttonText: "", // Hex color code
+  },
 };
 
 export default NextAuth(authOptions);
