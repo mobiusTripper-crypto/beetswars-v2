@@ -65,7 +65,13 @@ const VotablePoolForm: NextPage = () => {
   }
 
   if (session && status === "authenticated") {
-    if (!dbpools) return <Progress size="xs" isIndeterminate />;
+    if (!dbpools)
+      return (
+        <>
+          <AdminNav />
+          <Progress size="xs" isIndeterminate />
+        </>
+      );
     return (
       <>
         <AdminNav />

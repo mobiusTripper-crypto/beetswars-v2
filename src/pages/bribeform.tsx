@@ -134,7 +134,13 @@ const BribeForm: NextPage = () => {
   // //////////////////////////////
 
   if (session && status === "authenticated") {
-    if (bribedataQuery.isLoading) return <Progress size="xs" isIndeterminate />;
+    if (bribedataQuery.isLoading)
+      return (
+        <>
+          <AdminNav />
+          <Progress size="xs" isIndeterminate />
+        </>
+      );
     if (bribedataQuery.isError || !bribedataQuery.data || !bribedataQuery.data.bribefile)
       return <Heading>Error</Heading>;
     return (
