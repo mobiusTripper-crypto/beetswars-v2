@@ -23,6 +23,13 @@ export const siteTheme: Partial<ChakraTheme> = {
       bg_card: { default: "#D5E0EC", _dark: "#1C2635" },
     },
   },
+  components: {
+    Progress: {
+      defaultProps: {
+        colorScheme: "green",
+      },
+    },
+  },
 };
 
 const config: ThemeConfig = {
