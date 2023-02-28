@@ -1,4 +1,4 @@
-import { Box, HStack, Icon, Text } from "@chakra-ui/react";
+import { Image, Button, Box, HStack, Icon, Text } from "@chakra-ui/react";
 import { ColorModeSwitcher } from "components/ColorModeSwitcher";
 import { CustomConnectButton } from "components/CustomConnectButton";
 import { useGlobalContext } from "contexts/GlobalContext";
@@ -13,8 +13,10 @@ import React from "react";
 import { useEffect } from "react";
 import { useGetVp } from "hooks/useGetVp";
 import { useRoundList } from "hooks/useRoundList";
+import { useSession, signOut } from "next-auth/react";
 
 export const TopRow = () => {
+  const { data: session, status } = useSession();
   const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
   const { data: votingPower, connected: accountConnected } = useGetVp();
   const { data: roundList, loaded: roundListLoaded } = useRoundList();
@@ -27,19 +29,21 @@ export const TopRow = () => {
       ? Number(parseInt(urlParam.number[0] as string))
       : NaN;
 
+  //  console.log(session, status);
+
+  console.log(
+    "ap:",
+    asPath,
+    "rll:",
+    roundListLoaded,
+    "lr:",
+    roundList?.latest,
+    "pn:",
+    parsedNumber,
+    "rr:",
+    requestedRound
+  );
   useEffect(() => {
-    console.log(
-      "ap:",
-      asPath,
-      "rll:",
-      roundListLoaded,
-      "lr:",
-      roundList?.latest,
-      "pn:",
-      parsedNumber,
-      "rr:",
-      requestedRound
-    );
     if (
       asPath.includes("/round") &&
       roundListLoaded &&
@@ -61,7 +65,11 @@ export const TopRow = () => {
           requestRound(roundList.latest);
         }
       }
-    } else if (requestedRound === undefined || parsedNumber === undefined) {
+    } else if (
+      requestedRound === undefined ||
+      parsedNumber === undefined ||
+      (asPath === "/" && requestedRound !== roundList.latest)
+    ) {
       requestRound(roundList.latest);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,7 +94,7 @@ export const TopRow = () => {
   const wdafLink = "/snapshotTimes";
   const bribersdashLink = "/bribersDashboard";
   const chartLink = "/gaugeVoteHistory";
-  const linkActiveColor = "limegreen";
+  const linkActiveColor = "bw_green";
   const iconProps = {
     size: "1.6rem",
     margin: "0 1rem 0 0",
@@ -99,8 +107,36 @@ export const TopRow = () => {
   };
 
   return (
-    <>
-      <HStack p={4} justifyContent="flex-end" flexWrap="wrap">
+    <Box
+      position="sticky"
+      top="0"
+      width="100%"
+      p={2}
+      mb={2}
+      opacity="97%"
+      bgColor="bg_toprow"
+      zIndex="1"
+    >
+      <HStack justifyContent="flex-end" flexWrap="wrap">
+        <HStack flex="1">
+          {session && status === "authenticated" ? (
+            <>
+              <Link href="/admin">Signed in as {session?.user?.name}</Link>
+              <Image
+                src={session?.user?.image as string}
+                alt="gh avatar"
+                boxSize="25px"
+                borderRadius="full"
+                border="1px solid black"
+              />
+              <Button onClick={() => signOut({})}>Sign out</Button>
+              {asPath.includes("/round/") ? <Link href="/bribeform">Edit Round</Link> : ""}
+            </>
+          ) : (
+            ""
+          )}
+        </HStack>
+
         {asPath === "/" ? (
           ""
         ) : (
@@ -119,6 +155,7 @@ export const TopRow = () => {
                 <Icon
                   title="Main Dashboard Card View"
                   as={CardIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -133,6 +170,7 @@ export const TopRow = () => {
                 <Icon
                   title="Main Dashbhoard Table View"
                   as={TableIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -147,6 +185,7 @@ export const TopRow = () => {
                 <Icon
                   title="Briber's Dashboard"
                   as={BribersIcon}
+                  _hover={{ color: "bw_red" }}
                   height="1.2rem"
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -157,6 +196,7 @@ export const TopRow = () => {
                 <Icon
                   title="Gauge Vote History"
                   as={ChartIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -167,6 +207,7 @@ export const TopRow = () => {
                 <Icon
                   title="Snapshot Times"
                   as={StatsIcon}
+                  _hover={{ color: "bw_red" }}
                   height={iconProps.size}
                   width={iconProps.size}
                   margin={iconProps.margin}
@@ -179,7 +220,7 @@ export const TopRow = () => {
         <CustomConnectButton />
         <ColorModeSwitcher />
       </HStack>
-    </>
+    </Box>
   );
 };
 

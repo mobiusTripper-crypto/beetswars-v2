@@ -24,29 +24,24 @@ const GAUGE_VOTES = gql`
     }
   }
 `;
+
 /*
-const BEETS_PROPOSALS = gql`
-  query Proposals {
-    proposals(
-      first: 300
-      skip: 0
-      where: { space_in: ["beets.eth"] }
-      orderBy: "created"
-      orderDirection: asc
-    ) {
-      id
-      title
-      start
-      snapshot
-    }
-  }
-`;
+interface ProposalObject {
+  proposals: ProposalType[];
+}
 */
 
+interface ProposalType {
+  id: string;
+  title: string;
+  start: number;
+  snapshot: string;
+}
+
 const url = "https://hub.snapshot.org/graphql";
-const blockTime: any = [];
-const snapshots: any = [];
-const roundStart: any = [];
+const blockTime: number[] = [];
+const snapshots: string[] = [];
+const roundStart: number[] = [];
 
 function App() {
   const legendColor = useColorModeValue("#222", "#EEE");
@@ -109,14 +104,12 @@ function App() {
   });
 
   useEffect(() => {
-    // console.log(proposalsData);
     if (propSuccess) {
       // reset arrays
       snapshots.length = 0;
       roundStart.length = 0;
-      proposalsData.proposals.map((proposal: any) => {
+      proposalsData.proposals.map((proposal: ProposalType) => {
         if (regex_gaugevote.test(proposal.title)) {
-          //         console.log(proposal.snapshot);
           snapshots.push(proposal.snapshot);
           roundStart.push(proposal.start);
         }
@@ -126,6 +119,7 @@ function App() {
     } else {
       setAllLoaded(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propSuccess, proposalsData]);
 
   useEffect(() => {
@@ -133,14 +127,14 @@ function App() {
     let success = true;
     if (blocks2) {
       blockTime.length = 0;
-      blocks2.map((block: any) => {
+      blocks2.map(block => {
         if (!block.isSuccess) {
           success = false;
         }
       });
       if (success) {
-        blocks2.map((block: any) => {
-          blockTime.push(block.data);
+        blocks2.map(block => {
+          blockTime.push(block.data as number);
           setBlocksReady(true);
         });
       }
@@ -181,11 +175,11 @@ interface ChartProps {
 }
 
 function ChartSnapTimes(props: ChartProps) {
-  console.log(props);
+  //console.log(props);
 
   //  const blockTimeS = props.blockTime.sort();
   const diffs = props.snapshots.map((sn: string, index: number) => {
-    return (roundStart[index] - blockTime[index]) * 1000;
+    return ((roundStart[index] as number) - (blockTime[index] as number)) * 1000;
   });
   //  const difflabel = props.snapshots.map((sn: string, index: number) => {
   //    return timeSince((roundStart[index] - blockTime[index]) * 1000);

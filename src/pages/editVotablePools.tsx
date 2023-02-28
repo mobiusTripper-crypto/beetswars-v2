@@ -1,6 +1,6 @@
 import type { VotablePool } from "types/votablePools.raw";
-import { type NextPage } from "next";
-import { useSession, signIn, signOut } from "next-auth/react";
+import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import {
   Text,
   Checkbox,
@@ -14,24 +14,30 @@ import {
   Td,
   Card,
   useToast,
+  Progress,
 } from "@chakra-ui/react";
 import { HStack, VStack } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { useEffect, useState } from "react";
+import Router from "next/router";
+import AdminNav from "components/AdminNav";
 
 const VotablePoolForm: NextPage = () => {
+  const { data: session, status } = useSession();
+  useEffect(() => {
+    if (!session) Router.push("/admin");
+  });
   const { requestedRound } = useGlobalContext();
 
   const dbpools = trpc.votepools.list.useQuery(
     { round: requestedRound as number },
-    { enabled: !!requestedRound }
+    { enabled: !!requestedRound && !!session }
   ).data?.pools;
   const initPools = trpc.votepools.init.useMutation();
   const insertPools = trpc.votepools.insert.useMutation();
 
   const [pools, setPools] = useState(dbpools);
-  const { data: session, status } = useSession();
 
   useEffect(() => {
     setPools(dbpools);
@@ -59,12 +65,16 @@ const VotablePoolForm: NextPage = () => {
   }
 
   if (session && status === "authenticated") {
+    if (!dbpools)
+      return (
+        <>
+          <AdminNav />
+          <Progress size="xs" isIndeterminate />
+        </>
+      );
     return (
       <>
-        <HStack m={6} justifyContent="flex-end">
-          <Text>Signed in as {session?.user?.name}</Text>
-          <Button onClick={() => signOut()}>Sign out</Button>
-        </HStack>
+        <AdminNav />
         <Card m={6} p={6}>
           <Table variant="striped" colorScheme="teal" size="sm">
             <Thead>
@@ -116,7 +126,6 @@ const VotablePoolForm: NextPage = () => {
     <VStack>
       <HStack>
         <Text>Not signed in</Text>
-        <Button onClick={() => signIn()}>Sign in</Button>
       </HStack>
     </VStack>
   );

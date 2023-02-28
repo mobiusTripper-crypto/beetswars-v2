@@ -1,15 +1,4 @@
-// DONE: switch API v1 to TRPC
-// DONE: remove unused vars
-// DONE: redo route parameter handling
-
 import {
-  // Table,
-  // Thead,
-  // Tbody,
-  // Tr,
-  // Th,
-  // Td,
-  // TableContainer,
   Wrap,
   Text,
   Box,
@@ -27,11 +16,8 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
   IconButton,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "contexts/GlobalContext";
 import { trpc } from "utils/trpc";
@@ -47,8 +33,9 @@ import { OfferTable } from "components/TableView";
 export default function Round() {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
   const router = useRouter();
-  const number = router.query.number || "";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: roundList, loaded: roundListLoaded } = useRoundList();
   const { requestedRound, display } = useGlobalContext();
   const { data: votingPower, connected: accountConnected } = useGetVp();
@@ -203,34 +190,6 @@ export default function Round() {
         </Center>
       ) : (
         <OfferTable data={bribeData.bribelist} />
-        // <Center>
-        //   <TableContainer>
-        //     <Table variant="striped">
-        //       <Thead>
-        //         <Tr>
-        //           <Th isNumeric>voteindex</Th>
-        //           <Th>poolname</Th>
-        //           <Th>description</Th>
-        //           <Th>Link</Th>
-        //         </Tr>
-        //       </Thead>
-        //       <Tbody>
-        //         {bribeData?.bribelist.map(
-        //           (bribe: BribeOffer, i: number): JSX.Element => (
-        //             <Tr key={i}>
-        //               <Td isNumeric> {bribe.voteindex}</Td>
-        //               <Td>{bribe.poolname}</Td>
-        //               <Td>{bribe.rewarddescription}</Td>
-        //               <Td>
-        //                 <Link href={bribe.poolurl}>link</Link>
-        //               </Td>
-        //             </Tr>
-        //           )
-        //         )}
-        //       </Tbody>
-        //     </Table>
-        //   </TableContainer>
-        // </Center>
       )}
       <Text fontSize="sm" align="right" mr={5}>
         {bribeData.header.bribefileVersion ? bribeData?.header.bribefileVersion : ""}

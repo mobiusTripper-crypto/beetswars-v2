@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import {
   Box,
   Button,
@@ -8,13 +8,13 @@ import {
   Heading,
   HStack,
   Input,
-  Link,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
+import AdminNav from "components/AdminNav";
 
 const Admin: NextPage = () => {
   const addUser = trpc.login.addUser.useMutation();
@@ -37,20 +37,7 @@ const Admin: NextPage = () => {
   if (session && status === "authenticated") {
     return (
       <>
-        <HStack m={6} justifyContent="flex-end">
-          <Text>Signed in as {session?.user?.name}</Text>
-          <Button onClick={() => signOut()}>Sign out</Button>
-        </HStack>
-        <Card m={6} p={6}>
-          <HStack gap={6}>
-            <Link href="/bribeform">
-              <Button>Bribe Forms</Button>
-            </Link>
-            <Link href="/editVotablePools">
-              <Button>Edit votable Pools</Button>
-            </Link>
-          </HStack>
-        </Card>
+        <AdminNav />
         <Card m={6}>
           <CardHeader>
             <Heading size="md">Add user</Heading>
@@ -98,19 +85,17 @@ const Admin: NextPage = () => {
     );
   }
   return (
-    <VStack>
-      <HStack>
-        <Text>Not signed in</Text>
-        <Button
-          onClick={() =>
-            //I think setting callbackUrl will do dynamic redirect, but not working just yet. so we can have just a single OAuth Github app
-            //signIn("GitHubProvider", {callbackUrl: "http://localhost:3000/api/auth/callback/github",})
-            signIn()
-          }
-        >
-          Sign in
-        </Button>
-      </HStack>
+    <VStack m={20}>
+      <Text>Not signed in</Text>
+      <Button
+        onClick={() =>
+          //I think setting callbackUrl will do dynamic redirect, but not working just yet. so we can have just a single OAuth Github app
+          //signIn("GitHubProvider", {callbackUrl: "http://localhost:3000/api/auth/callback/github",})
+          signIn()
+        }
+      >
+        Sign in
+      </Button>
     </VStack>
   );
 };
