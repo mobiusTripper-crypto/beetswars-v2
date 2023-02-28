@@ -31,6 +31,7 @@ export async function getSnapshotVotes(proposal: string): Promise<SnapVote[]> {
       hasMore = result.votes.length === first;
       skip += first;
     }
+    // console.log(proposal);
     return allResults;
   } catch (error) {
     console.error("failed getSnapshotVotes: ", error);
@@ -43,7 +44,7 @@ export async function getSnapshotSplitVotes(proposal: string): Promise<SnapSplit
   const votes = await getSnapshotVotes(proposal);
   const splitVotes = [] as SnapSplitVote[];
   votes.forEach(({ choice, vp, voter }) => {
-    const total = Object.values(choice).reduce((a, b) => a + b);
+    const total = Object.values(choice).reduce((a, b) => a + b, 0);
     for (const [poolId, value] of Object.entries(choice)) {
       const votes = (vp * value) / total;
       splitVotes.push({ poolId, votes, voter });
@@ -56,12 +57,12 @@ export async function getSnapshotVotesPerPool(proposal: string): Promise<SnapVot
   const poolVotes: { [key: string]: number } = {};
   const votes = await getSnapshotVotes(proposal);
   votes.forEach(({ choice, vp }) => {
-    const total = Object.values(choice).reduce((a, b) => a + b);
+    const total = Object.values(choice).reduce((a, b) => a + b, 0);
     for (const [key, value] of Object.entries(choice)) {
       poolVotes[key] = (poolVotes[key] || 0) + (vp * value) / total;
     }
   });
-  const totalVotes = Math.round(Object.values(poolVotes).reduce((a, b) => a + b));
+  const totalVotes = Math.round(Object.values(poolVotes).reduce((a, b) => a + b, 0));
   const result = Object.entries(poolVotes).map(x => {
     const poolId = x[0];
     const votes = x[1];
