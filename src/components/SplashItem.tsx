@@ -1,11 +1,11 @@
-import { Divider, Icon, Box, Center, Text } from "@chakra-ui/react";
+import { Icon, Box, Center, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
 interface SplashItemProps {
   text: string;
   caption: string;
   href: string;
-  icon: any;
+  icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>,
   indicator?: boolean;
 }
 

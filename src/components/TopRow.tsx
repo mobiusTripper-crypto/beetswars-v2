@@ -44,7 +44,6 @@ export const TopRow = () => {
     requestedRound
   );
   useEffect(() => {
-    console.log("eff1");
     if (
       asPath.includes("/round") &&
       roundListLoaded &&
@@ -58,7 +57,6 @@ export const TopRow = () => {
   }, [requestedRound, parsedNumber]);
 
   useEffect(() => {
-    console.log("eff2");
     if (urlParam.number && roundListLoaded) {
       if (parsedNumber !== requestedRound) {
         if (roundList.rounds.includes(parsedNumber)) {
