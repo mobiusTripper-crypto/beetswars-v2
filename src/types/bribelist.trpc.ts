@@ -22,6 +22,7 @@ export interface BribeHeader {
   proposal: string;
   voteState: string;
   bribefileVersion: string;
+  snapshotBlock: number;
 }
 
 export interface BribeOffer extends SingleOffer {
