@@ -1,4 +1,4 @@
-import snapshot from "@snapshot-labs/snapshot.js";
+import snapshotJS from "@snapshot-labs/snapshot.js";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import { trpc } from "utils/trpc";
@@ -19,19 +19,19 @@ export const useGetVp = () => {
       enabled: !!requestedRound,
     }
   ).data?.bribefile;
-  const proposal = bribeData?.header.proposal;
+  const snapshot = bribeData?.header.snapshotBlock;
   const st = bribeData?.strategies;
   strategies = st as unknown as Strategy[];
   const account = useAccount();
-  const { data: vp } = useQqueryVp(proposal, account.address);
+  const { data: vp } = useQqueryVp(snapshot, account.address);
 
   return { data: vp, connected: account.isConnected };
 };
 
-const useQqueryVp = (proposal: string | undefined, address: string | undefined) =>
+const useQqueryVp = (snapshot: number | undefined, address: string | undefined) =>
   useQuery({
-    queryKey: ["votingPower", address],
-    queryFn: () => getVotingPower(proposal, address),
+    queryKey: ["votingPower", address, snapshot],
+    queryFn: () => getVotingPower(snapshot, address),
     refetchInterval: 0,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
@@ -39,27 +39,27 @@ const useQqueryVp = (proposal: string | undefined, address: string | undefined) 
     staleTime: Infinity,
   });
 
-async function getVotingPower(proposal: string | undefined, address: string | undefined) {
-  //console.log("prop:", proposal);
-  //console.log("addr:", address);
-  //console.log("strat:", strategies);
-
+async function getVotingPower(snapshot: number | undefined, address: string | undefined) {
   const network = "250";
   const space = "beets.eth";
   const delegation = false;
   //  const strategies = [];
 
-  if (address && proposal) {
-    const votingPower = await snapshot.utils.getVp(
-      address,
-      network,
-      strategies,
-      parseInt(proposal),
-      space,
-      delegation
-    );
-    console.log(votingPower);
-    return votingPower.vp;
+  if (address && snapshot) {
+    try {
+      const votingPower = await snapshotJS.utils.getVp(
+        address,
+        network,
+        strategies,
+        snapshot,
+        space,
+        delegation
+      );
+      console.log(votingPower);
+      return votingPower.vp;
+    } catch (error) {
+      return 0;
+    }
   }
   return 0;
 }
