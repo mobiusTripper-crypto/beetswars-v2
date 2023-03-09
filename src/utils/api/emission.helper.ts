@@ -29,7 +29,7 @@ export async function getEmissionForBlockspan(block1: number, block2: number): P
 export async function checkEmissionChange(lastEmission: Emission): Promise<Emission[]> {
   const stepwidth = 40000; // estimated between 0.5 and 1 days
   let block = lastEmission.block + stepwidth;
-  const oldBeets = lastEmission.beets;
+  let oldBeets = lastEmission.beets;
   const currentBlock = await getBlockByTsGraph(Math.floor(Date.now() / 1000) - 60);
   const data = [] as Emission[];
   while (block < currentBlock + stepwidth) {
@@ -40,6 +40,7 @@ export async function checkEmissionChange(lastEmission: Emission): Promise<Emiss
       const timestamp = await getTsByBlockRPC(newblock);
       data.push({ block: newblock, beets, timestamp });
       block = newblock;
+      oldBeets = beets;
     } else {
       block += stepwidth;
     }
