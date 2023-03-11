@@ -34,23 +34,23 @@ export async function getCoingeckoCurrentPrice(token: string): Promise<number> {
   return answer;
 }
 
-export async function getCoinGeckoHistoryOldMethod(
-  token: string,
-  timestamp: number
-): Promise<number> {
-  const endTime = new Date(timestamp * 1000).toLocaleDateString("de-DE").replace(/\./g, "-");
-  const url = `https://api.coingecko.com/api/v3/coins/${token}/history?date=${endTime}&localization=false`;
+// export async function getCoinGeckoHistoryOldMethod(
+//   token: string,
+//   timestamp: number
+// ): Promise<number> {
+//   const endTime = new Date(timestamp * 1000).toLocaleDateString("de-DE").replace(/\./g, "-");
+//   const url = `https://api.coingecko.com/api/v3/coins/${token}/history?date=${endTime}&localization=false`;
 
-  let answer = 0;
-  try {
-    const result = await fetch(url);
-    if (result.ok) {
-      const data = await result.json();
-      answer = Number(data["market_data"]["current_price"].usd);
-    }
-  } catch (error) {
-    console.error("failed getCoingeckoHistoryOldMethod:", error);
-    return 0;
-  }
-  return answer;
-}
+//   let answer = 0;
+//   try {
+//     const result = await fetch(url);
+//     if (result.ok) {
+//       const data = await result.json();
+//       answer = Number(data["market_data"]["current_price"].usd);
+//     }
+//   } catch (error) {
+//     console.error("failed getCoingeckoHistoryOldMethod:", error);
+//     return 0;
+//   }
+//   return answer;
+// }

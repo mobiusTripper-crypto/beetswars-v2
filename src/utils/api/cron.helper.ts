@@ -1,9 +1,8 @@
 import type { Chartdata } from "../../types/chartdata.raw";
 import { getSnapshotProposal, getSnapshotVotes } from "../externalData/snapshot";
-import { getCoingeckoPrice } from "../externalData/coingecko";
-import { getTokenPrice } from "../externalData/beetsBack";
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { getEmissionForRound } from "./bribeApr.helper";
+import { getPrice } from "utils/externalData/pricefeed";
 
 export async function getData(round: number) {
   const newData = {} as Chartdata;
@@ -32,8 +31,18 @@ export async function getData(round: number) {
   const bribedVotes = Math.round(bribedOffers.reduce((sum, x) => sum + (poolVotes[x] || 0), 0));
 
   // calculate prices
-  const priceBeets = await getCoingeckoPrice("beethoven-x", end);
-  const priceFbeets = await getTokenPrice(end, "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1");
+  const priceBeets = await getPrice(
+    true,
+    { token: "BEETS", tokenId: 0, coingeckoid: "beethoven-x" },
+    end
+  );
+  // const priceBeets = await getCoingeckoPrice("beethoven-x", end);
+  const priceFbeets = await getPrice(
+    true,
+    { token: "FBEETS", tokenId: 0, tokenaddress: "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1" },
+    end
+  );
+  // const priceFbeets = await getTokenPrice(end, "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1");
 
   // calculate total bribes
   const bribes = bribedOffers.map(x => {
@@ -56,10 +65,8 @@ export async function getData(round: number) {
         if ((reward.token = "BEETS")) {
           amount *= priceBeets;
         } else {
-          const tokenaddress = bribefile.tokendata.find(
-            x => x.token === reward.token
-          )?.tokenaddress;
-          amount *= tokenaddress ? await getTokenPrice(end, tokenaddress) : 0;
+          const rewardtoken = bribefile.tokendata.find(x => x.token === reward.token);
+          amount *= rewardtoken ? await getPrice(true, rewardtoken, end) : 0;
         }
       }
       // now we have amount in USD
