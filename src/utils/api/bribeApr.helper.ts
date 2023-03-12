@@ -1,6 +1,6 @@
 import type { EmissionData } from "types/emission.raw";
 import { readOneChartdata } from "utils/database/chartdata.db";
-import { getCoingeckoCurrentPrice } from "utils/externalData/coingecko";
+import { getPrice } from "utils/externalData/pricefeed";
 import { getBlockByTsGraph } from "utils/externalData/theGraph";
 import { getEmissionForBlockspan } from "./emission.helper";
 
@@ -44,7 +44,8 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
 
   const chartdata = await readOneChartdata(round);
   const beetsPrice = !chartdata
-    ? await getCoingeckoCurrentPrice("beethoven-x")
+    ? // ? await getCoingeckoCurrentPrice("beethoven-x")
+      await getPrice(false, { token: "BEETS", tokenId: 0, coingeckoid: "beethoven-x" })
     : chartdata.priceBeets;
   const usdValue = emission * beetsPrice;
   const voteEmissionPercent = round < 29 ? 0.3 : 0.5;
