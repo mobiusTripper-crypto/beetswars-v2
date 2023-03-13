@@ -1,6 +1,7 @@
 import type { Emission } from "types/emission.raw";
 import { checkEmissionChange } from "utils/api/emission.helper";
 import { findConfigEntry, setConfigEntry } from "./config.db";
+import { insertCronLog } from "./cronLog.db";
 import clientPromise from "./mongodb";
 
 const dbName = process.env.DB_NAME;
@@ -44,8 +45,8 @@ export async function updateEmissionChange(): Promise<Emission[]> {
 
     // no action if last entry younger than 1 day
     const lastChange = await findConfigEntry("tsEmissionChange");
-    if (!!lastChange && Number(lastChange) >= Math.floor(Date.now() / 1000) - 24 * 60 * 60)
-      return items;
+    const now = Math.floor(Date.now() / 1000);
+    if (!!lastChange && Number(lastChange) >= now - 24 * 60 * 60) return items;
 
     const lastEmission = items.reduce(
       (max, x) => {
@@ -56,6 +57,8 @@ export async function updateEmissionChange(): Promise<Emission[]> {
     const data = await checkEmissionChange(lastEmission);
     await Promise.all(data.map(item => addEmission(item)));
     await setConfigEntry({ name: "tsEmissionChange", data: Math.floor(Date.now() / 1000) });
+    const dateReadable = new Date(now * 1000).toUTCString();
+    await insertCronLog({ timestamp: now, jobName: "updateEmissionChange", dateReadable });
     return await coll.find<Emission>({}, { projection: { _id: 0 } }).toArray();
   } catch (error) {
     return [];

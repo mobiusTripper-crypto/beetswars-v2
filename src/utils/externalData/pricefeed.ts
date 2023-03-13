@@ -3,15 +3,19 @@ import { getTokenPrice } from "./beetsBack";
 import { getCoingeckoCurrentPrice, getCoingeckoPrice } from "./coingecko";
 import { getRpcPrice } from "./liveRpcQueries";
 
-export async function getPrice(history: boolean, token: Tokendata, ts?: number): Promise<number> {
+export async function getPrice(
+  history: boolean,
+  token: Tokendata,
+  timestamp?: number
+): Promise<number> {
   if (history) {
-    if (!ts) return 0;
+    if (!timestamp) return 0;
     if (token.lastprice) return token.lastprice;
     if (token.coingeckoid) {
-      const price = getCoingeckoPrice(token.coingeckoid, ts);
+      const price = getCoingeckoPrice(token.coingeckoid, timestamp);
       if (price) return price;
     }
-    if (token.tokenaddress) return getTokenPrice(ts, token.tokenaddress);
+    if (token.tokenaddress) return getTokenPrice(timestamp, token.tokenaddress);
     return 0;
   }
   if (token.tokenaddress) {
