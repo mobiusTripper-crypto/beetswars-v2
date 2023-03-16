@@ -3,6 +3,7 @@ import { getSnapshotProposal, getSnapshotVotes } from "../externalData/snapshot"
 import { readOneBribefile } from "utils/database/bribefile.db";
 import { getEmissionForRound } from "./bribeApr.helper";
 import { getPrice } from "utils/externalData/pricefeed";
+import { getRelicsFbeetsLocked } from "utils/externalData/theGraph";
 
 export async function getData(round: number) {
   const newData = {} as Chartdata;
@@ -43,6 +44,15 @@ export async function getData(round: number) {
     end
   );
   // const priceFbeets = await getTokenPrice(end, "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1");
+
+  let pricePerVp = priceFbeets;
+  if (round >= 32) {
+    const block = parseInt(prop.snapshot);
+    const addresses = votes.map(x => x.voter.toLowerCase());
+    const fbeetsLocked = await getRelicsFbeetsLocked(block, addresses);
+    const result = (priceFbeets * fbeetsLocked) / totalVotes;
+    pricePerVp = result;
+  }
 
   // calculate total bribes
   const bribes = bribedOffers.map(x => {
@@ -102,6 +112,7 @@ export async function getData(round: number) {
   newData.voteEnd = end;
   newData.priceBeets = priceBeets;
   newData.priceFbeets = priceFbeets;
+  newData.pricePerVp = pricePerVp;
   newData.bribersRoi = bribersRoi;
 
   return newData;

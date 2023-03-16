@@ -25,6 +25,7 @@ export const Chartdata = z.object({
   totalBriber: z.number(),
   priceBeets: z.number(),
   priceFbeets: z.number(),
+  pricePerVp: z.number().optional(),
   bribersRoi: z.number().optional(),
 });
 

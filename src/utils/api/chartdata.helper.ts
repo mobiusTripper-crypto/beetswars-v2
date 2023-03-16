@@ -25,9 +25,8 @@ export default async function getEchartData(): Promise<Echarts | null> {
     return new Date(round.voteEnd * 1000).toLocaleDateString("en-US");
   });
   const votingApr = data.map(round => {
-    return parseFloat(
-      ((round.totalBribes / round.priceFbeets / round.bribedVotes) * 26 * 100).toFixed(2)
-    );
+    const priceVP = round.pricePerVp ?? round.priceFbeets;
+    return parseFloat(((round.totalBribes / priceVP / round.bribedVotes) * 26 * 100).toFixed(2));
   });
   const bribersRoi = data.map(round => {
     return !round.bribersRoi ? NaN : Number(round.bribersRoi.toFixed(2));
