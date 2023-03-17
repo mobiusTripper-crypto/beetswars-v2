@@ -271,7 +271,7 @@ function Chart1() {
         offset: 23,
       },
       {
-        name: "Avg $/1kVP",
+        name: "Avg $/1000 VP",
         nameTextStyle: { color: "orange", fontSize: "0.9em" },
         type: "log",
         splitLine: { lineStyle: { type: "dotted", color: "#55555500" } },
@@ -388,7 +388,7 @@ function Chart1() {
       },
       {
         animation: false,
-        name: "Avg $/1kVP",
+        name: "Avg $/1000 VP",
         type: "line",
         symbolSize: 3,
         showSymbol: false,
@@ -490,7 +490,7 @@ function Chart1() {
       const selectedRound = (params.dataIndex + offset) as number;
       requestRound(selectedRound);
       console.log("click", params.dataIndex, "->", "request " + selectedRound);
-      const roundPage = "/round/" + selectedRound + "/" + display
+      const roundPage = "/round/" + selectedRound + "/" + display;
       router.push(roundPage);
     }
   };
