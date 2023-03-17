@@ -20,7 +20,6 @@ export const Summary = (props: SummaryProps) => {
     hour12: false,
   };
 
-//  console.log("headerData", headerData);
   return (
     <Center>
       <Flex align="center" justify="center" wrap="wrap" gap={4}>
@@ -46,7 +45,7 @@ export const Summary = (props: SummaryProps) => {
         </Card>
         <Card p={3} align="center" bgColor={bgCard}>
           <Text>Total Incentives: {headerData.totalBribes.toLocaleString("en-us")}</Text>
-          <Text>avg $/1kVP: {headerData.avgPer1000}</Text>
+          <Text>avg $/1000 VP: {headerData.avgPer1000}</Text>
           <Text>Bribed Voter: {headerData.bribedVoter}</Text>
         </Card>
       </Flex>

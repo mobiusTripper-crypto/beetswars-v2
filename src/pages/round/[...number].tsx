@@ -131,7 +131,7 @@ export default function Round() {
                         </Text>
                       </HStack>
                       <HStack>
-                        <Text>$/1kVP:</Text>
+                        <Text>$/1000 VP:</Text>
                         <Text as="b">{bribe.usdPer1000Vp.toFixed(2)}</Text>
                         <Popover placement="auto-start">
                           <PopoverTrigger>
@@ -144,7 +144,7 @@ export default function Round() {
                             />
                           </PopoverTrigger>
                           <PopoverContent>
-                            <PopoverHeader fontWeight="semibold">$/1kVP</PopoverHeader>
+                            <PopoverHeader fontWeight="semibold">$/1000 VP</PopoverHeader>
                             <PopoverBody>
                               Value in $ received for voting on this pool with 1k votes
                             </PopoverBody>
@@ -155,7 +155,7 @@ export default function Round() {
                       voteStateActive &&
                       requestedRound === roundList.latest ? (
                         <HStack marginTop="auto">
-                          <Text>$/accountVP:</Text>
+                          <Text>Max single reward:</Text>
                           <Text as="b">
                             {((bribe.usdPer1000Vp * votingPower) / 1000).toFixed(2)}
                           </Text>
@@ -170,10 +170,10 @@ export default function Round() {
                               />
                             </PopoverTrigger>
                             <PopoverContent>
-                              <PopoverHeader fontWeight="semibold">$/accountVP</PopoverHeader>
+                              <PopoverHeader fontWeight="semibold">Max single reward</PopoverHeader>
                               <PopoverBody>
-                                Value in $ received for voting on this pool with current voting
-                                balance of the connected account
+                                Value in $ received for using 100% VP on this pool with current
+                                connected account.
                               </PopoverBody>
                             </PopoverContent>
                           </Popover>

@@ -46,7 +46,7 @@ export const OfferTable: React.FC<Props> = ({ data }) => {
                 Votes % {sortField === "percent" ? "♦" : ""}
               </Th>
               <Th isNumeric onClick={() => sortData("usdPer1000Vp")} cursor="pointer">
-                $/1kVP {sortField === "usdPer1000Vp" ? "♦" : ""}
+                $/1000 VP {sortField === "usdPer1000Vp" ? "♦" : ""}
               </Th>
             </Tr>
           </Thead>
