@@ -25,13 +25,13 @@ export const Summary = (props: SummaryProps) => {
         <Card p={3} align="center" bgColor={bgCard}>
           <Text>
             Vote Start:{" "}
-            {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(
+            {new Intl.DateTimeFormat(undefined, dateFormatOptions).format(
               new Date(headerData.voteStart)
             )}
           </Text>
           <Text>
             Vote End:{" "}
-            {new Intl.DateTimeFormat("en-GB", dateFormatOptions).format(
+            {new Intl.DateTimeFormat(undefined, dateFormatOptions).format(
               new Date(headerData.voteEnd)
             )}
           </Text>
@@ -39,14 +39,14 @@ export const Summary = (props: SummaryProps) => {
           <Text>Time Left: {headerData.timeRemaining}</Text>
         </Card>
         <Card p={3} align="center" bgColor={bgCard}>
-          <Text>Votes Total: {headerData.totalVotes.toLocaleString("en-us")}</Text>
-          <Text>On Incentivized Pools: {headerData.bribedVotes.toLocaleString("en-us")}</Text>
+          <Text>Votes Total: {headerData.totalVotes.toLocaleString()}</Text>
+          <Text>On Incentivized Pools: {headerData.bribedVotes.toLocaleString()}</Text>
           <Text>Total Voter: {headerData.totalVoter}</Text>
         </Card>
         <Card p={3} align="center" bgColor={bgCard}>
           <Text>
             Total Incentives:{" "}
-            {headerData.totalBribes.toLocaleString("en-US", {
+            {headerData.totalBribes.toLocaleString(undefined, {
               style: "currency",
               currency: "USD",
               maximumFractionDigits: 0,
@@ -54,7 +54,7 @@ export const Summary = (props: SummaryProps) => {
           </Text>
           <Text>
             avg $/1000 VP:{" "}
-            {headerData.avgPer1000.toLocaleString("en-US", {
+            {headerData.avgPer1000.toLocaleString(undefined, {
               style: "currency",
               currency: "USD",
               maximumFractionDigits: 2,

@@ -18,7 +18,11 @@ export default async function getOverallStats(): Promise<OverallStats | null> {
     const x = (round.totalBribes / round.priceFbeets / round.bribedVotes) * 2600;
     return !x ? 0 : x;
   });
-  const avgVotingApr = (votingApr.reduce((sum, a) => sum + a ?? 0) / rounds).toFixed(2) + " %";
+  const avgVotingApr =
+    (votingApr.reduce((sum, a) => sum + a ?? 0) / rounds).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }) + " %";
   const result: OverallStats = {
     rounds,
     bribedVotes,

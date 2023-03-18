@@ -50,13 +50,21 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
     {
       heading: "Round Emissions USD",
       text: roundtext,
-      footer: "$ " + data.roundEmissionsUsd.toLocaleString(),
+      footer: data.roundEmissionsUsd.toLocaleString(undefined, {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+      }),
     },
     { heading: "Vote Incentives ROI", text: roundtext, footer: `${data.voteIncentivesRoi} %` },
     {
       heading: "Total Incentives USD",
       text: `for Round ${round}`,
-      footer: "$ " + data.totalVoteIncentives.toLocaleString(),
+      footer: data.totalVoteIncentives.toLocaleString(undefined, {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+      }),
     },
     round >= FIRST_ROUND_FOR_RECLICS
       ? {
@@ -73,7 +81,7 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
       ? {
           heading: "Total Relics",
           text: "at vote snapshot time",
-          footer: data.totalRelics.toString(),
+          footer: data.totalRelics.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         }
       : { heading: "Payout Status", text: "", footer: data.payoutStatus },
   ];

@@ -61,8 +61,18 @@ export const OfferTable: React.FC<Props> = ({ data }) => {
                   </Td>
                   <Td isNumeric>{row.rewardAmount.toLocaleString()}</Td>
                   <Td isNumeric>{row.votes.toLocaleString()}</Td>
-                  <Td isNumeric>{row.percent.toFixed(2)}</Td>
-                  <Td isNumeric>{row.usdPer1000Vp.toFixed(2)}</Td>
+                  <Td isNumeric>
+                    {row.percent.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </Td>
+                  <Td isNumeric>
+                    {row.usdPer1000Vp.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </Td>
                 </Tr>
               )
             )}
