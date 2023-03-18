@@ -16,7 +16,6 @@ export const Summary = (props: SummaryProps) => {
     day: "2-digit",
     hour: "numeric",
     minute: "numeric",
-    timeZoneName: "shortOffset",
     hour12: false,
   };
 
@@ -36,6 +35,7 @@ export const Summary = (props: SummaryProps) => {
               new Date(headerData.voteEnd)
             )}
           </Text>
+          <Text fontSize="11px">(your local time)</Text>
           <Text>Time Left: {headerData.timeRemaining}</Text>
         </Card>
         <Card p={3} align="center" bgColor={bgCard}>
