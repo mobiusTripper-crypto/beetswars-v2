@@ -93,7 +93,7 @@ export default function Round() {
                   key={i}
                   p={5}
                   border="1px"
-                  width="300px"
+                  width="310px"
                   borderRadius={20}
                   backgroundColor={bgCard}
                 >
@@ -127,7 +127,7 @@ export default function Round() {
                       <HStack>
                         <Text>Vote Total:</Text>
                         <Text as="b">
-                          {bribe.percent} % - [{bribe.votes.toLocaleString("en-us")}]
+                          {bribe.percent}% - {bribe.votes.toLocaleString("en-us")}
                         </Text>
                       </HStack>
                       <HStack>

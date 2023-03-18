@@ -21,6 +21,7 @@ import { MyGlobalContext } from "contexts/GlobalContext";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/600.css";
 import "@fontsource/inter/800.css";
+import Head from "next/head";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,7 @@ const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps<{ session: Session }>) => {
-  const [requestedRound, requestRound] = useState<number|undefined>(undefined);
+  const [requestedRound, requestRound] = useState<number | undefined>(undefined);
   const [display, setDisplay] = useState<string>("cards");
   const [voteActive, setVoteActive] = useState<boolean>(false);
 
@@ -49,6 +50,9 @@ const MyApp = ({
             <RainbowKitProvider chains={chains} modalSize="compact" theme={darkTheme()}>
               <ChakraProvider theme={theme}>
                 <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+                <Head>
+                  <title>Beetswars</title>
+                </Head>
                 <TopRow />
                 <Header />
                 <Component {...pageProps} />

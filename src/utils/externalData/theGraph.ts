@@ -1,20 +1,8 @@
 import { request, gql } from "graphql-request";
+import type { Blocks, RelicBalance, RelicCount, RelicPoolLevels } from "types/theGraph.raw";
 import { getBlockByTsRPC } from "./liveRpcQueries";
 
-interface Blocks {
-  blocks: {
-    timestamp: string;
-    number: string;
-  }[];
-}
-
-interface RelicBalance {
-  address: string;
-  relics: {
-    relicId: number;
-    balance: string;
-  }[];
-}
+const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
 export async function getBeetsPerBlock(block: number): Promise<number> {
   const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/masterchefv2";
@@ -101,10 +89,7 @@ export async function getRelicsFbeetsLocked(
       hasMore = result.users.length === first;
       skip += first;
     }
-
-    if (!allResults) {
-      return 0;
-    }
+    if (!allResults) return 0;
 
     const filteredUsers = !voterAdresses
       ? allResults
@@ -122,5 +107,76 @@ export async function getRelicsFbeetsLocked(
   } catch (error) {
     console.error("failed query theGraph getRelicsFbeetsLocked");
     return 0;
+  }
+}
+
+export async function getRelicCount(block: number): Promise<number> {
+  const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/reliquary";
+  const query = gql`
+  query {
+    reliquaries(
+      block: {number: ${block}}
+      where: {id: "${RELIC_CONTRACT}"}
+    ) {
+      relicCount
+      id
+      pools(where: {pid: 2}) {
+        pid
+        relicCount
+      }
+    }
+  }
+  `;
+  try {
+    const { reliquaries } = (await request(queryUrl, query)) as RelicCount;
+    if (!reliquaries) return 0;
+    const count = reliquaries[0]?.pools[0]?.relicCount || 0;
+    return count;
+  } catch (error) {
+    console.error("failed query theGraph getRelicCount");
+    return 0;
+  }
+}
+
+export async function getRelicLevelInfo(block: number) {
+  const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/reliquary";
+  const query = gql`
+  query {
+    poolLevels(
+      block: {number: ${block}}
+      where: {pool_: {pid: 2, reliquary: "${RELIC_CONTRACT}"}}
+    ) {
+      allocationPoints
+      balance
+      level
+      pool {
+        pid
+        relicCount
+        totalBalance
+      }
+    }
+  }
+  `;
+  try {
+    const { poolLevels } = (await request(queryUrl, query)) as RelicPoolLevels;
+    if (!poolLevels) return null;
+    const relicCount = poolLevels[0]?.pool.relicCount || 0;
+    const totalFbeets = poolLevels[0]?.pool.totalBalance || 0;
+    const maxPoints =
+      poolLevels.reduce((max, x) => (x.allocationPoints > max ? x.allocationPoints : max), 0) ||
+      100;
+    const levels = poolLevels.map(x => {
+      return {
+        level: x.level,
+        weight: x.allocationPoints,
+        balance: x.balance,
+        votingPower: (x.allocationPoints * x.balance) / maxPoints,
+      };
+    });
+    const totalVotingPower = levels.reduce((sum, x) => sum + x.votingPower, 0);
+    return { relicCount, totalFbeets, totalVotingPower, levels };
+  } catch (error) {
+    console.error("failed query theGraph getRelicCount");
+    return null;
   }
 }

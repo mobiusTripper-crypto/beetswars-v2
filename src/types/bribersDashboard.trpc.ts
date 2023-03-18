@@ -9,6 +9,7 @@ export const DashboardData = z.object({
   totalVoteIncentives: z.number(),
   voteIncentivesRoi: z.number(),
   poolsOverThreshold: z.number(),
+  totalVotingPower: z.number(),
   totalRelics: z.number(),
   payoutStatus: z.enum(["estimated", "payout active", "settled"]),
 });

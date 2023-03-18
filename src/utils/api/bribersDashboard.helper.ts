@@ -5,13 +5,15 @@ import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { readRoundPoolentries } from "utils/database/votablePools.db";
 import { getTotalFbeets } from "utils/externalData/liveRpcQueries";
-import { getSnapshotVotesPerPool } from "utils/externalData/snapshot";
-import { getBlockByTsGraph } from "utils/externalData/theGraph";
+import { getSnapshotProposal, getSnapshotVotesPerPool } from "utils/externalData/snapshot";
+import { getBlockByTsGraph, getRelicLevelInfo } from "utils/externalData/theGraph";
 import { getEmissionForRound } from "./bribeApr.helper";
 import getBribeData, { getBribeDataCalculated } from "./bribedata.helper";
 import { getEmissionForBlockspan } from "./emission.helper";
 import { getRoundlistNum } from "./roundlist.helper";
 import { initialInsertFromSnapshot } from "./votablePools.helper";
+
+const FIRST_ROUND_FOR_RECLICS = 32;
 
 export async function roundlist() {
   const result = await getRoundlistNum(true);
@@ -22,6 +24,7 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
   if (!round) return [];
   const data = await dashData(round);
   const roundtext = `for Round ${round} ${data.payoutStatus !== "settled" ? "(estimated)" : ""}`;
+  const totalFbeets = Math.round(data.totalFbeetsSupply);
   if (!data) return [];
   return [
     {
@@ -55,13 +58,24 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
       text: `for Round ${round}`,
       footer: "$ " + data.totalVoteIncentives.toLocaleString(),
     },
-    {
-      heading: "Total fBEETS Supply",
-      text: "totally minted fBEETS",
-      footer: data.totalFbeetsSupply.toLocaleString(),
-    },
-    // { heading: "Total Relics", text: "up to now", footer: data.totalRelics.toString() },
-    { heading: "Payout Status", text: "", footer: data.payoutStatus },
+    round >= FIRST_ROUND_FOR_RECLICS
+      ? {
+          heading: "maBEETS voting power",
+          text: `out of ${totalFbeets.toLocaleString()} fBEETS deposited`,
+          footer: data.totalVotingPower.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+        }
+      : {
+          heading: "Total voting Power",
+          text: "totally minted fBEETS",
+          footer: totalFbeets.toLocaleString(),
+        },
+    round >= FIRST_ROUND_FOR_RECLICS
+      ? {
+          heading: "Total Relics",
+          text: "at vote snapshot time",
+          footer: data.totalRelics.toString(),
+        }
+      : { heading: "Payout Status", text: "", footer: data.payoutStatus },
   ];
 }
 
@@ -133,7 +147,7 @@ export async function dashData(round = 0): Promise<DashboardData> {
   const poolsOverThreshold = votablePools.reduce((sum, x) => (x.isUncapped ? sum + 1 : sum), 0);
   const beetsEmissionsPerDay = Math.floor(await getEmissionForBlockspan(startBlock, endBlock));
   const fantomBlocksPerDay = endBlock - startBlock;
-  const totalFbeetsSupply = await getTotalFbeets();
+  let totalFbeetsSupply = await getTotalFbeets();
   const roundBeetsEmissions = Math.round(roundEmissions?.voteEmission || 0);
   // divert to live data, if round eq latest
   let totalVoteIncentives = roundEmissions?.totalBribes || 0;
@@ -149,7 +163,24 @@ export async function dashData(round = 0): Promise<DashboardData> {
         : Math.round((bribedEmissions / totalVoteIncentives) * 100);
     }
   }
-
+  //get relics and maxVP
+  let totalRelics = 0;
+  let totalVotingPower = totalFbeetsSupply;
+  if (round >= FIRST_ROUND_FOR_RECLICS) {
+    totalFbeetsSupply = 0;
+    const bribefile = await readOneBribefile(round); // raw data from database
+    if (!!bribefile) {
+      const proposal = bribefile.snapshot;
+      const prop = await getSnapshotProposal(proposal);
+      if (!!prop) {
+        const block = parseInt(prop.snapshot);
+        const levelInfo = await getRelicLevelInfo(block);
+        totalFbeetsSupply = levelInfo?.totalFbeets || 0;
+        totalRelics = levelInfo?.relicCount || 0;
+        totalVotingPower = levelInfo?.totalVotingPower || 0;
+      }
+    }
+  }
   const result: DashboardData = {
     beetsEmissionsPerDay,
     fantomBlocksPerDay,
@@ -159,7 +190,8 @@ export async function dashData(round = 0): Promise<DashboardData> {
     totalVoteIncentives,
     voteIncentivesRoi,
     poolsOverThreshold,
-    totalRelics: 0,
+    totalRelics,
+    totalVotingPower,
     payoutStatus,
   };
   return result;
