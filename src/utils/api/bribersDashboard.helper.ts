@@ -61,7 +61,7 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
     round >= FIRST_ROUND_FOR_RECLICS
       ? {
           heading: "maBEETS voting power",
-          text: `out of ${totalFbeets.toLocaleString()} fBEETS locked`,
+          text: `out of ${totalFbeets.toLocaleString()} fBEETS deposited`,
           footer: data.totalVotingPower.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         }
       : {
