@@ -44,8 +44,22 @@ export const Summary = (props: SummaryProps) => {
           <Text>Total Voter: {headerData.totalVoter}</Text>
         </Card>
         <Card p={3} align="center" bgColor={bgCard}>
-          <Text>Total Incentives: {headerData.totalBribes.toLocaleString("en-us")}</Text>
-          <Text>avg $/1000 VP: {headerData.avgPer1000}</Text>
+          <Text>
+            Total Incentives:{" "}
+            {headerData.totalBribes.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+              maximumFractionDigits: 0,
+            })}
+          </Text>
+          <Text>
+            avg $/1000 VP:{" "}
+            {headerData.avgPer1000.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+              maximumFractionDigits: 2,
+            })}
+          </Text>
           <Text>Bribed Voter: {headerData.bribedVoter}</Text>
         </Card>
       </Flex>
