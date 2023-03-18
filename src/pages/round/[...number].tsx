@@ -122,7 +122,13 @@ export default function Round() {
                     <VStack align="left">
                       <HStack>
                         <Text>{bribe.label}:</Text>
-                        <Text as="b">${bribe.rewardAmount.toLocaleString("en-us")}</Text>
+                        <Text as="b">
+                          {bribe.rewardAmount.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                            maximumFractionDigits: 0,
+                          })}
+                        </Text>
                       </HStack>
                       <HStack>
                         <Text>Vote Total:</Text>
@@ -132,7 +138,12 @@ export default function Round() {
                       </HStack>
                       <HStack>
                         <Text>$/1000 VP:</Text>
-                        <Text as="b">{bribe.usdPer1000Vp.toFixed(2)}</Text>
+                        <Text as="b">
+                          {bribe.usdPer1000Vp.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                          })}
+                        </Text>
                         <Popover placement="auto-start">
                           <PopoverTrigger>
                             <IconButton
@@ -157,7 +168,10 @@ export default function Round() {
                         <HStack marginTop="auto">
                           <Text>Max single reward:</Text>
                           <Text as="b">
-                            {((bribe.usdPer1000Vp * votingPower) / 1000).toFixed(2)}
+                            {((bribe.usdPer1000Vp * votingPower) / 1000).toLocaleString("en-US", {
+                              style: "currency",
+                              currency: "USD",
+                            })}
                           </Text>
                           <Popover placement="auto-start">
                             <PopoverTrigger>
