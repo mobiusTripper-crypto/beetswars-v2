@@ -1,5 +1,5 @@
 import type { Tokendata } from "types/bribedata.raw";
-import { getTokenPrice } from "./beetsBack";
+import { getPoolPriceHist, getPoolPriceLive, getTokenPrice } from "./beetsBack";
 import { getCoingeckoCurrentPrice, getCoingeckoPrice } from "./coingecko";
 import { getRpcPrice } from "./liveRpcQueries";
 
@@ -12,16 +12,19 @@ export async function getPrice(
     if (!timestamp) return 0;
     if (token.lastprice) return token.lastprice;
     if (token.coingeckoid) {
-      const price = getCoingeckoPrice(token.coingeckoid, timestamp);
+      const price = await getCoingeckoPrice(token.coingeckoid, timestamp);
       if (price) return price;
     }
-    if (token.tokenaddress) return getTokenPrice(timestamp, token.tokenaddress);
+    if (token.isbpt && token.tokenaddress)
+      return await getPoolPriceHist(timestamp, token.tokenaddress);
+    if (token.tokenaddress) return await getTokenPrice(timestamp, token.tokenaddress);
     return 0;
   }
+  if (token.isbpt && token.tokenaddress) return await getPoolPriceLive(token.tokenaddress);
   if (token.tokenaddress) {
-    const price = getRpcPrice(token.tokenaddress);
+    const price = await getRpcPrice(token.tokenaddress);
     if (price) return price;
   }
-  if (token.coingeckoid) return getCoingeckoCurrentPrice(token.coingeckoid);
+  if (token.coingeckoid) return await getCoingeckoCurrentPrice(token.coingeckoid);
   return 0;
 }
