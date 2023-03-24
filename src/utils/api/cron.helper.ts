@@ -4,6 +4,9 @@ import { readOneBribefile } from "utils/database/bribefile.db";
 import { getEmissionForRound } from "./bribeApr.helper";
 import { getPrice } from "utils/externalData/pricefeed";
 import { getRelicsFbeetsLocked } from "utils/externalData/theGraph";
+import { editToken } from "./editBribedata";
+
+const FIRST_ROUND_FOR_RECLICS = 32;
 
 export async function getData(round: number) {
   const newData = {} as Chartdata;
@@ -37,21 +40,44 @@ export async function getData(round: number) {
     { token: "BEETS", tokenId: 0, coingeckoid: "beethoven-x" },
     end
   );
-  // const priceBeets = await getCoingeckoPrice("beethoven-x", end);
-  const priceFbeets = await getPrice(
-    true,
-    { token: "FBEETS", tokenId: 0, tokenaddress: "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1" },
-    end
-  );
-  // const priceFbeets = await getTokenPrice(end, "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1");
+  const priceFbeets =
+    round < FIRST_ROUND_FOR_RECLICS
+      ? await getPrice(
+          true,
+          {
+            token: "FBEETS",
+            tokenId: 0,
+            tokenaddress: "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1",
+          },
+          end
+        )
+      : await getPrice(
+          true,
+          {
+            token: "FBEETS",
+            tokenId: 0,
+            tokenaddress: "0x9e4341acef4147196e99d648c5e43b3fc9d026780002000000000000000005ec",
+            isbpt: true,
+          },
+          end
+        );
 
   let pricePerVp = priceFbeets;
-  if (round >= 32) {
+  if (round >= FIRST_ROUND_FOR_RECLICS) {
     const block = parseInt(prop.snapshot);
     const addresses = votes.map(x => x.voter.toLowerCase());
     const fbeetsLocked = await getRelicsFbeetsLocked(block, addresses);
     const result = (priceFbeets * fbeetsLocked) / totalVotes;
     pricePerVp = result;
+  }
+
+  // store to lastprice
+  if (priceBeets > 0) {
+    const newTokenData = bribefile.tokendata.find(x => x.token === "BEETS");
+    if (newTokenData && !newTokenData.lastprice) {
+      newTokenData.lastprice = priceBeets;
+      await editToken(newTokenData, round);
+    }
   }
 
   // calculate total bribes
@@ -76,7 +102,15 @@ export async function getData(round: number) {
           amount *= priceBeets;
         } else {
           const rewardtoken = bribefile.tokendata.find(x => x.token === reward.token);
-          amount *= rewardtoken ? await getPrice(true, rewardtoken, end) : 0;
+          if (rewardtoken) {
+            const price = await getPrice(true, rewardtoken, end);
+            if (price > 0 && !rewardtoken.lastprice) {
+              // store to lastprice
+              rewardtoken.lastprice = price;
+              await editToken(rewardtoken, round);
+            }
+            amount *= price;
+          } else amount = 0;
         }
       }
       // now we have amount in USD
@@ -88,7 +122,7 @@ export async function getData(round: number) {
           percent = 0;
         } else if (bribe.percentagethreshold) {
           percent = Math.max(0, bribeEntry.percent - bribe.percentagethreshold);
-        } else if (bribe.payoutthreshold) {
+        } else if (bribe.payoutthreshold && bribe.payoutthreshold > 0) {
           percent = Math.max(0, bribeEntry.percent - bribe.payoutthreshold);
         }
         sum += amount * percent;
