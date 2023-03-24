@@ -144,7 +144,7 @@ export const TopRow = () => {
             <Box>
               <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
                 {accountConnected
-                  ? `VP: ${votingPower?.toLocaleString("en-us", { maximumFractionDigits: 0 })}`
+                  ? `VP: ${votingPower?.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
                   : ""}
               </Text>
             </Box>
