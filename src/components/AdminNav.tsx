@@ -7,6 +7,7 @@ export const AdminNav = () => {
   const adminPath = "/admin";
   const bribeformPath = "/bribeform";
   const poolPath = "/editVotablePools";
+  const logPath = "/cronLogs";
 
   return (
     <>
@@ -29,6 +30,12 @@ export const AdminNav = () => {
             isActive={currentPath === poolPath ? true : false}
           >
             Edit votable Pools
+          </Button>
+          <Button
+            onClick={() => router.push(logPath)}
+            isActive={currentPath === logPath ? true : false}
+          >
+            Cron Logs
           </Button>
         </HStack>
       </Card>
