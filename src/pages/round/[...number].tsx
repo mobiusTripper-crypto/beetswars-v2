@@ -160,7 +160,7 @@ export default function Round() {
                       <HStack marginTop="auto">
                         <Text>Max single reward:</Text>
                         <Text as="b">
-                          {((bribe.usdPer1000Vp * votingPower) / 1000).toLocaleString(undefined, {
+                          {(bribe.usdPerVp * votingPower).toLocaleString(undefined, {
                             style: "currency",
                             currency: "USD",
                           })}
