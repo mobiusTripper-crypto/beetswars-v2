@@ -2,7 +2,6 @@ import {
   Wrap,
   Text,
   Box,
-  Center,
   Divider,
   useColorModeValue,
   HStack,
@@ -65,81 +64,103 @@ export default function Round() {
 
   return (
     <>
-      <Box>
-        <Center>
-          <Box>
-            <Link href={snapshotLink} isExternal>
-              <Button
-                whiteSpace="normal"
-                height="auto"
-                variant="unstyled"
-                fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
-                fontWeight="600"
-                rightIcon={<Icon as={ArrowIcon} w={[2, 3, 4, 6, 8]} h={[2, 3, 4, 6, 8]} />}
-              >
-                {bribeData?.header.roundName}
-              </Button>
-            </Link>
-          </Box>
-        </Center>
+      <VStack align="center">
+        <Link href={snapshotLink} isExternal>
+          <Button
+            whiteSpace="normal"
+            height="auto"
+            variant="unstyled"
+            fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+            fontWeight="600"
+            rightIcon={<Icon as={ArrowIcon} w={[2, 3, 4, 6, 8]} h={[2, 3, 4, 6, 8]} />}
+          >
+            {bribeData?.header.roundName}
+          </Button>
+        </Link>
         <Summary headerData={bribeData?.header} />
-      </Box>
+      </VStack>
       {display === "cards" ? (
-        <Center>
-          <Wrap justify="center" spacing={10} mt={10}>
-            {bribeData?.bribelist?.map(
-              (bribe: BribeOffer, i: number): JSX.Element => (
-                <Box
-                  key={i}
-                  p={5}
-                  border="1px"
-                  width="310px"
-                  borderRadius={20}
-                  backgroundColor={bgCard}
-                >
+        <Wrap justify="center" spacing={10} mt={10}>
+          {bribeData?.bribelist?.map(
+            (bribe: BribeOffer, i: number): JSX.Element => (
+              <Box
+                key={i}
+                p={5}
+                border="1px"
+                width="310px"
+                borderRadius={20}
+                backgroundColor={bgCard}
+              >
+                <Box>
+                  {/* <Box> */}
+                  <Link href={bribe.poolurl} isExternal>
+                    <Button
+                      whiteSpace="normal"
+                      height="auto"
+                      blockSize="auto"
+                      variant="unstyled"
+                      size="lg"
+                      rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
+                    >
+                      {bribe.poolname}
+                    </Button>
+                  </Link>
+                  <Divider h="2px" bg="#ED1200" my={3} />
                   <Box>
-                    {/* <Box> */}
-                    <Link href={bribe.poolurl} isExternal>
-                      <Button
-                        whiteSpace="normal"
-                        height="auto"
-                        blockSize="auto"
-                        variant="unstyled"
-                        size="lg"
-                        rightIcon={<Icon as={ArrowIcon} h="12px" w="12px" />}
-                      >
-                        {bribe.poolname}
-                      </Button>
-                    </Link>
-                    <Divider h="2px" bg="#ED1200" my={3} />
-                    <Box>
-                      <Text fontSize="sm">{bribe.rewarddescription}</Text>
-                      <Text as="i" fontSize="xs">
-                        {bribe.assumption}
+                    <Text fontSize="sm">{bribe.rewarddescription}</Text>
+                    <Text as="i" fontSize="xs">
+                      {bribe.assumption}
+                    </Text>
+                  </Box>
+                  <Divider h="2px" bg="#ED1200" my={3} />
+                  <VStack align="left">
+                    <HStack>
+                      <Text>{bribe.label}:</Text>
+                      <Text as="b">
+                        {bribe.rewardAmount.toLocaleString(undefined, {
+                          style: "currency",
+                          currency: "USD",
+                          maximumFractionDigits: 0,
+                        })}
                       </Text>
-                    </Box>
-                    <Divider h="2px" bg="#ED1200" my={3} />
-                    <VStack align="left">
-                      <HStack>
-                        <Text>{bribe.label}:</Text>
+                    </HStack>
+                    <HStack>
+                      <Text>Vote Total:</Text>
+                      <Text as="b">
+                        {bribe.percent}% - {bribe.votes.toLocaleString()}
+                      </Text>
+                    </HStack>
+                    <HStack>
+                      <Text>$/1000 VP:</Text>
+                      <Text as="b">
+                        {bribe.usdPer1000Vp.toLocaleString(undefined, {
+                          style: "currency",
+                          currency: "USD",
+                        })}
+                      </Text>
+                      <Popover placement="auto-start">
+                        <PopoverTrigger>
+                          <IconButton
+                            isRound
+                            height="0"
+                            minWidth="0"
+                            aria-label="Explain Item"
+                            icon={<Icon as={QuestionIcon} />}
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverHeader fontWeight="semibold">$/1000 VP</PopoverHeader>
+                          <PopoverBody>
+                            Value in $ received for voting on this pool with 1k votes
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </HStack>
+                    {accountConnected && voteStateActive && requestedRound === roundList.latest ? (
+                      <HStack marginTop="auto">
+                        <Text>Max single reward:</Text>
                         <Text as="b">
-                          {bribe.rewardAmount.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                            maximumFractionDigits: 0,
-                          })}
-                        </Text>
-                      </HStack>
-                      <HStack>
-                        <Text>Vote Total:</Text>
-                        <Text as="b">
-                          {bribe.percent}% - {bribe.votes.toLocaleString("en-us")}
-                        </Text>
-                      </HStack>
-                      <HStack>
-                        <Text>$/1000 VP:</Text>
-                        <Text as="b">
-                          {bribe.usdPer1000Vp.toLocaleString("en-US", {
+                          {(bribe.usdPerVp * votingPower).toLocaleString(undefined, {
                             style: "currency",
                             currency: "USD",
                           })}
@@ -155,53 +176,23 @@ export default function Round() {
                             />
                           </PopoverTrigger>
                           <PopoverContent>
-                            <PopoverHeader fontWeight="semibold">$/1000 VP</PopoverHeader>
+                            <PopoverHeader fontWeight="semibold">Max single reward</PopoverHeader>
                             <PopoverBody>
-                              Value in $ received for voting on this pool with 1k votes
+                              Value in $ received for using 100% VP on this pool with current
+                              connected account.
                             </PopoverBody>
                           </PopoverContent>
                         </Popover>
                       </HStack>
-                      {accountConnected &&
-                      voteStateActive &&
-                      requestedRound === roundList.latest ? (
-                        <HStack marginTop="auto">
-                          <Text>Max single reward:</Text>
-                          <Text as="b">
-                            {((bribe.usdPer1000Vp * votingPower) / 1000).toLocaleString("en-US", {
-                              style: "currency",
-                              currency: "USD",
-                            })}
-                          </Text>
-                          <Popover placement="auto-start">
-                            <PopoverTrigger>
-                              <IconButton
-                                isRound
-                                height="0"
-                                minWidth="0"
-                                aria-label="Explain Item"
-                                icon={<Icon as={QuestionIcon} />}
-                              />
-                            </PopoverTrigger>
-                            <PopoverContent>
-                              <PopoverHeader fontWeight="semibold">Max single reward</PopoverHeader>
-                              <PopoverBody>
-                                Value in $ received for using 100% VP on this pool with current
-                                connected account.
-                              </PopoverBody>
-                            </PopoverContent>
-                          </Popover>
-                        </HStack>
-                      ) : (
-                        ""
-                      )}
-                    </VStack>
-                  </Box>
+                    ) : (
+                      ""
+                    )}
+                  </VStack>
                 </Box>
-              )
-            )}
-          </Wrap>
-        </Center>
+              </Box>
+            )
+          )}
+        </Wrap>
       ) : (
         <OfferTable data={bribeData.bribelist} />
       )}

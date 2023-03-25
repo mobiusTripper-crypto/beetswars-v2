@@ -1,4 +1,4 @@
-import { Card, Center, Flex, Text, useColorModeValue } from "@chakra-ui/react";
+import { Card, Text, useColorModeValue, Wrap } from "@chakra-ui/react";
 import type { BribeHeader } from "types/bribelist.trpc";
 
 interface SummaryProps {
@@ -20,49 +20,47 @@ export const Summary = (props: SummaryProps) => {
   };
 
   return (
-    <Center>
-      <Flex align="center" justify="center" wrap="wrap" gap={4}>
-        <Card p={3} align="center" bgColor={bgCard}>
-          <Text>
-            Vote Start:{" "}
-            {new Intl.DateTimeFormat(undefined, dateFormatOptions).format(
-              new Date(headerData.voteStart)
-            )}
-          </Text>
-          <Text>
-            Vote End:{" "}
-            {new Intl.DateTimeFormat(undefined, dateFormatOptions).format(
-              new Date(headerData.voteEnd)
-            )}
-          </Text>
-          <Text fontSize="11px">(your local time)</Text>
-          <Text>Time Left: {headerData.timeRemaining}</Text>
-        </Card>
-        <Card p={3} align="center" bgColor={bgCard}>
-          <Text>Votes Total: {headerData.totalVotes.toLocaleString()}</Text>
-          <Text>On Incentivized Pools: {headerData.bribedVotes.toLocaleString()}</Text>
-          <Text>Total Voter: {headerData.totalVoter}</Text>
-        </Card>
-        <Card p={3} align="center" bgColor={bgCard}>
-          <Text>
-            Total Incentives:{" "}
-            {headerData.totalBribes.toLocaleString(undefined, {
-              style: "currency",
-              currency: "USD",
-              maximumFractionDigits: 0,
-            })}
-          </Text>
-          <Text>
-            avg $/1000 VP:{" "}
-            {headerData.avgPer1000.toLocaleString(undefined, {
-              style: "currency",
-              currency: "USD",
-              maximumFractionDigits: 2,
-            })}
-          </Text>
-          <Text>Bribed Voter: {headerData.bribedVoter}</Text>
-        </Card>
-      </Flex>
-    </Center>
+    <Wrap justify="center" spacing={10}>
+      <Card p={3} backgroundColor={bgCard} align="center">
+        <Text>
+          Vote Start:{" "}
+          {new Intl.DateTimeFormat(undefined, dateFormatOptions).format(
+            new Date(headerData.voteStart)
+          )}
+        </Text>
+        <Text>
+          Vote End:{" "}
+          {new Intl.DateTimeFormat(undefined, dateFormatOptions).format(
+            new Date(headerData.voteEnd)
+          )}
+        </Text>
+        <Text fontSize="11px">(your local time)</Text>
+        <Text>Time Left: {headerData.timeRemaining}</Text>
+      </Card>
+      <Card p={3} backgroundColor={bgCard} align="center">
+        <Text>Votes Total: {headerData.totalVotes.toLocaleString()}</Text>
+        <Text>On Incentivized Pools: {headerData.bribedVotes.toLocaleString()}</Text>
+        <Text>Total Voter: {headerData.totalVoter}</Text>
+      </Card>
+      <Card p={3} backgroundColor={bgCard} align="center">
+        <Text>
+          Total Incentives:{" "}
+          {headerData.totalBribes.toLocaleString(undefined, {
+            style: "currency",
+            currency: "USD",
+            maximumFractionDigits: 0,
+          })}
+        </Text>
+        <Text>
+          avg $/1000 VP:{" "}
+          {headerData.avgPer1000.toLocaleString(undefined, {
+            style: "currency",
+            currency: "USD",
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+        <Text>Bribed Voter: {headerData.bribedVoter}</Text>
+      </Card>
+    </Wrap>
   );
 };

@@ -22,7 +22,7 @@ export default async function getEchartData(): Promise<Echarts | null> {
     return Number(round.priceBeets.toFixed(4));
   });
   const endTime = data.map(round => {
-    return new Date(round.voteEnd * 1000).toLocaleDateString("en-US");
+    return new Date(round.voteEnd * 1000).toLocaleDateString();
   });
   const votingApr = data.map(round => {
     const priceVP = round.pricePerVp ?? round.priceFbeets;
