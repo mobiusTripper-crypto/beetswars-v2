@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const round = Number(latest) || 0;
   const newRound = await getData(round);
   const now = Math.floor(Date.now() / 1000);
-  if (now < newRound.voteEnd) {
+  if (now < newRound.voteEnd || now > newRound.voteEnd + 7 * 24 * 60 * 60) {
     const myvalue = {
       error: "too early, did not write to database",
       value: newRound,

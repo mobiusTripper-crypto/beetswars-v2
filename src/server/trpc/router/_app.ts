@@ -3,6 +3,7 @@ import { bribedataRouter } from "./bribedata";
 import { dashboardRouter } from "./bribersDashboard";
 import { bribesRouter } from "./bribes";
 import { chartdataRouter } from "./chartdata";
+import { cronlogRouter } from "./cronlog";
 import { exampleRouter } from "./example";
 import { loginRouter } from "./loginId";
 import { statsRouter } from "./overallStats";
@@ -19,6 +20,7 @@ export const appRouter = router({
   bribes: bribedataRouter,
   votepools: votepoolsRouter,
   dashboard: dashboardRouter,
+  cronlogs: cronlogRouter,
 });
 
 // export type definition of API
