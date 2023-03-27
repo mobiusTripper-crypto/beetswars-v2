@@ -58,6 +58,7 @@
     "initVersion": "6.11.4"
   },
   "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0",
     "@fontsource/inter": "^4.5.15"
   }
 }
