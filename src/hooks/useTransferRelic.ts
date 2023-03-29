@@ -38,11 +38,12 @@ export function useTransferRelic(toAddress: string, relicId: string) {
     address: RELIC_CONTRACT,
     abi: ReliquaryAbi,
     functionName: "safeTransferFrom",
-    args: [account.address, toAddress, relicId],
+    args: [account.address, toAddress, Number(relicId)],
+    enabled: Number(relicId) < 0,
   });
 
   const { write, isError, data } = useContractWrite({
-    onError: () => toast(transferSuccess()),
+    onError: () => toast(transferFailure()),
     ...config,
   });
 

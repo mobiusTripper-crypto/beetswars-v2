@@ -18,9 +18,8 @@ export type ReliquaryFarmPosition = {
 
 class ReliquaryService {
   constructor(
-    private readonly reliquaryContractAddress: string // private readonly chainId: string,
-  ) // private readonly beetsAddress: string
-  {}
+    private readonly reliquaryContractAddress: string // private readonly chainId: string, // private readonly beetsAddress: string
+  ) {}
 
   public async getAllPositions({
     userAddress,

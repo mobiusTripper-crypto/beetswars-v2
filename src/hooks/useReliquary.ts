@@ -2,13 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { type ReliquaryFarmPosition, reliquaryService } from "services/reliquary";
 import { useAccount, useProvider } from "wagmi";
-import { useTransferRelic } from "./useTransferRelic";
 
 export default function useReliquary() {
   const account = useAccount();
   const provider = useProvider();
   const [selectedRelicId, setSelectedRelicId] = useState<string | undefined>(undefined);
-  const { transfer } = useTransferRelic();
 
   const {
     data: relicPositionsUnsorted = [],
@@ -41,10 +39,6 @@ export default function useReliquary() {
     position => position.relicId === selectedRelicId
   );
 
-  const transfer = (relicId: string) => {
-    console.log("transfer", relicId);
-  };
-
   return {
     relicPositions,
     isLoadingRelicPositions,
@@ -52,6 +46,5 @@ export default function useReliquary() {
     selectedRelicId: selectedRelicId,
     selectedRelic: selectedRelic || null,
     refetchRelicPositions,
-    transfer,
   };
 }
