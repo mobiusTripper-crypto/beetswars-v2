@@ -39,7 +39,7 @@ export function useTransferRelic(toAddress: string, relicId: string) {
     abi: ReliquaryAbi,
     functionName: "safeTransferFrom",
     args: [account.address, toAddress, Number(relicId)],
-    enabled: Number(relicId) < 0,
+    enabled: Number(relicId) > 0,
   });
 
   const { write, isError, data } = useContractWrite({

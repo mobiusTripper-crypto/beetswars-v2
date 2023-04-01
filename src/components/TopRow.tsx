@@ -219,6 +219,9 @@ export const TopRow = () => {
             </Box>
           </>
         )}
+        <Box>
+          <Link href="/relics">relics</Link>
+        </Box>
         <CustomConnectButton />
         <ColorModeSwitcher />
       </HStack>

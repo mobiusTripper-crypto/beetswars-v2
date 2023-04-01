@@ -39,7 +39,7 @@ export function TransferTokenModel(props: modalProps) {
 
   const submit = () => {
     console.log("transfer ", toAddress, relic.relicId);
-    transfer?.();
+    transfer(toAddress, relic.relicId);
     onClose();
   };
 
