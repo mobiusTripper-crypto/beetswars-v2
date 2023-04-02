@@ -17,9 +17,10 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { useTransferRelic } from "hooks/useTransferRelic";
+import { useMergeRelic } from "hooks/useMergeRelic";
 import { useState } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
+import { RelicBalance } from "types/theGraph.raw";
 
 interface modalProps {
   // data: Tokendata;
@@ -28,20 +29,22 @@ interface modalProps {
   // onSubmit: (payload: Tokendata) => void;
 
   relic: ReliquaryFarmPosition;
+  relicPositions: ReliquaryFarmPosition[];
 }
 
-export function TransferTokenModal(props: modalProps) {
-  const { relic } = props;
+export function MergeTokenModal(props: modalProps) {
+  const { relic, relicPositions } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [toAddress, setToAddress] = useState<string | undefined>(undefined);
-  const { transfer, isError, mayFail } = useTransferRelic(toAddress || "", relic.relicId || "");
+  const [toId, setToId] = useState<string | undefined>(undefined);
+  const { merge, isError, mayFail } = useMergeRelic(relic.relicId, toId || "");
 
-  //const mayFail = false
+  //console.log(relic);
+  //console.log(relicPositions);
 
   const submit = () => {
-    console.log("transfer ", toAddress, relic.relicId);
-    transfer(toAddress, relic.relicId);
+    console.log("merge ", relic.relicId, toId);
+    merge(relic.relicId, toId);
     onClose();
   };
 
@@ -51,7 +54,7 @@ export function TransferTokenModal(props: modalProps) {
 
   return (
     <>
-      <Button onClick={openModal}>Transfer</Button>
+      <Button onClick={openModal}>Merge</Button>
 
       <Modal
         closeOnOverlayClick={false}
@@ -62,7 +65,7 @@ export function TransferTokenModal(props: modalProps) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Transfer Relic</ModalHeader>
+          <ModalHeader>Merge Relic</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -72,12 +75,18 @@ export function TransferTokenModal(props: modalProps) {
                   <Input value={relic.relicId || ""} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>To Address</FormLabel>
-                  <Input
-                    placeholder="0x..."
-                    value={toAddress || ""}
-                    onChange={e => setToAddress(e.target.value)}
-                  />
+                  <FormLabel>Into Relic {toId}</FormLabel>
+                  <Select placeholder="Select Target Relic" onChange={e => setToId(e.target.value)}>
+                    {relicPositions.map((rel, index) => {
+                      if (rel.relicId !== relic.relicId) {
+                        return (
+                          <option key={index} value={rel.relicId}>
+                            {rel.relicId}
+                          </option>
+                        );
+                      }
+                    })}
+                  </Select>
                   <FormHelperText>
                     Items sent to the wrong address cannot be recovered. Be certain the address is
                     entered correctly.
@@ -90,8 +99,8 @@ export function TransferTokenModal(props: modalProps) {
             <Button variant="ghost" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button disabled={mayFail || !toAddress} onClick={submit}>
-              Transfer
+            <Button disabled={mayFail || !toId} onClick={submit}>
+              Merge
             </Button>
           </ModalFooter>
         </ModalContent>

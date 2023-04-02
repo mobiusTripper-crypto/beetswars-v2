@@ -1,7 +1,8 @@
-import { Avatar, Box, Button, Card, Divider, HStack, Text, useToast, Wrap } from "@chakra-ui/react";
+import { Center, Avatar, Box, Button, Card, Divider, HStack, Text, useToast, Wrap } from "@chakra-ui/react";
 import useReliquary from "hooks/useReliquary";
 import type { NextPage } from "next";
-import { TransferTokenModel } from "components/TransferRelicModal";
+import { TransferTokenModal } from "components/TransferRelicModal";
+import { MergeTokenModal } from "components/MergeRelicModal";
 import RelicLevel1 from "assets/images/reliquary/1.png";
 import RelicLevel2 from "assets/images/reliquary/2.png";
 import RelicLevel3 from "assets/images/reliquary/3.png";
@@ -63,13 +64,15 @@ const Relics: NextPage = () => {
     "The Awakened",
   ];
 
-  return relicPositions ? (
-    <Wrap spacing={10}>
+  console.log(relicPositions);
+
+  return relicPositions.length > 0 ? (
+    <Wrap spacing={5} justify='center'>
       {relicPositions.map((relic, index) => {
         console.log(relic, index);
         return (
           <Box key={index}>
-            <Card m={12} p={6} w={300} variant="outline">
+            <Card m={2} p={3} w={280} variant="outline">
               <Text>Relic #{relic.relicId}</Text>
               <Divider m={3} />
               <Text>
@@ -106,21 +109,8 @@ const Relics: NextPage = () => {
                 >
                   Split
                 </Button>
-                <Button
-                  onClick={() =>
-                    toast({
-                      title: "Merge",
-                      description: `merge relic #${relic.relicId}`,
-                      status: "success",
-                      duration: 5000,
-                      isClosable: true,
-                      position: "top",
-                    })
-                  }
-                >
-                  Merge
-                </Button>
-                <TransferTokenModel relic={relic} />
+                <MergeTokenModal relic={relic} relicPositions={relicPositions} />
+                <TransferTokenModal relic={relic} />
               </HStack>
             </Card>
           </Box>
@@ -128,7 +118,7 @@ const Relics: NextPage = () => {
       })}
     </Wrap>
   ) : (
-    <Text>Connect Wallet</Text>
+    <Center>Connect Wallet</Center>
   );
 };
 

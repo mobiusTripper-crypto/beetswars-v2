@@ -16,49 +16,51 @@ const defaultOptions: Partial<UseToastOptions> = {
   position: "bottom-right",
 };
 
-const transferSuccess = (): UseToastOptions => ({
-  title: "Transfer Successful.",
-  description: "Your relic was transfered successfully",
+const mergeSuccess = (): UseToastOptions => ({
+  title: "Merge Successful.",
+  description: "Your relic was merged successfully",
   status: "success",
   ...defaultOptions,
 });
 
-const transferFailure = (): UseToastOptions => ({
-  title: "Transfer Failed.",
-  description: "The relic was not transfered",
+const mergeFailure = (): UseToastOptions => ({
+  title: "Merge Failed.",
+  description: "The relic was not merged",
   status: "error",
   ...defaultOptions,
 });
 
-export function useTransferRelic(toAddress: string, relicId: string) {
+export function useMergeRelic(fromId: string, toId: string) {
   const toast = useToast();
   const account = useAccount();
+
+console.log("merge", fromId, toId) 
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,
     abi: ReliquaryAbi,
-    functionName: "safeTransferFrom",
-    args: [account.address, toAddress, Number(relicId)],
-    enabled: (Number(relicId) > 0 && !!toAddress),
+    functionName: "merge",
+    args: [Number(fromId), Number(toId)],
+    enabled: !!Number(fromId) && !!Number(toId),
   });
 
   const { write, isError, data } = useContractWrite({
-    onError: () => toast(transferFailure()),
+    onError: () => toast(mergeFailure()),
     ...config,
   });
 
   const { isSuccess, isLoading } = useWaitForTransaction({
     hash: data?.hash,
-    onSuccess: () => toast(transferSuccess()),
+    onSuccess: () => toast(mergeSuccess()),
     onError(e) {
       console.error(e);
-      toast(transferFailure());
+      toast(mergeFailure());
     },
   });
 
   return {
-    transfer: write,
-    isTransfering: isLoading,
+    merge: write,
+    isMerging: isLoading,
     isSuccess,
     isError,
     mayFail,
