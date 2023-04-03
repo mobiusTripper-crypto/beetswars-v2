@@ -1,8 +1,20 @@
-import { Center, Avatar, Box, Button, Card, Divider, HStack, Text, useToast, Wrap } from "@chakra-ui/react";
+import {
+  Center,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Divider,
+  HStack,
+  Text,
+  useToast,
+  Wrap,
+} from "@chakra-ui/react";
 import useReliquary from "hooks/useReliquary";
 import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
 import { MergeTokenModal } from "components/MergeRelicModal";
+import { SplitTokenModal } from "components/SplitRelicModal";
 import RelicLevel1 from "assets/images/reliquary/1.png";
 import RelicLevel2 from "assets/images/reliquary/2.png";
 import RelicLevel3 from "assets/images/reliquary/3.png";
@@ -67,7 +79,7 @@ const Relics: NextPage = () => {
   console.log(relicPositions);
 
   return relicPositions.length > 0 ? (
-    <Wrap spacing={5} justify='center'>
+    <Wrap spacing={5} justify="center">
       {relicPositions.map((relic, index) => {
         console.log(relic, index);
         return (
@@ -95,20 +107,7 @@ const Relics: NextPage = () => {
               <Text>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
               <Divider m={3} />
               <HStack>
-                <Button
-                  onClick={() =>
-                    toast({
-                      title: "Split",
-                      description: `split relic #${relic.relicId}`,
-                      status: "success",
-                      duration: 5000,
-                      isClosable: true,
-                      position: "top",
-                    })
-                  }
-                >
-                  Split
-                </Button>
+                <SplitTokenModal relic={relic} />
                 <MergeTokenModal relic={relic} relicPositions={relicPositions} />
                 <TransferTokenModal relic={relic} />
               </HStack>
