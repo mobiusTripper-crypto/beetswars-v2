@@ -69,3 +69,6 @@ export function useSplitRelic(toAddress: string, relicId: string, amount: string
     mayFail,
   };
 }
+
+
+
