@@ -16,48 +16,48 @@ const defaultOptions: Partial<UseToastOptions> = {
   position: "bottom-right",
 };
 
-const transferSuccess = (): UseToastOptions => ({
-  title: "Transfer Successful.",
-  description: "Your relic was transfered successfully",
+const splitSuccess = (): UseToastOptions => ({
+  title: "Split Successful.",
+  description: "Your relic was split successfully",
   status: "success",
   ...defaultOptions,
 });
 
-const transferFailure = (): UseToastOptions => ({
-  title: "Transfer Failed.",
-  description: "The relic was not transfered",
+const splitFailure = (): UseToastOptions => ({
+  title: "Split Failed.",
+  description: "The relic was not split",
   status: "error",
   ...defaultOptions,
 });
 
-export function useSplitRelic(toAddress: string, relicId: string, amount: string ) {
+export function useSplitRelic(toAddress: string, relicId: string, amount: string) {
   const toast = useToast();
   const account = useAccount();
 
   const arg_amount = parseFloat(amount) / 10 ** 18;
 
-console.log(toAddress,relicId, Number(arg_amount))
+  console.log(toAddress, relicId, Number(arg_amount));
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,
     abi: ReliquaryAbi,
     functionName: "split",
-    args: [Number(relicId), Number(arg_amount) , toAddress],
-//    enabled: (Number(relicId) > 0 && !!toAddress && Number(amount) > 0),
-enabled: false,
+    args: [Number(relicId), Number(arg_amount), toAddress],
+    //    enabled: (Number(relicId) > 0 && !!toAddress && Number(amount) > 0),
+    enabled: false,
   });
 
   const { write, isError, data } = useContractWrite({
-    onError: () => toast(transferFailure()),
+    onError: () => toast(splitFailure()),
     ...config,
   });
 
   const { isSuccess, isLoading } = useWaitForTransaction({
     hash: data?.hash,
-    onSuccess: () => toast(transferSuccess()),
+    onSuccess: () => toast(splitSuccess()),
     onError(e) {
       console.error(e);
-      toast(transferFailure());
+      toast(splitFailure());
     },
   });
 
