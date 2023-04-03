@@ -44,7 +44,7 @@ export function MergeTokenModal(props: modalProps) {
 
   const submit = () => {
     console.log("merge ", relic.relicId, toId);
-    merge(relic.relicId, toId);
+    merge?.();
     onClose();
   };
 

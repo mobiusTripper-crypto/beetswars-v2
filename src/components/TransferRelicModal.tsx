@@ -39,9 +39,15 @@ export function TransferTokenModal(props: modalProps) {
 
   //const mayFail = false
 
+  const handleChange = event => {
+    event.preventDefault();
+    console.log(event.target.value);
+    setToAddress(event.target.value);
+  };
+
   const submit = () => {
     console.log("transfer ", toAddress, relic.relicId);
-    transfer(toAddress, relic.relicId);
+    transfer?.();
     onClose();
   };
 
@@ -73,11 +79,7 @@ export function TransferTokenModal(props: modalProps) {
                 </FormControl>
                 <FormControl>
                   <FormLabel>To Address</FormLabel>
-                  <Input
-                    placeholder="0x..."
-                    value={toAddress || ""}
-                    onChange={e => setToAddress(e.target.value)}
-                  />
+                  <Input placeholder="0x..." value={toAddress || ""} onChange={handleChange} />
                   <FormHelperText>
                     Items sent to the wrong address cannot be recovered. Be certain the address is
                     entered correctly.
