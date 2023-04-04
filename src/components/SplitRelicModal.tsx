@@ -50,12 +50,12 @@ export function SplitTokenModal(props: modalProps) {
     amount || ""
   );
 
-  const handleChange = event => {
+  const handleChange = (event:any) => {
     event.preventDefault();
     console.log(event.target.value);
     setToAddress(event.target.value);
   };
-  const handleAmount = event => {
+  const handleAmount = (event:any) => {
     event.preventDefault();
     console.log(event.target.value);
     setAmount(event.target.value);
@@ -121,7 +121,7 @@ export function SplitTokenModal(props: modalProps) {
               Cancel
             </Button>
             <Button
-              disabled={mayFail || !toAddress || amount > relic.amount || amount === "0" || !amount}
+              disabled={mayFail || !toAddress || !!amount}
               onClick={submit}
             >
               Split

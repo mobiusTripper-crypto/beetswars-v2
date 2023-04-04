@@ -39,7 +39,7 @@ export function TransferTokenModal(props: modalProps) {
 
   //const mayFail = false
 
-  const handleChange = event => {
+  const handleChange = (event:any) => {
     event.preventDefault();
     console.log(event.target.value);
     setToAddress(event.target.value);
