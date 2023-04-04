@@ -121,7 +121,7 @@ export function SplitTokenModal(props: modalProps) {
               Cancel
             </Button>
             <Button
-              disabled={mayFail || !toAddress || !!amount}
+              disabled={mayFail}
               onClick={submit}
             >
               Split

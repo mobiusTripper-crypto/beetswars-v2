@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { FaCoins as BribersIcon } from "react-icons/fa";
+import { FaTools as ToolsIcon } from "react-icons/fa";
 import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
 import { BiLineChart as ChartIcon } from "react-icons/bi";
 import { RoundSelector } from "components/RoundSelector";
@@ -94,9 +95,11 @@ export const TopRow = () => {
   const wdafLink = "/snapshotTimes";
   const bribersdashLink = "/bribersDashboard";
   const chartLink = "/gaugeVoteHistory";
+  const relicsLink = "/relics";
   const linkActiveColor = "bw_green";
   const iconProps = {
     size: "1.6rem",
+    smaller: "1.3rem",
     margin: "0 1rem 0 0",
   };
 
@@ -216,12 +219,20 @@ export const TopRow = () => {
                   color={asPath.includes(`${wdafLink}`) ? `${linkActiveColor}` : ""}
                 />
               </Link>
+              <Link href={relicsLink}>
+                <Icon
+                  title="Relic Tools"
+                  as={ToolsIcon}
+                  _hover={{ color: "bw_red" }}
+                  height={iconProps.smaller}
+                  width={iconProps.smaller}
+                  margin={iconProps.margin}
+                  color={asPath.includes(`${relicsLink}`) ? `${linkActiveColor}` : ""}
+                />
+              </Link>
             </Box>
           </>
         )}
-        <Box>
-          <Link href="/relics">relics</Link>
-        </Box>
         <CustomConnectButton />
         <ColorModeSwitcher />
       </HStack>

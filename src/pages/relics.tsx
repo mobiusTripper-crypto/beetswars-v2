@@ -4,12 +4,16 @@ import {
   Box,
   Button,
   Card,
+  CardHeader,
+  CardBody,
   Divider,
   HStack,
   Text,
   useToast,
   Wrap,
+  Heading,
 } from "@chakra-ui/react";
+import { CustomConnectButton } from "components/CustomConnectButton";
 import useReliquary from "hooks/useReliquary";
 import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
@@ -78,46 +82,63 @@ const Relics: NextPage = () => {
 
   console.log(relicPositions);
 
-  return relicPositions.length > 0 ? (
-    <Wrap spacing={5} justify="center">
-      {relicPositions.map((relic, index) => {
-        console.log(relic, index);
-        return (
-          <Box key={index}>
-            <Card m={2} p={3} w={280} variant="outline">
-              <Text>Relic #{relic.relicId}</Text>
-              <Divider m={3} />
-              <Text>
-                {relic.amount === "0.0"
-                  ? "Empty relic - no level"
-                  : `Level ${relic?.level + 1} - ${relicLevelNames[relic.level]}`}
-              </Text>
-              <Image
-                style={{ cursor: "pointer" }}
-                src={getImage(relic.amount === "0.0" ? 0 : relic?.level + 1)}
-                width={200}
-                height={200}
-                alt="reliquary"
-                placeholder="blur"
-              />
-              <HStack>
-                <Avatar src={fBeetsImage.src} h={5} w={5} />
-                <Text>{parseFloat(relic.amount).toLocaleString()}</Text>
-              </HStack>
-              <Text>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
-              <Divider m={3} />
-              <HStack>
-                <SplitTokenModal relic={relic} />
-                <MergeTokenModal relic={relic} relicPositions={relicPositions} />
-                <TransferTokenModal relic={relic} />
-              </HStack>
-            </Card>
-          </Box>
-        );
-      })}
-    </Wrap>
-  ) : (
-    <Center>Connect Wallet</Center>
+  return (
+    <>
+      <Text
+        fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+        fontWeight="600"
+        margin="20px"
+        textAlign="center"
+      >
+        Relic Tools
+      </Text>
+      {relicPositions.length > 0 ? (
+        <Wrap spacing={4} justify="center">
+          {relicPositions.map((relic, index) => {
+            console.log(relic, index);
+            return (
+              <Box key={index}>
+                <Card m={1} p={1} w={300} variant="filled" align="center">
+                  <CardHeader>
+                    <Heading size="md">Relic #{relic.relicId}</Heading>
+                    <Text>
+                      {relic.amount === "0.0"
+                        ? "Empty relic - no level"
+                        : `Level ${relic?.level + 1} - ${relicLevelNames[relic.level]}`}
+                    </Text>
+                  </CardHeader>
+                  <CardBody>
+                    <Box m={3}>
+                      <Image
+                        objectFit="cover"
+                        src={getImage(relic.amount === "0.0" ? 0 : relic?.level + 1)}
+                        alt="reliquary"
+                        placeholder="blur"
+                      />
+                      <HStack m={1}>
+                        <Avatar src={fBeetsImage.src} h={5} w={5} />
+                        <Text>{parseFloat(relic.amount).toLocaleString()}</Text>
+                      </HStack>
+                      <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
+                    </Box>
+                    <HStack m={1}>
+                      <SplitTokenModal relic={relic} />
+                      <MergeTokenModal relic={relic} relicPositions={relicPositions} />
+                      <TransferTokenModal relic={relic} />
+                    </HStack>
+                  </CardBody>
+                </Card>
+              </Box>
+            );
+          })}
+        </Wrap>
+      ) : (
+        <Center>
+          <CustomConnectButton />
+        </Center>
+      )}
+      ;
+    </>
   );
 };
 
