@@ -54,7 +54,9 @@ export function MergeTokenModal(props: modalProps) {
 
   return (
     <>
-      <Button onClick={openModal}>Merge</Button>
+      <Button disabled={relicPositions.length < 2} onClick={openModal}>
+        Merge
+      </Button>
 
       <Modal
         closeOnOverlayClick={false}
