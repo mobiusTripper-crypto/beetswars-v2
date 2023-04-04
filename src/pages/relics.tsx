@@ -99,16 +99,14 @@ const Relics: NextPage = () => {
             return (
               <Box key={index}>
                 <Card m={1} p={1} w={300} variant="filled" align="center">
-                  <CardHeader>
-                    <Heading size="md">Relic #{relic.relicId}</Heading>
-                    <Text>
-                      {relic.amount === "0.0"
-                        ? "Empty relic - no level"
-                        : `Level ${relic?.level + 1} - ${relicLevelNames[relic.level]}`}
-                    </Text>
-                  </CardHeader>
-                  <CardBody>
-                    <Box m={3}>
+                    <Heading m={3} size="md">Relic #{relic.relicId}</Heading>
+                  <Text>
+                    {relic.amount === "0.0"
+                      ? "Empty relic - no level"
+                      : `Level ${relic?.level + 1} - ${relicLevelNames[relic.level]}`}
+                  </Text>
+                  <Box m={4}>
+                    <Box mr={5} ml={5}>
                       <Image
                         objectFit="cover"
                         src={getImage(relic.amount === "0.0" ? 0 : relic?.level + 1)}
@@ -121,12 +119,12 @@ const Relics: NextPage = () => {
                       </HStack>
                       <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
                     </Box>
-                    <HStack m={1}>
+                    <HStack m={3}>
                       <SplitTokenModal relic={relic} />
                       <MergeTokenModal relic={relic} relicPositions={relicPositions} />
                       <TransferTokenModal relic={relic} />
                     </HStack>
-                  </CardBody>
+                  </Box>
                 </Card>
               </Box>
             );
@@ -137,7 +135,6 @@ const Relics: NextPage = () => {
           <CustomConnectButton />
         </Center>
       )}
-      ;
     </>
   );
 };
