@@ -102,7 +102,7 @@ export function SplitTokenModal(props: modalProps) {
             <Button variant="ghost" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button disabled={mayFail || !amount} onClick={submit}>
+            <Button disabled={isError || mayFail} onClick={submit}>
               Split
             </Button>
           </ModalFooter>
