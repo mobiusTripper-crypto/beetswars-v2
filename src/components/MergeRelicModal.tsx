@@ -1,10 +1,8 @@
 import {
   Button,
-  Checkbox,
   FormControl,
   Text,
   FormLabel,
-  HStack,
   Input,
   Modal,
   ModalBody,
@@ -20,14 +18,8 @@ import {
 import { useMergeRelic } from "hooks/useMergeRelic";
 import { useEffect, useState } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
-import { RelicBalance } from "types/theGraph.raw";
 
 interface modalProps {
-  // data: Tokendata;
-  // lasttokens?: Tokendata[];
-  // isNew: boolean;
-  // onSubmit: (payload: Tokendata) => void;
-
   relic: ReliquaryFarmPosition;
   relicPositions: ReliquaryFarmPosition[];
 }
@@ -54,9 +46,6 @@ export function MergeTokenModal(props: modalProps) {
         );
     }
   }, [relic, relicPositions, toId]);
-
-  //console.log(relic);
-  //console.log(relicPositions);
 
   const submit = () => {
     console.log("merge ", relic.relicId, toId);
@@ -106,7 +95,7 @@ export function MergeTokenModal(props: modalProps) {
                     })}
                   </Select>
                   <Text mt={2}>
-                    Your merged relic will have the new entry date of{" "}
+                    Your merged relic will have the entry date of{" "}
                     {new Date((newEntry || 0) * 1000).toDateString()} and the level of{" "}
                     {Math.min(Math.ceil((Date.now() / 1000 - newEntry) / (7 * 24 * 60 * 60)), 11)}.
                   </Text>
