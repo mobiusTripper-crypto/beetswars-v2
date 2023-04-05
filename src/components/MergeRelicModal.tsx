@@ -2,7 +2,7 @@ import {
   Button,
   Checkbox,
   FormControl,
-  FormHelperText,
+  Text,
   FormLabel,
   HStack,
   Input,
@@ -18,7 +18,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useMergeRelic } from "hooks/useMergeRelic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
 import { RelicBalance } from "types/theGraph.raw";
 
@@ -38,6 +38,22 @@ export function MergeTokenModal(props: modalProps) {
 
   const [toId, setToId] = useState<string | undefined>(undefined);
   const { merge, isError, mayFail } = useMergeRelic(relic.relicId, toId || "");
+
+  const [newEntry, setNewEntry] = useState(0);
+
+  useEffect(() => {
+    if (!toId) {
+      setNewEntry(relic.entry);
+    } else {
+      const mergeRelic = relicPositions.find(x => x.relicId === toId);
+      mergeRelic &&
+        setNewEntry(
+          (parseFloat(relic.amount) * relic.entry +
+            parseFloat(mergeRelic.amount) * mergeRelic.entry) /
+            (parseFloat(relic.amount) + parseFloat(mergeRelic.amount))
+        );
+    }
+  }, [relic, relicPositions, toId]);
 
   //console.log(relic);
   //console.log(relicPositions);
@@ -89,10 +105,11 @@ export function MergeTokenModal(props: modalProps) {
                       }
                     })}
                   </Select>
-                  <FormHelperText>
-                    Items sent to the wrong address cannot be recovered. Be certain the address is
-                    entered correctly.
-                  </FormHelperText>
+                  <Text mt={2}>
+                    Your merged relic will have the new entry date of{" "}
+                    {new Date((newEntry || 0) * 1000).toDateString()} and the level of{" "}
+                    {Math.min(Math.ceil((Date.now() / 1000 - newEntry) / (7 * 24 * 60 * 60)), 11)}.
+                  </Text>
                 </FormControl>
               </VStack>
             </FormControl>
