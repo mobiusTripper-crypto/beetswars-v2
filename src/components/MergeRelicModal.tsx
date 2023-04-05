@@ -95,7 +95,7 @@ export function MergeTokenModal(props: modalProps) {
                     })}
                   </Select>
                   <Text mt={2}>
-                    Your merged relic will have the entry date of{" "}
+                    Your merged relic will have the new entry date of{" "}
                     {new Date((newEntry || 0) * 1000).toDateString()} and the level of{" "}
                     {Math.min(Math.ceil((Date.now() / 1000 - newEntry) / (7 * 24 * 60 * 60)), 11)}.
                   </Text>

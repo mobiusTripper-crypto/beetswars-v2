@@ -36,7 +36,7 @@ export function useSplitRelic(toAddress: string, relicId: string, amount: BigNum
     abi: ReliquaryAbi,
     functionName: "split",
     args: [Number(relicId), amount, toAddress],
-    enabled: Number(relicId) > 0 && !!toAddress && amount.eq(0),
+    enabled: Number(relicId) > 0 && !!toAddress && !amount.eq(0),
   });
 
   const { write, isError, data } = useContractWrite({
