@@ -29,7 +29,7 @@ const splitFailure = (): UseToastOptions => ({
 export function useSplitRelic(toAddress: string, relicId: string, amount: BigNumber) {
   const toast = useToast();
 
-  console.log("split args:", Number(relicId), amount, toAddress);
+  //  console.log("split args:", Number(relicId), amount, toAddress);
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,

@@ -1,12 +1,7 @@
 import type { UseToastOptions } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import ReliquaryAbi from "utils/abi/Reliquary.json";
-import {
-  useAccount,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
@@ -32,9 +27,8 @@ const mergeFailure = (): UseToastOptions => ({
 
 export function useMergeRelic(fromId: string, toId: string) {
   const toast = useToast();
-  const account = useAccount();
 
-console.log("merge", fromId, toId) 
+  //console.log("merge", fromId, toId)
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,

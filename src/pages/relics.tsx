@@ -34,7 +34,8 @@ import fBeetsImage from "assets/images/fBEETS.png";
 import Image from "next/image";
 
 const Relics: NextPage = () => {
-  const { relicPositions, isLoadingRelicPositions, selectedRelic } = useReliquary();
+  const { relicPositions, isLoadingRelicPositions, selectedRelic, refetchRelicPositions } =
+    useReliquary();
   const toast = useToast();
 
   function getImage(level: number) {
@@ -80,7 +81,7 @@ const Relics: NextPage = () => {
     "The Awakened",
   ];
 
-  console.log(relicPositions);
+  //console.log(relicPositions);
 
   return (
     <>
@@ -95,11 +96,13 @@ const Relics: NextPage = () => {
       {relicPositions.length > 0 ? (
         <Wrap spacing={4} justify="center">
           {relicPositions.map((relic, index) => {
-            console.log(relic, index);
+            //console.log(relic, index);
             return (
               <Box key={index}>
                 <Card m={1} p={1} w={300} variant="filled" align="center">
-                    <Heading m={3} size="md">Relic #{relic.relicId}</Heading>
+                  <Heading m={3} size="md">
+                    Relic #{relic.relicId}
+                  </Heading>
                   <Text>
                     {relic.amount === "0.0"
                       ? "Empty relic - no level"
@@ -120,9 +123,9 @@ const Relics: NextPage = () => {
                       <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
                     </Box>
                     <HStack m={3}>
-                      <SplitTokenModal relic={relic} />
-                      <MergeTokenModal relic={relic} relicPositions={relicPositions} />
-                      <TransferTokenModal relic={relic} />
+                      <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
+                      <MergeTokenModal relic={relic} refresh={refetchRelicPositions} relicPositions={relicPositions} />
+                      <TransferTokenModal relic={relic} refresh={refetchRelicPositions}/>
                     </HStack>
                   </Box>
                 </Card>
