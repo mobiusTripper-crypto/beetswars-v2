@@ -8,6 +8,7 @@ import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { FaCoins as BribersIcon } from "react-icons/fa";
 import { ImStatsBars as StatsIcon } from "react-icons/im";
 import { BiLineChart as ChartIcon } from "react-icons/bi";
+import { GoTools as ToolsIcon } from "react-icons/go";
 import { useRoundList } from "hooks/useRoundList";
 
 const Home: NextPage = () => {
@@ -15,7 +16,7 @@ const Home: NextPage = () => {
   const { display } = useGlobalContext();
   const { data: voteStateActive, loaded: voteStateLoaded } = useVoteState();
 
-//  console.log("vote active state:", voteStateActive);
+  //  console.log("vote active state:", voteStateActive);
 
   return (
     <>
@@ -44,10 +45,10 @@ const Home: NextPage = () => {
             caption="History of previous rounds"
           />
           <SplashItem
-            href="/snapshotTimes"
-            icon={StatsIcon}
-            text="Snapshot Times"
-            caption="add fBEETS in time"
+            href="/relicTools"
+            icon={ToolsIcon}
+            text="Relic Tools"
+            caption="Split, Merge, Transfer Relics"
           />
         </SimpleGrid>
       </Center>
@@ -56,7 +57,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-
-
-

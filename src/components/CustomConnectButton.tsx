@@ -62,9 +62,10 @@ export const CustomConnectButton = () => {
                         <PopoverHeader fontWeight="semibold">Connect Wallet</PopoverHeader>
                         <PopoverBody>
                           Connecting your wallet to beetswars will display your rewards based on
-                          your voting power. This app is safe and secure, as we use
-                          industry-standard encryption and security protocols and never store or
-                          access private information.
+                          your voting power. A wallet connection is required in order to use the
+                          Relic Tools. This app is safe and secure, as we use industry-standard
+                          encryption and security protocols and never store or access private
+                          information.
                         </PopoverBody>
                       </PopoverContent>
                     </Popover>
