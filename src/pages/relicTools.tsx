@@ -22,6 +22,7 @@ import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
 import { MergeTokenModal } from "components/MergeRelicModal";
 import { SplitTokenModal } from "components/SplitRelicModal";
+import RelicLevel0 from "assets/images/reliquary/0.png";
 import RelicLevel1 from "assets/images/reliquary/1.png";
 import RelicLevel2 from "assets/images/reliquary/2.png";
 import RelicLevel3 from "assets/images/reliquary/3.png";
@@ -68,7 +69,7 @@ const Relics: NextPage = () => {
       case 11:
         return RelicLevel11;
       default:
-        return RelicLevel1;
+        return RelicLevel0;
     }
   }
 
