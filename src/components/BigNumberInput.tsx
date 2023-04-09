@@ -67,16 +67,12 @@ export function BigNumberInput({
 
   const truncateDecimalPlaces = useCallback(
     (eventValue: string) => {
-      console.log("truncateDecimalPlaces", eventValue);
       if (eventValue.includes(".")) {
         const [leftDigits, rightDigits] = eventValue.split(".");
-        console.log("yyy", leftDigits, rightDigits);
         //trunc right side of number if more than max decimal places
         if (rightDigits && rightDigits.length > decimalPlaces) {
           const maxLength = (leftDigits ? leftDigits.length : 0) + decimalPlaces + 1;
-          const xxx = eventValue.slice(0, maxLength);
-          console.log("tt", xxx);
-          return xxx;
+          return eventValue.slice(0, maxLength);
         }
       }
       return eventValue;

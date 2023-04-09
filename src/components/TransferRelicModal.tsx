@@ -30,7 +30,7 @@ export function TransferTokenModal(props: modalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [transferPending, setTransferPending] = useState<boolean>(false);
   const [toAddress, setToAddress] = useState<EthAddressType | undefined>(undefined);
-  const { transfer, isError, mayFail, isSuccess } = useTransferRelic(
+  const { transfer, isError, mayFail, isSuccess, isEnabled } = useTransferRelic(
     toAddress || "",
     relic.relicId || ""
   );
@@ -97,8 +97,8 @@ export function TransferTokenModal(props: modalProps) {
                   <FormLabel>To Address</FormLabel>
                   <Input placeholder="0x..." value={toAddress || ""} onChange={handleChange} />
                   <FormHelperText>
-                    Items sent to the wrong address cannot be recovered. Be certain the address is
-                    entered correctly.
+                    Relics sent to the wrong address cannot be recovered. Be absolutely certain the
+                    address is entered correctly.
                   </FormHelperText>
                 </FormControl>
               </VStack>
@@ -108,8 +108,8 @@ export function TransferTokenModal(props: modalProps) {
             <Button variant="ghost" mr={3} onClick={onClose} disabled={transferPending}>
               Cancel
             </Button>
-            <Button disabled={mayFail || !toAddress} onClick={submit}>
-              {transferPending ? <Spinner /> : "Transfer!"}
+            <Button disabled={mayFail || !isEnabled || transferPending} onClick={submit}>
+              {transferPending ? <Spinner /> : "Transfer"}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -31,7 +31,10 @@ export function MergeTokenModal(props: modalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [mergePending, setMergePending] = useState<boolean>(false);
   const [toId, setToId] = useState<string | undefined>(undefined);
-  const { merge, isError, mayFail, isSuccess } = useMergeRelic(relic.relicId, toId || "");
+  const { merge, isError, mayFail, isSuccess, isEnabled } = useMergeRelic(
+    relic.relicId,
+    toId || ""
+  );
 
   const [newEntry, setNewEntry] = useState(0);
 
@@ -126,8 +129,8 @@ export function MergeTokenModal(props: modalProps) {
             <Button variant="ghost" mr={3} onClick={onClose} disabled={mergePending}>
               Cancel
             </Button>
-            <Button disabled={mayFail || !toId} onClick={submit}>
-              {mergePending ? <Spinner /> : "Merge!"}
+            <Button disabled={mayFail || !isEnabled || mergePending} onClick={submit}>
+              {mergePending ? <Spinner /> : "Merge"}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -3,6 +3,7 @@ import { useToast } from "@chakra-ui/react";
 import ReliquaryAbi from "utils/abi/Reliquary.json";
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import type { BigNumber } from "ethers";
+import { type EthAddressType, EthAddress } from "types/ethAdress.raw";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
@@ -26,17 +27,17 @@ const splitFailure = (): UseToastOptions => ({
   ...defaultOptions,
 });
 
-export function useSplitRelic(toAddress: string, relicId: string, amount: BigNumber) {
+export function useSplitRelic(toAddress: EthAddressType, relicId: string, amount: BigNumber) {
   const toast = useToast();
 
-  //  console.log("split args:", Number(relicId), amount, toAddress);
+  const isEnabled = EthAddress.safeParse(toAddress).success && Number(relicId) > 0 && amount.gt(0);
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,
     abi: ReliquaryAbi,
     functionName: "split",
     args: [Number(relicId), amount, toAddress],
-    enabled: Number(relicId) > 0 && !!toAddress && !amount.eq(0),
+    enabled: isEnabled,
   });
 
   const { write, isError, data } = useContractWrite({
@@ -59,5 +60,6 @@ export function useSplitRelic(toAddress: string, relicId: string, amount: BigNum
     isSuccess,
     isError,
     mayFail,
+    isEnabled,
   };
 }

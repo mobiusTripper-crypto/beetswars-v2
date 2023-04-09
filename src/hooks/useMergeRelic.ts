@@ -28,14 +28,14 @@ const mergeFailure = (): UseToastOptions => ({
 export function useMergeRelic(fromId: string, toId: string) {
   const toast = useToast();
 
-  //console.log("merge", fromId, toId)
+  const isEnabled = !!Number(fromId) && !!Number(toId);
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,
     abi: ReliquaryAbi,
     functionName: "merge",
     args: [Number(fromId), Number(toId)],
-    enabled: !!Number(fromId) && !!Number(toId),
+    enabled: isEnabled,
   });
 
   const { write, isError, data } = useContractWrite({
@@ -58,5 +58,6 @@ export function useMergeRelic(fromId: string, toId: string) {
     isSuccess,
     isError,
     mayFail,
+    isEnabled,
   };
 }
