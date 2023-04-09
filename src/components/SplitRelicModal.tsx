@@ -83,7 +83,7 @@ export function SplitTokenModal(props: modalProps) {
 
   return (
     <>
-      <Button onClick={openModal}>Split</Button>
+      <Button onClick={openModal}  disabled={parseFloat(relic.amount) === 0}>Split</Button>
 
       <Modal
         closeOnOverlayClick={false}
