@@ -8,6 +8,7 @@ import {
   CardBody,
   Divider,
   HStack,
+  VStack,
   Text,
   useToast,
   Wrap,
@@ -15,6 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { CustomConnectButton } from "components/CustomConnectButton";
 import useReliquary from "hooks/useReliquary";
+import { useAccount } from "wagmi";
+
 import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
 import { MergeTokenModal } from "components/MergeRelicModal";
@@ -34,6 +37,8 @@ import fBeetsImage from "assets/images/fBEETS.png";
 import Image from "next/image";
 
 const Relics: NextPage = () => {
+  const account = useAccount();
+
   const { relicPositions, isLoadingRelicPositions, selectedRelic, refetchRelicPositions } =
     useReliquary();
   const toast = useToast();
@@ -81,8 +86,6 @@ const Relics: NextPage = () => {
     "The Awakened",
   ];
 
-  //console.log(relicPositions);
-
   return (
     <>
       <Text
@@ -124,8 +127,12 @@ const Relics: NextPage = () => {
                     </Box>
                     <HStack m={3}>
                       <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
-                      <MergeTokenModal relic={relic} refresh={refetchRelicPositions} relicPositions={relicPositions} />
-                      <TransferTokenModal relic={relic} refresh={refetchRelicPositions}/>
+                      <MergeTokenModal
+                        relic={relic}
+                        refresh={refetchRelicPositions}
+                        relicPositions={relicPositions}
+                      />
+                      <TransferTokenModal relic={relic} refresh={refetchRelicPositions} />
                     </HStack>
                   </Box>
                 </Card>
@@ -135,7 +142,14 @@ const Relics: NextPage = () => {
         </Wrap>
       ) : (
         <Center>
-          <CustomConnectButton />
+          <VStack>
+            <CustomConnectButton />
+            {account.isConnected && relicPositions.length === 0 && (
+              <Box>
+                <Text>No Relic found at this Address</Text>
+              </Box>
+            )}
+          </VStack>
         </Center>
       )}
     </>
