@@ -13,30 +13,32 @@ import {
   ModalOverlay,
   useDisclosure,
   VStack,
+  Spinner,
 } from "@chakra-ui/react";
 import { useTransferRelic } from "hooks/useTransferRelic";
-import { useState } from "react";
+import { useState, useEffect, type SetStateAction } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
+import { type EthAddressType } from "types/ethAdress.raw";
 
 interface modalProps {
-  // data: Tokendata;
-  // lasttokens?: Tokendata[];
-  // isNew: boolean;
-  // onSubmit: (payload: Tokendata) => void;
-
   relic: ReliquaryFarmPosition;
+  refresh: () => void;
 }
 
 export function TransferTokenModal(props: modalProps) {
-  const { relic } = props;
+  const { relic, refresh } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [transferPending, setTransferPending] = useState<boolean>(false);
+  const [toAddress, setToAddress] = useState<EthAddressType | undefined>(undefined);
+  const { transfer, isError, mayFail, isSuccess, isEnabled } = useTransferRelic(
+    toAddress || "",
+    relic.relicId || ""
+  );
 
-  const [toAddress, setToAddress] = useState<string | undefined>(undefined);
-  const { transfer, isError, mayFail } = useTransferRelic(toAddress || "", relic.relicId || "");
-
-  //const mayFail = false
-
-  const handleChange = (event: any) => {
+  const handleChange = (event: {
+    preventDefault: () => void;
+    target: { value: SetStateAction<string | undefined> };
+  }) => {
     event.preventDefault();
     console.log(event.target.value);
     setToAddress(event.target.value);
@@ -44,13 +46,29 @@ export function TransferTokenModal(props: modalProps) {
 
   const submit = () => {
     console.log("transfer ", toAddress, relic.relicId);
+    setTransferPending(true);
     transfer?.();
-    onClose();
+    //onClose();
+  };
+
+  const reset = () => {
+    console.log("reset transfer", relic.relicId);
+    setToAddress(undefined);
   };
 
   const openModal = () => {
     onOpen();
   };
+
+  useEffect(() => {
+    console.log("effect");
+    if (isSuccess || isError) {
+      console.log("refresh");
+      refresh();
+      setTransferPending(false);
+      onClose();
+    }
+  }, [isSuccess, isError]);
 
   return (
     <>
@@ -62,6 +80,7 @@ export function TransferTokenModal(props: modalProps) {
         isOpen={isOpen}
         onClose={onClose}
         size="lg"
+        onCloseComplete={reset}
       >
         <ModalOverlay />
         <ModalContent>
@@ -78,19 +97,19 @@ export function TransferTokenModal(props: modalProps) {
                   <FormLabel>To Address</FormLabel>
                   <Input placeholder="0x..." value={toAddress || ""} onChange={handleChange} />
                   <FormHelperText>
-                    Items sent to the wrong address cannot be recovered. Be certain the address is
-                    entered correctly.
+                    Relics sent to the wrong address cannot be recovered. Be absolutely certain the
+                    address is entered correctly.
                   </FormHelperText>
                 </FormControl>
               </VStack>
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={onClose} disabled={transferPending}>
               Cancel
             </Button>
-            <Button disabled={mayFail || !toAddress} onClick={submit}>
-              Transfer
+            <Button disabled={mayFail || !isEnabled || transferPending} onClick={submit}>
+              {transferPending ? <Spinner /> : "Transfer"}
             </Button>
           </ModalFooter>
         </ModalContent>

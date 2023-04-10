@@ -14,6 +14,7 @@ import {
   Select,
   useDisclosure,
   VStack,
+  Spinner,
 } from "@chakra-ui/react";
 import { useMergeRelic } from "hooks/useMergeRelic";
 import { useEffect, useState } from "react";
@@ -22,14 +23,18 @@ import type { ReliquaryFarmPosition } from "services/reliquary";
 interface modalProps {
   relic: ReliquaryFarmPosition;
   relicPositions: ReliquaryFarmPosition[];
+  refresh: () => void;
 }
 
 export function MergeTokenModal(props: modalProps) {
-  const { relic, relicPositions } = props;
+  const { relic, relicPositions, refresh } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [mergePending, setMergePending] = useState<boolean>(false);
   const [toId, setToId] = useState<string | undefined>(undefined);
-  const { merge, isError, mayFail } = useMergeRelic(relic.relicId, toId || "");
+  const { merge, isError, mayFail, isSuccess, isEnabled } = useMergeRelic(
+    relic.relicId,
+    toId || ""
+  );
 
   const [newEntry, setNewEntry] = useState(0);
 
@@ -50,12 +55,28 @@ export function MergeTokenModal(props: modalProps) {
   const submit = () => {
     console.log("merge ", relic.relicId, toId);
     merge?.();
-    onClose();
+    setMergePending(true);
+    //onClose();
+  };
+
+  const reset = () => {
+    console.log("reset merge", relic.relicId);
+    setToId(undefined);
   };
 
   const openModal = () => {
     onOpen();
   };
+
+  useEffect(() => {
+    console.log("effect", isSuccess, isError);
+    if (isSuccess || isError) {
+      console.log("refresh");
+      refresh();
+      setMergePending(false);
+      onClose();
+    }
+  }, [isSuccess, isError]);
 
   return (
     <>
@@ -69,6 +90,7 @@ export function MergeTokenModal(props: modalProps) {
         isOpen={isOpen}
         onClose={onClose}
         size="lg"
+        onCloseComplete={reset}
       >
         <ModalOverlay />
         <ModalContent>
@@ -104,11 +126,11 @@ export function MergeTokenModal(props: modalProps) {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={onClose} disabled={mergePending}>
               Cancel
             </Button>
-            <Button disabled={mayFail || !toId} onClick={submit}>
-              Merge
+            <Button disabled={mayFail || !isEnabled || mergePending} onClick={submit}>
+              {mergePending ? <Spinner /> : "Merge"}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -8,6 +8,7 @@ import {
   CardBody,
   Divider,
   HStack,
+  VStack,
   Text,
   useToast,
   Wrap,
@@ -15,10 +16,13 @@ import {
 } from "@chakra-ui/react";
 import { CustomConnectButton } from "components/CustomConnectButton";
 import useReliquary from "hooks/useReliquary";
+import { useAccount } from "wagmi";
+
 import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
 import { MergeTokenModal } from "components/MergeRelicModal";
 import { SplitTokenModal } from "components/SplitRelicModal";
+import RelicLevel0 from "assets/images/reliquary/0.png";
 import RelicLevel1 from "assets/images/reliquary/1.png";
 import RelicLevel2 from "assets/images/reliquary/2.png";
 import RelicLevel3 from "assets/images/reliquary/3.png";
@@ -34,7 +38,10 @@ import fBeetsImage from "assets/images/fBEETS.png";
 import Image from "next/image";
 
 const Relics: NextPage = () => {
-  const { relicPositions, isLoadingRelicPositions, selectedRelic } = useReliquary();
+  const account = useAccount();
+
+  const { relicPositions, isLoadingRelicPositions, selectedRelic, refetchRelicPositions } =
+    useReliquary();
   const toast = useToast();
 
   function getImage(level: number) {
@@ -62,7 +69,7 @@ const Relics: NextPage = () => {
       case 11:
         return RelicLevel11;
       default:
-        return RelicLevel1;
+        return RelicLevel0;
     }
   }
 
@@ -80,8 +87,6 @@ const Relics: NextPage = () => {
     "The Awakened",
   ];
 
-  console.log(relicPositions);
-
   return (
     <>
       <Text
@@ -95,11 +100,13 @@ const Relics: NextPage = () => {
       {relicPositions.length > 0 ? (
         <Wrap spacing={4} justify="center">
           {relicPositions.map((relic, index) => {
-            console.log(relic, index);
+            //console.log(relic, index);
             return (
               <Box key={index}>
                 <Card m={1} p={1} w={300} variant="filled" align="center">
-                    <Heading m={3} size="md">Relic #{relic.relicId}</Heading>
+                  <Heading m={3} size="md">
+                    Relic #{relic.relicId}
+                  </Heading>
                   <Text>
                     {relic.amount === "0.0"
                       ? "Empty relic - no level"
@@ -120,9 +127,13 @@ const Relics: NextPage = () => {
                       <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
                     </Box>
                     <HStack m={3}>
-                      <SplitTokenModal relic={relic} />
-                      <MergeTokenModal relic={relic} relicPositions={relicPositions} />
-                      <TransferTokenModal relic={relic} />
+                      <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
+                      <MergeTokenModal
+                        relic={relic}
+                        refresh={refetchRelicPositions}
+                        relicPositions={relicPositions}
+                      />
+                      <TransferTokenModal relic={relic} refresh={refetchRelicPositions} />
                     </HStack>
                   </Box>
                 </Card>
@@ -132,7 +143,14 @@ const Relics: NextPage = () => {
         </Wrap>
       ) : (
         <Center>
-          <CustomConnectButton />
+          <VStack>
+            <CustomConnectButton />
+            {account.isConnected && relicPositions.length === 0 && (
+              <Box>
+                <Text>No Relic found at this Address</Text>
+              </Box>
+            )}
+          </VStack>
         </Center>
       )}
     </>

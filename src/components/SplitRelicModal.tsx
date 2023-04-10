@@ -13,50 +13,77 @@ import {
   ModalOverlay,
   useDisclosure,
   VStack,
+  Checkbox,
+  Spinner,
 } from "@chakra-ui/react";
 import { useSplitRelic } from "hooks/useSplitRelic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
 import { useAccount } from "wagmi";
 import { BigNumberInput } from "./BigNumberInput";
 import { BigNumber } from "ethers";
+import { type EthAddressType } from "types/ethAdress.raw";
 
 interface modalProps {
-  // data: Tokendata;
-  // lasttokens?: Tokendata[];
-  // isNew: boolean;
-  // onSubmit: (payload: Tokendata) => void;
-
   relic: ReliquaryFarmPosition;
+  refresh: () => void;
 }
 
 export function SplitTokenModal(props: modalProps) {
   const account = useAccount();
-
-  const { relic } = props;
+  const { relic, refresh } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [toAddress, setToAddress] = useState<string | undefined>(account.address);
-  const [amount, setAmount] = useState<BigNumber>(BigNumber.from(0));
-  const { split, isError, mayFail } = useSplitRelic(
-    toAddress || "",
-    relic.relicId || "",
-    amount || ""
+  const [changeAddressEnabled, setChangeAddressEnabled] = useState<boolean>(false);
+  const [splitPending, setSplitPending] = useState<boolean>(false);
+  const [toAddress, setToAddress] = useState<EthAddressType | undefined>(account.address);
+  const [amount, setAmount] = useState<BigNumber | undefined>(undefined);
+
+  const { split, isError, mayFail, isSuccess, isEnabled } = useSplitRelic(
+    (changeAddressEnabled ? toAddress : account.address) || "",
+    relic.relicId,
+    amount || BigNumber.from("0")
   );
 
   const submit = () => {
-    console.log("split ", toAddress, relic.relicId);
+    setSplitPending(true);
     split?.();
-    onClose();
+    //onClose();
+  };
+
+  const reset = () => {
+    setChangeAddressEnabled(false);
+    setAmount(undefined);
+    setToAddress(account.address);
   };
 
   const openModal = () => {
     onOpen();
   };
 
+  /*
+  console.log(
+    mayFail,
+    !amount.gt(0),
+    !EthAddress.safeParse(toAddress).success,
+    isSplitting,
+    splitPending
+  );
+*/
+
+  useEffect(() => {
+    if (isSuccess || isError) {
+      refresh();
+      setSplitPending(false);
+      onClose();
+    }
+  }, [isSuccess, isError]);
+
   return (
     <>
-      <Button onClick={openModal}>Split</Button>
+      <Button onClick={openModal} disabled={parseFloat(relic.amount) === 0}>
+        Split
+      </Button>
 
       <Modal
         closeOnOverlayClick={false}
@@ -64,10 +91,11 @@ export function SplitTokenModal(props: modalProps) {
         isOpen={isOpen}
         onClose={onClose}
         size="lg"
+        onCloseComplete={reset}
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Split Relic</ModalHeader>
+          <ModalHeader>Split Relic #{relic.relicId || ""}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -84,26 +112,45 @@ export function SplitTokenModal(props: modalProps) {
                     onChange={value => setAmount(value.bigNumberValue || BigNumber.from(0))}
                     max={relic.amount}
                   />
-                  <FormLabel>To Address</FormLabel>
-                  <Input
-                    placeholder={account.address}
-                    value={toAddress || ""}
-                    onChange={event => setToAddress(event.target.value)}
-                  />
-                  <FormHelperText>
-                    Items sent to the wrong address cannot be recovered. Be certain the address is
-                    entered correctly.
-                  </FormHelperText>
+                </FormControl>
+                <FormControl>
+                  <Checkbox
+                    m={2}
+                    isChecked={changeAddressEnabled}
+                    onChange={() => setChangeAddressEnabled(!changeAddressEnabled)}
+                  >
+                    Send to different address
+                  </Checkbox>
+                  {changeAddressEnabled ? (
+                    <>
+                      <Input
+                        placeholder={account.address}
+                        value={toAddress || ""}
+                        onChange={event => setToAddress(event.target.value)}
+                      />
+                      <FormHelperText>
+                        Relics sent to the wrong address cannot be recovered. Be absolutely certain
+                        the address is entered correctly.
+                      </FormHelperText>
+                    </>
+                  ) : (
+                    <>
+                      <FormHelperText>
+                        The new relic will be created in the current wallet address. Check the box
+                        to send to a different wallet address.
+                      </FormHelperText>
+                    </>
+                  )}
                 </FormControl>
               </VStack>
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={onClose} disabled={splitPending}>
               Cancel
             </Button>
-            <Button disabled={isError || mayFail} onClick={submit}>
-              Split
+            <Button disabled={mayFail || !isEnabled || splitPending} onClick={submit}>
+              {splitPending ? <Spinner /> : "Split"}
             </Button>
           </ModalFooter>
         </ModalContent>

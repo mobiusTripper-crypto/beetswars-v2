@@ -7,11 +7,7 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import * as z from "zod";
-
-const Address = z.string().regex(/^0x[0-9a-fA-F]{40}$/);
-type Address = z.infer<typeof Address>;
-
+import { type EthAddressType, EthAddress } from "types/ethAdress.raw";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
@@ -35,16 +31,18 @@ const transferFailure = (): UseToastOptions => ({
   ...defaultOptions,
 });
 
-export function useTransferRelic(toAddress: Address, relicId: string) {
+export function useTransferRelic(toAddress: EthAddressType, relicId: string) {
   const toast = useToast();
   const account = useAccount();
+
+  const isEnabled = Number(relicId) > 0 && EthAddress.safeParse(toAddress).success;
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,
     abi: ReliquaryAbi,
     functionName: "safeTransferFrom",
     args: [account.address, toAddress, Number(relicId)],
-    enabled: (Number(relicId) > 0 && !!toAddress),
+    enabled: isEnabled,
   });
 
   const { write, isError, data } = useContractWrite({
@@ -67,5 +65,6 @@ export function useTransferRelic(toAddress: Address, relicId: string) {
     isSuccess,
     isError,
     mayFail,
+    isEnabled,
   };
 }
