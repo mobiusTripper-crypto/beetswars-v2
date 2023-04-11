@@ -22,7 +22,9 @@ import type { ReliquaryFarmPosition } from "services/reliquary";
 import { useAccount } from "wagmi";
 import { BigNumberInput } from "./BigNumberInput";
 import { BigNumber } from "ethers";
-import { type EthAddressType } from "types/ethAdress.raw";
+import type { EthAddressType } from "types/ethAdress.raw";
+import { ModalButton } from "components/ModalButton";
+
 
 interface modalProps {
   relic: ReliquaryFarmPosition;
@@ -79,11 +81,12 @@ export function SplitTokenModal(props: modalProps) {
     }
   }, [isSuccess, isError]);
 
+
+
+
   return (
     <>
-      <Button onClick={openModal} disabled={parseFloat(relic.amount) === 0}>
-        Split
-      </Button>
+      <ModalButton text="Split" disabled={parseFloat(relic.amount) === 0} action={openModal} />
 
       <Modal
         closeOnOverlayClick={false}

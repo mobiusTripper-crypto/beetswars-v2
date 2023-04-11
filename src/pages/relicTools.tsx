@@ -22,6 +22,7 @@ import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
 import { MergeTokenModal } from "components/MergeRelicModal";
 import { SplitTokenModal } from "components/SplitRelicModal";
+import { ShiftTokenModal } from "components/ShiftRelicModal";
 import RelicLevel0 from "assets/images/reliquary/0.png";
 import RelicLevel1 from "assets/images/reliquary/1.png";
 import RelicLevel2 from "assets/images/reliquary/2.png";
@@ -126,15 +127,16 @@ const Relics: NextPage = () => {
                       </HStack>
                       <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
                     </Box>
-                    <HStack m={3}>
+                    <VStack m={0}>
+                    <HStack m={0}>
                       <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
-                      <MergeTokenModal
-                        relic={relic}
-                        refresh={refetchRelicPositions}
-                        relicPositions={relicPositions}
-                      />
+                      <MergeTokenModal relic={relic} refresh={refetchRelicPositions} relicPositions={relicPositions} />
+                    </HStack>
+                    <HStack m={0}>
+                      <ShiftTokenModal relic={relic} refresh={refetchRelicPositions} relicPositions={relicPositions} />
                       <TransferTokenModal relic={relic} refresh={refetchRelicPositions} />
                     </HStack>
+                    </VStack>
                   </Box>
                 </Card>
               </Box>

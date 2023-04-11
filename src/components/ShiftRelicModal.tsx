@@ -16,11 +16,12 @@ import {
   VStack,
   Spinner,
 } from "@chakra-ui/react";
-import { useMergeRelic } from "hooks/useMergeRelic";
+import { useShiftRelic } from "hooks/useShiftRelic";
 import { useEffect, useState } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
+import { BigNumberInput } from "./BigNumberInput";
+import { BigNumber } from "ethers";
 import { ModalButton } from "components/ModalButton";
-
 
 interface modalProps {
   relic: ReliquaryFarmPosition;
@@ -28,42 +29,30 @@ interface modalProps {
   refresh: () => void;
 }
 
-export function MergeTokenModal(props: modalProps) {
+export function ShiftTokenModal(props: modalProps) {
   const { relic, relicPositions, refresh } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mergePending, setMergePending] = useState<boolean>(false);
+  const [shiftPending, setShiftPending] = useState<boolean>(false);
   const [toId, setToId] = useState<string | undefined>(undefined);
-  const { merge, isError, mayFail, isSuccess, isEnabled } = useMergeRelic(
+  const [amount, setAmount] = useState<BigNumber | undefined>(undefined);
+
+  const { shift, isError, mayFail, isSuccess, isEnabled } = useShiftRelic(
     relic.relicId,
-    toId || ""
+    toId || "",
+    amount || BigNumber.from("0")
   );
-
-  const [newEntry, setNewEntry] = useState(0);
-
-  useEffect(() => {
-    if (!toId) {
-      setNewEntry(relic.entry);
-    } else {
-      const mergeRelic = relicPositions.find(x => x.relicId === toId);
-      mergeRelic &&
-        setNewEntry(
-          (parseFloat(relic.amount) * relic.entry +
-            parseFloat(mergeRelic.amount) * mergeRelic.entry) /
-            (parseFloat(relic.amount) + parseFloat(mergeRelic.amount))
-        );
-    }
-  }, [relic, relicPositions, toId]);
 
   const submit = () => {
     console.log("merge ", relic.relicId, toId);
-    merge?.();
-    setMergePending(true);
+    shift?.();
+    setShiftPending(true);
     //onClose();
   };
 
   const reset = () => {
-    console.log("reset merge", relic.relicId);
+    console.log("reset shift", relic.relicId);
     setToId(undefined);
+    setAmount(undefined);
   };
 
   const openModal = () => {
@@ -75,14 +64,14 @@ export function MergeTokenModal(props: modalProps) {
     if (isSuccess || isError) {
       console.log("refresh");
       refresh();
-      setMergePending(false);
+      setShiftPending(false);
       onClose();
     }
   }, [isSuccess, isError]);
 
   return (
     <>
-      <ModalButton text="Merge" disabled={relicPositions.length < 2} action={openModal} />
+      <ModalButton text="Shift" disabled={(relicPositions.length < 2 || parseFloat(relic.amount) === 0)} action={openModal} />
 
       <Modal
         closeOnOverlayClick={false}
@@ -94,17 +83,26 @@ export function MergeTokenModal(props: modalProps) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Merge Relic</ModalHeader>
+          <ModalHeader>Shift Relic</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
               <VStack align="left">
                 <FormControl isDisabled>
-                  <FormLabel>Relic ID</FormLabel>
+                  <FormLabel>From Relic ID</FormLabel>
                   <Input value={relic.relicId || ""} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Into Relic {toId}</FormLabel>
+                  <FormLabel>Amount (max {relic.amount})</FormLabel>
+                  <BigNumberInput
+                    placeholder="0"
+                    value={amount}
+                    onChange={value => setAmount(value.bigNumberValue || BigNumber.from(0))}
+                    max={relic.amount}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>To Relic {toId}</FormLabel>
                   <Select placeholder="Select Target Relic" onChange={e => setToId(e.target.value)}>
                     {relicPositions.map((rel, index) => {
                       if (rel.relicId !== relic.relicId) {
@@ -117,20 +115,18 @@ export function MergeTokenModal(props: modalProps) {
                     })}
                   </Select>
                   <Text mt={2}>
-                    Your merged relic will have the new entry date of{" "}
-                    {new Date((newEntry || 0) * 1000).toDateString()} and the level of{" "}
-                    {Math.min(Math.ceil((Date.now() / 1000 - newEntry) / (7 * 24 * 60 * 60)), 11)}.
+                    Shift amount from {relic.relicId} to {toId}
                   </Text>
                 </FormControl>
               </VStack>
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose} disabled={mergePending}>
+            <Button variant="ghost" mr={3} onClick={onClose} disabled={shiftPending}>
               Cancel
             </Button>
-            <Button disabled={mayFail || !isEnabled || mergePending} onClick={submit}>
-              {mergePending ? <Spinner /> : "Merge"}
+            <Button disabled={mayFail || !isEnabled || shiftPending} onClick={submit}>
+              {shiftPending ? <Spinner /> : "Shift"}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -138,3 +134,5 @@ export function MergeTokenModal(props: modalProps) {
     </>
   );
 }
+
+

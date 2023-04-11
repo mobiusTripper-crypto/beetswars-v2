@@ -18,7 +18,8 @@ import {
 import { useTransferRelic } from "hooks/useTransferRelic";
 import { useState, useEffect, type SetStateAction } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
-import { type EthAddressType } from "types/ethAdress.raw";
+import type { EthAddressType } from "types/ethAdress.raw";
+import { ModalButton } from "components/ModalButton";
 
 interface modalProps {
   relic: ReliquaryFarmPosition;
@@ -72,7 +73,7 @@ export function TransferTokenModal(props: modalProps) {
 
   return (
     <>
-      <Button onClick={openModal}>Transfer</Button>
+      <ModalButton text="Transfer" disabled={false} action={openModal} />
 
       <Modal
         closeOnOverlayClick={false}
