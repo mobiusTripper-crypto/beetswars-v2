@@ -3,7 +3,6 @@ import { useToast } from "@chakra-ui/react";
 import ReliquaryAbi from "utils/abi/Reliquary.json";
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import type { BigNumber } from "ethers";
-import { type EthAddressType, EthAddress } from "types/ethAdress.raw";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
@@ -32,7 +31,7 @@ export function useShiftRelic(fromId: string, toId: string, amount: BigNumber) {
 
   const isEnabled = !!Number(fromId) && !!Number(toId) && amount.gt(0);
 
-    console.log( [Number(fromId), Number(toId)], amount,)
+  console.log([Number(fromId), Number(toId)], amount);
 
   const { config, isError: mayFail } = usePrepareContractWrite({
     address: RELIC_CONTRACT,

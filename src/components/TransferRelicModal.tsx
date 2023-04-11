@@ -74,7 +74,6 @@ export function TransferTokenModal(props: modalProps) {
   return (
     <>
       <ModalButton text="Transfer" disabled={false} action={openModal} />
-
       <Modal
         closeOnOverlayClick={false}
         blockScrollOnMount

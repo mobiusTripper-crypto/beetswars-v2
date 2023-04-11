@@ -71,8 +71,11 @@ export function ShiftTokenModal(props: modalProps) {
 
   return (
     <>
-      <ModalButton text="Shift" disabled={(relicPositions.length < 2 || parseFloat(relic.amount) === 0)} action={openModal} />
-
+      <ModalButton
+        text="Shift"
+        disabled={relicPositions.length < 2 || parseFloat(relic.amount) === 0}
+        action={openModal}
+      />
       <Modal
         closeOnOverlayClick={false}
         blockScrollOnMount
@@ -134,5 +137,3 @@ export function ShiftTokenModal(props: modalProps) {
     </>
   );
 }
-
-

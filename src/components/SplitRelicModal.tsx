@@ -25,7 +25,6 @@ import { BigNumber } from "ethers";
 import type { EthAddressType } from "types/ethAdress.raw";
 import { ModalButton } from "components/ModalButton";
 
-
 interface modalProps {
   relic: ReliquaryFarmPosition;
   refresh: () => void;
@@ -63,16 +62,6 @@ export function SplitTokenModal(props: modalProps) {
     onOpen();
   };
 
-  /*
-  console.log(
-    mayFail,
-    !amount.gt(0),
-    !EthAddress.safeParse(toAddress).success,
-    isSplitting,
-    splitPending
-  );
-*/
-
   useEffect(() => {
     if (isSuccess || isError) {
       refresh();
@@ -81,13 +70,9 @@ export function SplitTokenModal(props: modalProps) {
     }
   }, [isSuccess, isError]);
 
-
-
-
   return (
     <>
       <ModalButton text="Split" disabled={parseFloat(relic.amount) === 0} action={openModal} />
-
       <Modal
         closeOnOverlayClick={false}
         blockScrollOnMount

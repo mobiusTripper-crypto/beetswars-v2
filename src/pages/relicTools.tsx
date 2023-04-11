@@ -1,23 +1,7 @@
-import {
-  Center,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  Divider,
-  HStack,
-  VStack,
-  Text,
-  useToast,
-  Wrap,
-  Heading,
-} from "@chakra-ui/react";
+import { Center, Avatar, Box, Card, HStack, VStack, Text, Wrap, Heading } from "@chakra-ui/react";
 import { CustomConnectButton } from "components/CustomConnectButton";
 import useReliquary from "hooks/useReliquary";
 import { useAccount } from "wagmi";
-
 import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
 import { MergeTokenModal } from "components/MergeRelicModal";
@@ -43,7 +27,6 @@ const Relics: NextPage = () => {
 
   const { relicPositions, isLoadingRelicPositions, selectedRelic, refetchRelicPositions } =
     useReliquary();
-  const toast = useToast();
 
   function getImage(level: number) {
     switch (level) {
@@ -128,14 +111,22 @@ const Relics: NextPage = () => {
                       <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
                     </Box>
                     <VStack m={0}>
-                    <HStack m={0}>
-                      <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
-                      <MergeTokenModal relic={relic} refresh={refetchRelicPositions} relicPositions={relicPositions} />
-                    </HStack>
-                    <HStack m={0}>
-                      <ShiftTokenModal relic={relic} refresh={refetchRelicPositions} relicPositions={relicPositions} />
-                      <TransferTokenModal relic={relic} refresh={refetchRelicPositions} />
-                    </HStack>
+                      <HStack m={0}>
+                        <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
+                        <MergeTokenModal
+                          relic={relic}
+                          refresh={refetchRelicPositions}
+                          relicPositions={relicPositions}
+                        />
+                      </HStack>
+                      <HStack m={0}>
+                        <ShiftTokenModal
+                          relic={relic}
+                          refresh={refetchRelicPositions}
+                          relicPositions={relicPositions}
+                        />
+                        <TransferTokenModal relic={relic} refresh={refetchRelicPositions} />
+                      </HStack>
                     </VStack>
                   </Box>
                 </Card>

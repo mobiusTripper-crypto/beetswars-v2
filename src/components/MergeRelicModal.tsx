@@ -21,7 +21,6 @@ import { useEffect, useState } from "react";
 import type { ReliquaryFarmPosition } from "services/reliquary";
 import { ModalButton } from "components/ModalButton";
 
-
 interface modalProps {
   relic: ReliquaryFarmPosition;
   relicPositions: ReliquaryFarmPosition[];
@@ -83,7 +82,6 @@ export function MergeTokenModal(props: modalProps) {
   return (
     <>
       <ModalButton text="Merge" disabled={relicPositions.length < 2} action={openModal} />
-
       <Modal
         closeOnOverlayClick={false}
         blockScrollOnMount
