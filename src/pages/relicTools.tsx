@@ -87,7 +87,15 @@ const Relics: NextPage = () => {
             //console.log(relic, index);
             return (
               <Box key={index}>
-                <Card m={1} p={1} w={300} variant="filled" align="center">
+                <Card
+                  m={1}
+                  p={1}
+                  w={300}
+                  variant="filled"
+                  align="center"
+                  border="1px solid #567"
+                  borderRadius="11px"
+                >
                   <Heading m={3} size="md">
                     Relic #{relic.relicId}
                   </Heading>
@@ -111,7 +119,7 @@ const Relics: NextPage = () => {
                       <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
                     </Box>
                     <VStack m={0}>
-                      <HStack m={0}>
+                      <HStack m={1}>
                         <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
                         <MergeTokenModal
                           relic={relic}
@@ -119,7 +127,7 @@ const Relics: NextPage = () => {
                           relicPositions={relicPositions}
                         />
                       </HStack>
-                      <HStack m={0}>
+                      <HStack m={1}>
                         <ShiftTokenModal
                           relic={relic}
                           refresh={refetchRelicPositions}
