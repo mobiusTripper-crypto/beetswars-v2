@@ -118,13 +118,18 @@ const Relics: NextPage = () => {
                         <Avatar src={fBeetsImage.src} h={5} w={5} />
                         <Text>{parseFloat(relic.amount).toLocaleString()}</Text>
                       </HStack>
-                      <Text m={1}>
+                      <Text m={1} fontSize="0.9rem">
                         {relic.amount === "0.0"
                           ? "maBEETS: -- "
-                          : "maBEETs: " +
-                            (parseFloat(relic?.amount) * Number(levelWeights[relic?.level])/100).toLocaleString()}
+                          : "maBEETS VP: " +
+                            (
+                              (parseFloat(relic?.amount) * Number(levelWeights[relic?.level])) /
+                              100
+                            ).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </Text>
-                      <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
+                      <Text m={1} fontSize="0.9rem">
+                        Entry: {new Date((relic.entry || 0) * 1000).toDateString()}
+                      </Text>
                     </Box>
                     <VStack m={0}>
                       <HStack m={1}>
