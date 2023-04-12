@@ -146,10 +146,12 @@ export const TopRow = () => {
         ) : (
           <>
             <Box>
-              <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
+              <Text mr={2} fontWeight="bold" color="#ED1200">
                 {accountConnected &&
                 (asPath.includes(`${dashboardLink}`) || asPath.includes(`${tableLink}`))
-                  ? `VP: ${votingPower?.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+                  ? `maBEETS VP: ${votingPower?.toLocaleString(undefined, {
+                      maximumFractionDigits: 0,
+                    })}`
                   : ""}
               </Text>
             </Box>
