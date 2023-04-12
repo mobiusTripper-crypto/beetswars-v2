@@ -147,7 +147,8 @@ export const TopRow = () => {
           <>
             <Box>
               <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
-                {accountConnected
+                {accountConnected &&
+                (asPath.includes(`${dashboardLink}`) || asPath.includes(`${tableLink}`))
                   ? `VP: ${votingPower?.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
                   : ""}
               </Text>

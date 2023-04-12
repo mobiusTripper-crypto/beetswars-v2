@@ -71,6 +71,8 @@ const Relics: NextPage = () => {
     "The Awakened",
   ];
 
+  const levelWeights = [4, 25, 35, 40, 44, 46, 50, 60, 80, 94, 100];
+
   return (
     <>
       <Text
@@ -116,6 +118,12 @@ const Relics: NextPage = () => {
                         <Avatar src={fBeetsImage.src} h={5} w={5} />
                         <Text>{parseFloat(relic.amount).toLocaleString()}</Text>
                       </HStack>
+                      <Text m={1}>
+                        {relic.amount === "0.0"
+                          ? "maBEETS: -- "
+                          : "maBEETs: " +
+                            (parseFloat(relic?.amount) * Number(levelWeights[relic?.level])/100).toLocaleString()}
+                      </Text>
                       <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
                     </Box>
                     <VStack m={0}>
