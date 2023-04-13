@@ -17,7 +17,7 @@ import { useGetVp } from "hooks/useGetVp";
 import { useRoundList } from "hooks/useRoundList";
 import { useSession, signOut } from "next-auth/react";
 
-  let voteToken = "fBEETS";
+let voteToken = "fBEETS";
 
 export const TopRow = () => {
   const { data: session, status } = useSession();
@@ -51,7 +51,7 @@ export const TopRow = () => {
   );
 
   useEffect(() => {
-    if (requestedRound > 31) {
+    if ((requestedRound ?? 0) > 31) {
       voteToken = "maBEETS";
     } else {
       voteToken = "fBEETS";
