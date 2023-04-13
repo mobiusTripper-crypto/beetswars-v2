@@ -1,27 +1,12 @@
-import {
-  Center,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  Divider,
-  HStack,
-  VStack,
-  Text,
-  useToast,
-  Wrap,
-  Heading,
-} from "@chakra-ui/react";
+import { Center, Avatar, Box, Card, HStack, VStack, Text, Wrap, Heading } from "@chakra-ui/react";
 import { CustomConnectButton } from "components/CustomConnectButton";
 import useReliquary from "hooks/useReliquary";
 import { useAccount } from "wagmi";
-
 import type { NextPage } from "next";
 import { TransferTokenModal } from "components/TransferRelicModal";
 import { MergeTokenModal } from "components/MergeRelicModal";
 import { SplitTokenModal } from "components/SplitRelicModal";
+import { ShiftTokenModal } from "components/ShiftRelicModal";
 import RelicLevel0 from "assets/images/reliquary/0.png";
 import RelicLevel1 from "assets/images/reliquary/1.png";
 import RelicLevel2 from "assets/images/reliquary/2.png";
@@ -42,7 +27,6 @@ const Relics: NextPage = () => {
 
   const { relicPositions, isLoadingRelicPositions, selectedRelic, refetchRelicPositions } =
     useReliquary();
-  const toast = useToast();
 
   function getImage(level: number) {
     switch (level) {
@@ -87,6 +71,8 @@ const Relics: NextPage = () => {
     "The Awakened",
   ];
 
+  const levelWeights = [4, 25, 35, 40, 44, 46, 50, 60, 80, 94, 100];
+
   return (
     <>
       <Text
@@ -103,7 +89,15 @@ const Relics: NextPage = () => {
             //console.log(relic, index);
             return (
               <Box key={index}>
-                <Card m={1} p={1} w={300} variant="filled" align="center">
+                <Card
+                  m={1}
+                  p={1}
+                  w={300}
+                  variant="filled"
+                  align="center"
+                  border="1px solid #567"
+                  borderRadius="11px"
+                >
                   <Heading m={3} size="md">
                     Relic #{relic.relicId}
                   </Heading>
@@ -124,17 +118,37 @@ const Relics: NextPage = () => {
                         <Avatar src={fBeetsImage.src} h={5} w={5} />
                         <Text>{parseFloat(relic.amount).toLocaleString()}</Text>
                       </HStack>
-                      <Text m={1}>Entry: {new Date((relic.entry || 0) * 1000).toDateString()}</Text>
+                      <Text m={1} fontSize="0.9rem">
+                        {relic.amount === "0.0"
+                          ? "maBEETS: -- "
+                          : "maBEETS VP: " +
+                            (
+                              (parseFloat(relic?.amount) * Number(levelWeights[relic?.level])) /
+                              100
+                            ).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </Text>
+                      <Text m={1} fontSize="0.9rem">
+                        Entry: {new Date((relic.entry || 0) * 1000).toDateString()}
+                      </Text>
                     </Box>
-                    <HStack m={3}>
-                      <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
-                      <MergeTokenModal
-                        relic={relic}
-                        refresh={refetchRelicPositions}
-                        relicPositions={relicPositions}
-                      />
-                      <TransferTokenModal relic={relic} refresh={refetchRelicPositions} />
-                    </HStack>
+                    <VStack m={0}>
+                      <HStack m={1}>
+                        <SplitTokenModal relic={relic} refresh={refetchRelicPositions} />
+                        <MergeTokenModal
+                          relic={relic}
+                          refresh={refetchRelicPositions}
+                          relicPositions={relicPositions}
+                        />
+                      </HStack>
+                      <HStack m={1}>
+                        <ShiftTokenModal
+                          relic={relic}
+                          refresh={refetchRelicPositions}
+                          relicPositions={relicPositions}
+                        />
+                        <TransferTokenModal relic={relic} refresh={refetchRelicPositions} />
+                      </HStack>
+                    </VStack>
                   </Box>
                 </Card>
               </Box>

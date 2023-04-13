@@ -17,6 +17,8 @@ import { useGetVp } from "hooks/useGetVp";
 import { useRoundList } from "hooks/useRoundList";
 import { useSession, signOut } from "next-auth/react";
 
+  let voteToken = "fBEETS";
+
 export const TopRow = () => {
   const { data: session, status } = useSession();
   const { requestedRound, requestRound, display, setDisplay } = useGlobalContext();
@@ -43,8 +45,20 @@ export const TopRow = () => {
     "pn:",
     parsedNumber,
     "rr:",
-    requestedRound
+    requestedRound,
+    "tkn:",
+    voteToken
   );
+
+  useEffect(() => {
+    if (requestedRound > 31) {
+      voteToken = "maBEETS";
+    } else {
+      voteToken = "fBEETS";
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedRound]);
+
   useEffect(() => {
     if (
       asPath.includes("/round") &&
@@ -146,9 +160,12 @@ export const TopRow = () => {
         ) : (
           <>
             <Box>
-              <Text fontSize="0.8rem" fontWeight="bold" color="#ED1200">
-                {accountConnected
-                  ? `VP: ${votingPower?.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+              <Text mr={2} fontWeight="bold" color="#ED1200">
+                {accountConnected &&
+                (asPath.includes(`${dashboardLink}`) || asPath.includes(`${tableLink}`))
+                  ? `${voteToken} VP: ${votingPower?.toLocaleString(undefined, {
+                      maximumFractionDigits: 0,
+                    })}`
                   : ""}
               </Text>
             </Box>
