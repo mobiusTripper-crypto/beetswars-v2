@@ -52,7 +52,7 @@
     "zod": "^3.18.0"
   },
   "engines": {
-    "node": "18.12.1"
+    "node": "18.13.0"
   },
   "ct3aMetadata": {
     "initVersion": "6.11.4"
