@@ -2,11 +2,11 @@ import * as z from "zod";
 
 export const Tokendata = z.object({
   token: z.string(),
-  tokenaddress: z.string().optional(),
-  coingeckoid: z.string().optional(),
-  bptpoolid: z.string().optional(),
-  isbpt: z.boolean().optional(),
-  lastprice: z.number().optional(),
+  tokenaddress: z.string().nullable().optional(),
+  coingeckoid: z.string().nullable().optional(),
+  bptpoolid: z.string().nullable().optional(),
+  isbpt: z.boolean().nullable().optional(),
+  lastprice: z.number().nullable().optional(),
   tokenId: z.number(),
 });
 export type Tokendata = z.infer<typeof Tokendata>;

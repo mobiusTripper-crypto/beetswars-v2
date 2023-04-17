@@ -98,7 +98,7 @@ export async function getData(round: number) {
     for (const reward of bribe.reward) {
       let amount = reward.amount;
       if (!reward.isfixed) {
-        if ((reward.token = "BEETS")) {
+        if (reward.token === "BEETS") {
           amount *= priceBeets;
         } else {
           const rewardtoken = bribefile.tokendata.find(x => x.token === reward.token);
