@@ -56,10 +56,10 @@ export function EditTokenModal(props: modalProps) {
   const openModal = () => {
     if (data) {
       console.log("set token values");
-      setTokenaddress(data.tokenaddress);
-      setCoingeckoid(data.coingeckoid);
-      setBptpoolid(data.bptpoolid);
-      setIsbpt(data.isbpt);
+      setTokenaddress(data.tokenaddress || undefined);
+      setCoingeckoid(data.coingeckoid || undefined);
+      setBptpoolid(data.bptpoolid || undefined);
+      setIsbpt(data.isbpt || undefined);
       setLastprice((data.lastprice || "").toString());
       setToken(data.token);
       setTokenId(data.tokenId);
@@ -75,10 +75,10 @@ export function EditTokenModal(props: modalProps) {
     if (!newtoken || newtoken.token === "") return;
     console.log("newtoken: ", newtoken.token);
     setToken(newtoken.token);
-    setTokenaddress(newtoken.tokenaddress);
-    setCoingeckoid(newtoken.coingeckoid);
-    setBptpoolid(newtoken.bptpoolid);
-    setIsbpt(newtoken.isbpt);
+    setTokenaddress(newtoken.tokenaddress || undefined);
+    setCoingeckoid(newtoken.coingeckoid || undefined);
+    setBptpoolid(newtoken.bptpoolid || undefined);
+    setIsbpt(newtoken.isbpt || undefined);
     setTokenId(0);
   };
 

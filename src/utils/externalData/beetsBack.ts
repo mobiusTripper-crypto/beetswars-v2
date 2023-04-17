@@ -7,7 +7,7 @@ export async function getTokenPrice(timestamp: number, address: string): Promise
   const query = gql`
     query Chartdata {
       tokenGetPriceChartData(
-        address: "${address}"
+        address: "${address.toLowerCase()}"
         range: THIRTY_DAY
       ) {
         id
