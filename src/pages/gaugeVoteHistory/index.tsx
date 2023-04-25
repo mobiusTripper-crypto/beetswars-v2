@@ -74,7 +74,7 @@ function Chart1() {
     tooltip: {
       trigger: "axis",
       padding: 7,
-      backgroundColor: "#FFFFFFEE",
+      backgroundColor: "#EEE",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (args: any) => {
         //console.log(args);
@@ -85,7 +85,7 @@ function Chart1() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         args.forEach((item: any) => {
           tooltip += `<tr><td>${item.marker}</td><td> ${item.seriesName}:</td><td align='right'> 
-            ${item.value}</td></tr>`;
+            ${item.value.toLocaleString(undefined, { maximumFractionDigits: 4 })}</td></tr>`;
         });
         tooltip += `</table>`;
 
