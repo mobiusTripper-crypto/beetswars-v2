@@ -40,7 +40,7 @@ export const { chains, provider, webSocketProvider } = configureChains(
 const { connectors } = getDefaultWallets({
   appName: "beetswars live",
   chains,
-  projectId: "w73ief" || "",
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'dummy',
 });
 
 export const client = createClient({
