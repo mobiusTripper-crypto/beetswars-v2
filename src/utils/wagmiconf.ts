@@ -23,9 +23,8 @@ const fantomChain: Chain = {
     symbol: "FTM",
   },
   rpcUrls: {
-    default: {
-      http: ["https://rpc.ftm.tools/"],
-    },
+    public: { http: ["https://rpc.ftm.tools/"] },
+    default: { http: ["https://rpc.ftm.tools/"] },
   },
   blockExplorers: {
     default: { name: "FtmScan", url: "https://ftmscan.com" },
@@ -41,6 +40,7 @@ export const { chains, provider, webSocketProvider } = configureChains(
 const { connectors } = getDefaultWallets({
   appName: "beetswars live",
   chains,
+  projectId: "w73ief" || "",
 });
 
 export const client = createClient({
