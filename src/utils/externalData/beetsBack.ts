@@ -3,7 +3,7 @@ import { request, gql } from "graphql-request";
 // get historic price for single token
 export async function getTokenPrice(timestamp: number, address: string): Promise<number> {
   type Chartdata = { id: string; price: string; timestamp: number };
-  const queryUrl = "https://backend-v2.beets-ftm-node.com/graphql";
+  const queryUrl = "https://backend-v3.beets-ftm-node.com/graphql";
   const query = gql`
     query Chartdata {
       tokenGetPriceChartData(
@@ -39,7 +39,7 @@ export async function getTokenPrice(timestamp: number, address: string): Promise
 // get historic price for BPT pool
 export async function getPoolPriceHist(timestamp: number, address: string): Promise<number> {
   type PoolChartdata = { sharePrice: string; timestamp: number };
-  const queryUrl = "https://backend-v2.beets-ftm-node.com/graphql";
+  const queryUrl = "https://backend-v3.beets-ftm-node.com/graphql";
   const query = gql`
     query PoolData {
       poolGetSnapshots(
@@ -79,7 +79,7 @@ export async function getPoolPriceLive(address: string): Promise<number> {
       totalShares: number;
     };
   };
-  const queryUrl = "https://backend-v2.beets-ftm-node.com/graphql";
+  const queryUrl = "https://backend-v3.beets-ftm-node.com/graphql";
   const query = gql`
     query PoolData {
       poolGetPool(
