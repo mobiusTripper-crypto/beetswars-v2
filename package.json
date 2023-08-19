@@ -12,7 +12,7 @@
     "@chakra-ui/react": "^2.4.4",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@rainbow-me/rainbowkit": "^0.8.1",
+    "@rainbow-me/rainbowkit": "^0.12.16",
     "@snapshot-labs/snapshot.js": "^0.4.61",
     "@tanstack/react-query": "^4.24.4",
     "@tanstack/react-query-devtools": "^4.24.4",
@@ -48,7 +48,7 @@
     "superjson": "1.9.1",
     "swagger-ui-react": "^4.15.5",
     "typescript": "^4.8.4",
-    "wagmi": "^0.9.5",
+    "wagmi": "^0.12.18",
     "zod": "^3.18.0"
   },
   "engines": {
