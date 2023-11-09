@@ -159,16 +159,17 @@ export async function dashData(round = 0): Promise<DashboardData> {
   const roundBeetsEmissions = Math.round(roundEmissions?.voteEmission || 0);
   // divert to live data, if round eq latest
   let totalVoteIncentives = roundEmissions?.totalBribes || 0;
+  let totalExternalVoteIncentives = roundEmissions?.totalExternalBribes || 0;
   let voteIncentivesRoi = Math.round(roundEmissions?.avgBribeRoiInPercent || 0);
   if (round === latest) {
     const calcBribe = await getBribeDataCalculated(round);
     if (!!calcBribe) {
       totalVoteIncentives = calcBribe.header.totalBribes;
-      const bribedEmissions =
-        (calcBribe.header.bribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd;
+      const externallyBribedEmissions =
+        (calcBribe.externallyBribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd;
       voteIncentivesRoi = !totalVoteIncentives
         ? 0
-        : Math.round((bribedEmissions / totalVoteIncentives) * 100);
+        : Math.round((externallyBribedEmissions / totalExternalVoteIncentives) * 100);
     }
   }
   //get relics and maxVP

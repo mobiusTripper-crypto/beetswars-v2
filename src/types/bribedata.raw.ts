@@ -17,6 +17,7 @@ export const Reward = z.object({
   amount: z.number(),
   isfixed: z.boolean(),
   rewardId: z.number(),
+  isProtocolBribe: z.boolean(),
 });
 export type Reward = z.infer<typeof Reward>;
 

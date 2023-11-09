@@ -6,6 +6,7 @@ export interface SingleOffer {
   usdPerVp: number;
   label: string;
   underminimum: boolean;
+  hadExternalBribe: boolean;
 }
 
 export interface BribeHeader {
@@ -44,4 +45,5 @@ export interface BribeData {
   bribelist: BribeOffer[];
   strategies: SpaceStrategy[];
   roundnumber: number;
+  externallyBribedVotes: number;
 }

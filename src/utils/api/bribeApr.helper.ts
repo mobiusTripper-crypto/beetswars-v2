@@ -54,9 +54,11 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
 
   const bribedEmissions = !chartdata
     ? 0
-    : (chartdata.bribedVotes / chartdata.totalVotes) * voteEmission * beetsPrice;
+    : (chartdata.externallyBribedVotes / chartdata.totalVotes) * voteEmission * beetsPrice;
   const totalBribes = chartdata?.totalBribes || 0;
-  const avgBribeRoiInPercent = !chartdata ? 0 : (bribedEmissions / chartdata.totalBribes) * 100;
+  const avgBribeRoiInPercent = !chartdata
+    ? 0
+    : (bribedEmissions / chartdata.totalExternalBribes) * 100;
   return {
     round,
     emission,

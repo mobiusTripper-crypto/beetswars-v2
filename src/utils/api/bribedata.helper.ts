@@ -59,6 +59,10 @@ export async function getBribeDataCalculated(round = 0): Promise<BribeData | nul
       return bribeOffer;
     })
   );
+  const externallyBribedOffers = bribelist.filter(bribedPool => bribedPool.hadExternalBribe);
+  const externallyBribedVotes = Math.round(
+    externallyBribedOffers.reduce((sum, bribe) => sum + bribe.votes, 0)
+  );
 
   const bribedVotes = bribelist.reduce((sum, bribe) => sum + bribe.votes, 0);
   const totalBribes = bribelist.reduce((sum, bribe) => sum + bribe.rewardAmount, 0);
@@ -93,7 +97,7 @@ export async function getBribeDataCalculated(round = 0): Promise<BribeData | nul
   };
 
   const strategies = snapshot.strategies;
-  const retVal = { header, bribelist, strategies, roundnumber };
+  const retVal = { header, bribelist, strategies, roundnumber, externallyBribedVotes };
 
   // write to db one hour after vote closed if not in dev mode
   if (process.env.NODE_ENV !== "development") {

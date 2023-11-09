@@ -13,6 +13,7 @@ import {
 import { useSession, signIn, signOut } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import type { Bribedata, Reward } from "types/bribedata.raw";
+import { FaLastfmSquare, FaSmileBeam } from "react-icons/fa";
 
 const Admin: NextPage = () => {
   const addRound = trpc.bribes.addRound.useMutation();
@@ -65,6 +66,7 @@ const Admin: NextPage = () => {
         amount: 2900,
         isfixed: true,
         rewardId: 1,
+        isProtocolBribe: false,
       },
     ],
   };
@@ -75,6 +77,7 @@ const Admin: NextPage = () => {
     amount: 200,
     isfixed: true,
     rewardId: 2,
+    isProtocolBribe: false,
   };
 
   const { data: session, status } = useSession();

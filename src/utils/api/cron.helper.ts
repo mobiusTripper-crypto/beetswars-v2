@@ -17,6 +17,11 @@ export async function getData(round: number) {
   if (!bribefile) return newData; //empty
   const proposal = bribefile.snapshot;
   const bribedOffers = bribefile.bribedata.map(x => (x.voteindex + 1).toString());
+  const externallyBribedOffers = bribefile.bribedata
+    .filter(bribedPool => {
+      bribedPool.reward.some(reward => reward.isProtocolBribe === false);
+    })
+    .map(x => (x.voteindex + 1).toString());
   const prop = await getSnapshotProposal(proposal);
   const votes = await getSnapshotVotes(proposal);
   if (!prop) return newData;
@@ -33,6 +38,9 @@ export async function getData(round: number) {
   });
   const totalVotes = Math.round(Object.values(poolVotes).reduce((a, b) => a + b));
   const bribedVotes = Math.round(bribedOffers.reduce((sum, x) => sum + (poolVotes[x] || 0), 0));
+  const externallyBribedVotes = Math.round(
+    externallyBribedOffers.reduce((sum, x) => sum + (poolVotes[x] || 0), 0)
+  );
 
   // calculate prices
   const priceBeets = await getPrice(
@@ -143,6 +151,7 @@ export async function getData(round: number) {
   newData.totalBriber = bribedOffers.length;
   newData.totalBribes = totalBribes;
   newData.bribedVotes = bribedVotes;
+  newData.externallyBribedVotes = externallyBribedVotes;
   newData.voteEnd = end;
   newData.priceBeets = priceBeets;
   newData.priceFbeets = priceFbeets;
