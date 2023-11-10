@@ -68,7 +68,7 @@ export function EditOfferModal(props: modalProps) {
     token: "",
     amount: 0,
     isfixed: true,
-    isProtocolBribe: false,
+    isProtocolBribe: true,
     rewardId: maxRewardId + 1,
   };
 

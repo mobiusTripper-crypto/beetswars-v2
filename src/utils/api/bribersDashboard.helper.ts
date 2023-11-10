@@ -58,6 +58,11 @@ export async function commonDashData(round = 0): Promise<CardData[]> {
     },
     { heading: "Vote Incentives ROI", text: roundtext, footer: `${data.voteIncentivesRoi} %` },
     {
+      heading: "External Vote Incentives ROI",
+      text: roundtext,
+      footer: `${data.externalVoteIncentivesRoi} %`,
+    },
+    {
       heading: "Total Incentives USD",
       text: `for Round ${round}`,
       footer: data.totalVoteIncentives.toLocaleString(undefined, {
@@ -161,13 +166,21 @@ export async function dashData(round = 0): Promise<DashboardData> {
   let totalVoteIncentives = roundEmissions?.totalBribes || 0;
   let totalExternalVoteIncentives = roundEmissions?.totalExternalBribes || 0;
   let voteIncentivesRoi = Math.round(roundEmissions?.avgBribeRoiInPercent || 0);
+  let externalVoteIncentivesRoi = Math.round(roundEmissions?.avgExternalBribeRoiInPercent || 0);
   if (round === latest) {
     const calcBribe = await getBribeDataCalculated(round);
     if (!!calcBribe) {
       totalVoteIncentives = calcBribe.header.totalBribes;
+
+      const bribedEmissions =
+        (calcBribe.header.bribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd;
+      voteIncentivesRoi = !totalVoteIncentives
+        ? 0
+        : Math.round((bribedEmissions / totalVoteIncentives) * 100);
+
       const externallyBribedEmissions =
         (calcBribe.externallyBribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd;
-      voteIncentivesRoi = !totalVoteIncentives
+      externalVoteIncentivesRoi = !totalVoteIncentives
         ? 0
         : Math.round((externallyBribedEmissions / totalExternalVoteIncentives) * 100);
     }
@@ -198,6 +211,7 @@ export async function dashData(round = 0): Promise<DashboardData> {
     roundEmissionsUsd,
     totalVoteIncentives,
     voteIncentivesRoi,
+    externalVoteIncentivesRoi,
     poolsOverThreshold,
     totalRelics,
     totalVotingPower,

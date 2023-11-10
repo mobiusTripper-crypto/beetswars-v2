@@ -15,7 +15,7 @@ export async function calculateSingleOffer(
   let hadExternalBribe = false;
 
   for (const reward of rewards) {
-    if (reward.isProtocolBribe === false) {
+    if (reward.isProtocolBribe === false || !reward.isProtocolBribe) {
       hadExternalBribe = true;
     }
   }
