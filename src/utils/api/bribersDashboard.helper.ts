@@ -164,7 +164,7 @@ export async function dashData(round = 0): Promise<DashboardData> {
   const roundBeetsEmissions = Math.round(roundEmissions?.voteEmission || 0);
   // divert to live data, if round eq latest
   let totalVoteIncentives = roundEmissions?.totalBribes || 0;
-  let totalExternalVoteIncentives = roundEmissions?.totalExternalBribes || 0;
+  const totalExternalVoteIncentives = roundEmissions?.totalExternalBribes || 0;
   let voteIncentivesRoi = Math.round(roundEmissions?.avgBribeRoiInPercent || 0);
   let externalVoteIncentivesRoi = Math.round(roundEmissions?.avgExternalBribeRoiInPercent || 0);
   if (round === latest) {
@@ -178,8 +178,9 @@ export async function dashData(round = 0): Promise<DashboardData> {
         ? 0
         : Math.round((bribedEmissions / totalVoteIncentives) * 100);
 
-      const externallyBribedEmissions =
-        (calcBribe.externallyBribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd;
+      const externallyBribedEmissions = calcBribe.externallyBribedVotes
+        ? (calcBribe.externallyBribedVotes / calcBribe.header.totalVotes) * roundEmissionsUsd
+        : 0;
       externalVoteIncentivesRoi = !totalVoteIncentives
         ? 0
         : Math.round((externallyBribedEmissions / totalExternalVoteIncentives) * 100);
