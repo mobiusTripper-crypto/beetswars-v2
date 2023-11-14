@@ -8,7 +8,7 @@ export const DashboardData = z.object({
   roundEmissionsUsd: z.number(),
   totalVoteIncentives: z.number(),
   voteIncentivesRoi: z.number(),
-  externalVoteIncentivesRoi: z.number(),
+  externalVoteIncentivesRoi: z.number().optional(),
   poolsOverThreshold: z.number(),
   totalVotingPower: z.number(),
   totalRelics: z.number(),
@@ -27,7 +27,7 @@ export const BribesRoi = z.object({
   totalEmissionUsd: z.number(),
   poolEmissionUsd: z.number(),
   roiPercent: z.number(),
-  // externalRoiPercent: z.number(),
+  externalRoiPercent: z.number().optional(),
   payoutStatus: z.enum(["estimated", "payout active", "settled"]),
 });
 

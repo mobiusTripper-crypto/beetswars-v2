@@ -16,9 +16,9 @@ export const EmissionData = z.object({
   voteEmission: z.number(),
   percentUsdValue: z.number(),
   totalBribes: z.number(),
-  totalExternalBribes: z.number(),
+  totalExternalBribes: z.number().optional(),
   avgBribeRoiInPercent: z.number(),
-  avgExternalBribeRoiInPercent: z.number(),
+  avgExternalBribeRoiInPercent: z.number().optional(),
   payoutStatus: z.enum(["estimated", "payout active", "settled"]),
 });
 
