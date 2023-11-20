@@ -43,6 +43,7 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
   const emission = factor * (await getEmissionForBlockspan(block1, block2));
 
   const chartdata = await readOneChartdata(round);
+
   const beetsPrice = !chartdata
     ? // ? await getCoingeckoCurrentPrice("beethoven-x")
       await getPrice(false, { token: "BEETS", tokenId: 0, coingeckoid: "beethoven-x" })
@@ -52,11 +53,22 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
   const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
   const percentUsdValue = (voteEmission * beetsPrice) / 100;
 
+  const externallyBribedVotes = chartdata?.externallyBribedVotes || 0;
+
   const bribedEmissions = !chartdata
     ? 0
     : (chartdata.bribedVotes / chartdata.totalVotes) * voteEmission * beetsPrice;
+  const externalBribedEmissions = !chartdata
+    ? 0
+    : (externallyBribedVotes / chartdata.totalVotes) * voteEmission * beetsPrice;
+
   const totalBribes = chartdata?.totalBribes || 0;
+  const totalExternalBribes = chartdata?.totalExternalBribes || 0;
+
   const avgBribeRoiInPercent = !chartdata ? 0 : (bribedEmissions / chartdata.totalBribes) * 100;
+  const avgExternalBribeRoiInPercent = !chartdata
+    ? 0
+    : (externalBribedEmissions / totalExternalBribes) * 100;
   return {
     round,
     emission,
@@ -66,6 +78,7 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
     percentUsdValue,
     totalBribes,
     avgBribeRoiInPercent,
+    avgExternalBribeRoiInPercent,
     payoutStatus,
   } as EmissionData;
 }

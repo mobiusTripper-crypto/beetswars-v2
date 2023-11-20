@@ -12,6 +12,14 @@ export async function calculateSingleOffer(
   const choice = bribe.voteindex + 1;
   const rewards = bribe.reward;
 
+  let hadExternalBribe = false;
+
+  for (const reward of rewards) {
+    if (reward.isProtocolBribe === false || !reward.isProtocolBribe) {
+      hadExternalBribe = true;
+    }
+  }
+
   const snapshotVotesPerPool = await getSnapshotVotesPerPool(snapshot);
   if (!snapshotVotesPerPool)
     return {
@@ -22,6 +30,7 @@ export async function calculateSingleOffer(
       usdPerVp: 0,
       label: "can't get Data for pool",
       underminimum: false,
+      hadExternalBribe,
     };
 
   // votes, percent
@@ -39,6 +48,7 @@ export async function calculateSingleOffer(
       usdPerVp: 0,
       label: "under minimum",
       underminimum: true,
+      hadExternalBribe,
     };
 
   // rewardAmount
@@ -110,5 +120,6 @@ export async function calculateSingleOffer(
     usdPerVp,
     label,
     underminimum: false,
+    hadExternalBribe,
   };
 }

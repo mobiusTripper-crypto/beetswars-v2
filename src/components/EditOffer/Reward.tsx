@@ -83,6 +83,18 @@ export function Reward(props: RewardProps) {
         />
       </GridItem>
       <GridItem>
+        <Checkbox
+          isChecked={reward.isProtocolBribe}
+          onChange={e => {
+            const rewardCopy = {
+              ...reward,
+              ["isProtocolBribe"]: e.target.checked,
+            };
+            updateReward(rewardCopy, reward.rewardId);
+          }}
+        />
+      </GridItem>
+      <GridItem>
         <Button onClick={() => deleteReward(reward.rewardId)}>Delete</Button>
       </GridItem>
     </>

@@ -68,6 +68,7 @@ export function EditOfferModal(props: modalProps) {
     token: "",
     amount: 0,
     isfixed: true,
+    isProtocolBribe: true,
     rewardId: maxRewardId + 1,
   };
 
@@ -252,12 +253,13 @@ export function EditOfferModal(props: modalProps) {
             <Heading size="md" mt={4}>
               Rewards
             </Heading>
-            <Grid templateColumns="1fr 3fr 3fr 3fr 2fr 1fr" gap={4} mt={2} alignItems="center">
+            <Grid templateColumns="1fr 3fr 3fr 3fr 2fr 1fr 1fr" gap={4} mt={2} alignItems="center">
               <GridItem fontWeight="bold">ID</GridItem>
               <GridItem fontWeight="bold">Type</GridItem>
               <GridItem fontWeight="bold">Token</GridItem>
               <GridItem fontWeight="bold">Amount</GridItem>
               <GridItem fontWeight="bold">Is Fixed</GridItem>
+              <GridItem fontWeight="bold">Is Protocol Bribe</GridItem>
               <GridItem>
                 <Button onClick={addReward}>Add</Button>
               </GridItem>
