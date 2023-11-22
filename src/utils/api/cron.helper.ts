@@ -19,7 +19,7 @@ export async function getData(round: number) {
   const bribedOffers = bribefile.bribedata.map(x => (x.voteindex + 1).toString());
   const externallyBribedOffers = bribefile.bribedata
     .filter(bribedPool => {
-      bribedPool.reward.some(reward => reward.isProtocolBribe === false);
+      return bribedPool.reward.some(reward => reward.isProtocolBribe === false);
     })
     .map(x => (x.voteindex + 1).toString());
   const prop = await getSnapshotProposal(proposal);
@@ -94,11 +94,13 @@ export async function getData(round: number) {
     const votes = poolVotes[x] || 0;
     const percent = (votes * 100) / totalVotes;
     const usd = 0;
-    return { key, votes, percent, usd };
+    const usdExternal = 0;
+    return { key, votes, percent, usd, usdExternal };
   });
   for (const bribe of bribefile.bribedata) {
     const rewardcap = bribe.rewardcap || Infinity;
     let sum = 0;
+    let sumExternal = 0;
     const key = (bribe.voteindex + 1).toString();
     let bribeEntry = bribes.find(x => x.key === key); // eslint-disable-line prefer-const
     if (!bribeEntry) break;
@@ -124,6 +126,7 @@ export async function getData(round: number) {
       // now we have amount in USD
       if (reward.type === "fixed") {
         sum += amount;
+        sumExternal += reward.isProtocolBribe ? 0 : amount;
       } else if (reward.type === "percent") {
         let percent = bribeEntry.percent;
         if (percent < 0.15 && bribe.payoutthreshold !== -1) {
@@ -134,14 +137,18 @@ export async function getData(round: number) {
           percent = Math.max(0, bribeEntry.percent - bribe.payoutthreshold);
         }
         sum += amount * percent;
+        sumExternal += (reward.isProtocolBribe ? 0 : amount) * percent;
       } else if (reward.type === "pervote") {
         sum += amount * bribeEntry.votes;
+        sumExternal += (reward.isProtocolBribe ? 0 : amount) * bribeEntry.votes;
       }
     }
     bribeEntry.usd = Math.min(sum, rewardcap);
+    bribeEntry.usdExternal = Math.min(sumExternal, rewardcap);
     bribes[index] = bribeEntry;
   }
   const totalBribes = Math.round(bribes.reduce((sum, x) => sum + x.usd, 0));
+  const totalExternalBribes = Math.round(bribes.reduce((sum, x) => sum + x.usdExternal, 0));
   const emissions = await getEmissionForRound(round);
   const bribersRoi = emissions?.avgBribeRoiInPercent ?? 0;
 
@@ -150,6 +157,7 @@ export async function getData(round: number) {
   newData.totalVotes = totalVotes;
   newData.totalBriber = bribedOffers.length;
   newData.totalBribes = totalBribes;
+  newData.totalExternalBribes = totalExternalBribes;
   newData.bribedVotes = bribedVotes;
   newData.externallyBribedVotes = externallyBribedVotes;
   newData.voteEnd = end;
