@@ -80,5 +80,6 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
     avgBribeRoiInPercent,
     avgExternalBribeRoiInPercent,
     payoutStatus,
+    totalExternalBribes,
   } as EmissionData;
 }
