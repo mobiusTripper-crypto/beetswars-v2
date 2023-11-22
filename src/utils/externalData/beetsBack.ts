@@ -45,6 +45,7 @@ export async function getPoolPriceHist(timestamp: number, address: string): Prom
       poolGetSnapshots(
         id: "${address}"
         range: THIRTY_DAYS
+        chain: FANTOM
       ) {
         sharePrice
         timestamp
@@ -84,6 +85,7 @@ export async function getPoolPriceLive(address: string): Promise<number> {
     query PoolData {
       poolGetPool(
         id: "${address}"
+        chain: FANTOM
       ) {
         dynamicData{
           totalLiquidity
