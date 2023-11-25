@@ -5,6 +5,7 @@ export const VotablePool = z.object({
   voteindex: z.number(),
   round: z.number(),
   isUncapped: z.boolean(),
+  capMultiplier: z.number().optional(),
 });
 
 export type VotablePool = z.infer<typeof VotablePool>;
