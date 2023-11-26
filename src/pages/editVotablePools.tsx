@@ -18,6 +18,7 @@ import {
   Card,
   useToast,
   Progress,
+  Input,
 } from "@chakra-ui/react";
 import { HStack, VStack } from "@chakra-ui/react";
 import { trpc } from "utils/trpc";
@@ -41,21 +42,47 @@ const VotablePoolForm: NextPage = () => {
   const insertPools = trpc.votepools.insert.useMutation();
 
   const [pools, setPools] = useState(dbpools);
+  const [capMultipliers, setCapMultipliers] = useState( !dbpools ? [''] : dbpools.map(value => ''));
 
   useEffect(() => {
-    setPools(dbpools);
+    setPools(dbpools );
+    setCapMultipliers(!dbpools ? [''] : dbpools.map((value) => 
+    { const returnValue =!value.capMultiplier ? '' : value.capMultiplier.toString();
+      return returnValue;
+      }))
   }, [requestedRound, dbpools]);
 
   const handleCheckboxChange = (index: number, isChecked: boolean) => {
     const votablePools = !pools ? [] : [...pools];
+    const multipliers = !capMultipliers ? [] : [...capMultipliers];
     (votablePools[index] as VotablePool).isUncapped = isChecked;
+    if(isChecked)
+    {
+      (votablePools[index] as VotablePool).capMultiplier = undefined;
+      multipliers[index] = ''
+      setCapMultipliers(multipliers);
+    }
     setPools(votablePools);
   };
+
+  const handleInputChange = (index: number, value: string) => {
+    const votablePools = !pools ? [] : [...pools];
+    const multipliers = !capMultipliers ? [] : [...capMultipliers];
+    (votablePools[index] as VotablePool).capMultiplier = Number(value);
+    multipliers[index] = value;
+    setCapMultipliers(multipliers);
+    setPools(votablePools);
+  };
+
+
   const handleSubmit = (event: React.FormEvent) => {
+    //fix null values in pools from dbpools
+    const fixedPools = !pools ? [] : pools?.map((pool, index) => {return !pool.capMultiplier ? {...pool, capMultiplier: Number(capMultipliers[index])} : pool}) 
     event.preventDefault();
-    pools && insertPools.mutate(pools);
+    pools && insertPools.mutate(fixedPools);
     showToast();
   };
+
   const toast = useToast();
   function showToast() {
     toast({
@@ -86,6 +113,7 @@ const VotablePoolForm: NextPage = () => {
                 <Th>Vote Index</Th>
                 <Th>Round</Th>
                 <Th>Is Uncapped</Th>
+                <Th w={150}>Multiplier</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -107,7 +135,12 @@ const VotablePoolForm: NextPage = () => {
                         />
                       </FormControl>
                     </Td>
-                    {/* TODO: Add cap multiplier here -> default: votablePool.capMultiplier = 1.0 */}
+                    <Td>
+                      <FormControl>
+                        <Input type="number" value={capMultipliers[index]} disabled={votablePool.isUncapped} 
+                        onChange={e => handleInputChange(index, e.target.value)}/>
+                      </FormControl>
+                    </Td>
                   </Tr>
                 ))}
             </Tbody>
