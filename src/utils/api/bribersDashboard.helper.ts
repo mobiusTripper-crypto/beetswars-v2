@@ -236,6 +236,7 @@ export async function bribesRoi(round: number, voteindex: number): Promise<Bribe
   if (!poolList) return null;
   let uncapped = poolList.find(x => x.voteindex === voteindex)?.isUncapped || false;
   if (round < 29) uncapped = true;
+  const capMultiplier = poolList.find(x => x.voteindex === voteindex)?.capMultiplier || 1.0;
 
   const roundEmissions = await getEmissionForRound(round);
   const totalEmissionUsd = !roundEmissions
@@ -250,7 +251,7 @@ export async function bribesRoi(round: number, voteindex: number): Promise<Bribe
   const poolname = poolList.find(x => x.voteindex === voteindex)?.poolName || "no Name";
   const totalvotes = votesAllPools.reduce((sum, x) => sum + x.votes, 0);
   const rawPercent = 100 * (votes / totalvotes);
-  const votesPercent = uncapped ? rawPercent : Math.min(rawPercent, 1);
+  const votesPercent = uncapped ? rawPercent : Math.min(rawPercent, 1.0 * capMultiplier);
   const totalIncentivesUsd = voteDashboard.header.totalBribes;
   const poolData = voteDashboard.bribelist.find(x => x.voteindex === voteindex);
   const poolIncentivesUsd = isBribed && poolData ? poolData.rewardAmount : 0;

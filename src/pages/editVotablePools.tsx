@@ -1,3 +1,6 @@
+// TODO: set votablePool.capMultiplier to 1.0 if not given by database/trpc
+// TODO: add UI element to enter new capMultiplier either by input field (number) or by dropdown/radiobutton
+//////////////////////////////////////
 import type { VotablePool } from "types/votablePools.raw";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -104,6 +107,7 @@ const VotablePoolForm: NextPage = () => {
                         />
                       </FormControl>
                     </Td>
+                    {/* TODO: Add cap multiplier here -> default: votablePool.capMultiplier = 1.0 */}
                   </Tr>
                 ))}
             </Tbody>

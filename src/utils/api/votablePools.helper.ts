@@ -22,7 +22,13 @@ export async function initialInsertFromSnapshot(
     if (!proposal) return null;
     const snaplist = proposal.choices;
     const data = snaplist.map((choice, index) => {
-      return { poolName: choice, voteindex: index, round, isUncapped: false } as VotablePool;
+      return {
+        poolName: choice,
+        voteindex: index,
+        round,
+        isUncapped: false,
+        capMultiplier: 1.0,
+      } as VotablePool;
     });
 
     const result = await insertPoolentries(data);
