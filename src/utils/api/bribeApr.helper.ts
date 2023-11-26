@@ -25,16 +25,20 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
   }
   // B) emission has started but not finished (ts1 < date.now, ts2 > date.now) take emissions from start to now and expand to 14 days
   else if (ts1 < now) {
-    start = ts1;
+    // start = ts1;
+    start = now - 14 * 24 * 60 * 60;
     end = now;
-    factor = TWOWEEKS / (end - start); // expand to full 14 days
+    //factor = TWOWEEKS / (end - start); // expand to full 14 days
+    factor = 1;
     payoutStatus = "payout active";
   }
   // C) emission has not yet started (ts1 > date.now) take emissions of last 1 day * 14
   else {
-    start = now - 24 * 60 * 60; //one day back
+    //  start = now - 24 * 60 * 60; //one day back
+    start = now - 14 * 24 * 60 * 60; //14 days back
     end = now;
-    factor = 14;
+    // factor = 14;
+    factor = 1;
     payoutStatus = "estimated";
   }
   const block1 = await getBlockByTsGraph(start);
