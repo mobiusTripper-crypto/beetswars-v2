@@ -7,8 +7,14 @@ export async function getRpcPrice(tokenAddress: string): Promise<number> {
   if (!tokenAddress) return 0;
   const provider = new ethers.providers.JsonRpcProvider(providerUrl);
   const contract = new ethers.Contract(contract_address, contract_abi, provider);
-  const priceobj = await contract.calculateAssetPrice(tokenAddress);
-  const price = parseFloat(ethers.utils.formatEther(priceobj));
+  let price = 0;
+  try {
+    const priceobj = await contract.calculateAssetPrice(tokenAddress);
+    price = parseFloat(ethers.utils.formatEther(priceobj));
+  } catch (error) {
+    console.error("Failed getting price from RPC for "+tokenAddress);
+    return 0;
+  }
   return price;
 }
 
