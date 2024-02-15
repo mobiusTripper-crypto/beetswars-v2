@@ -9,6 +9,7 @@ export async function getTokenPrice(timestamp: number, address: string): Promise
       tokenGetPriceChartData(
         address: "${address.toLowerCase()}"
         range: THIRTY_DAY
+        chain: FANTOM
       ) {
         id
         price

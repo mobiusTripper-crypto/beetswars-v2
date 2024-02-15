@@ -42,6 +42,7 @@ const VotablePoolForm: NextPage = () => {
   const insertPools = trpc.votepools.insert.useMutation();
 
   const [pools, setPools] = useState(dbpools);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [capMultipliers, setCapMultipliers] = useState( !dbpools ? [''] : dbpools.map(value => ''));
 
   useEffect(() => {
