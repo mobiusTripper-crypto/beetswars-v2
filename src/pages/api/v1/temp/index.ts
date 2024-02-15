@@ -1,9 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { readEmissionList } from "utils/database/beetsEmissions.db";
+import processHiddenhandApi from "utils/api/hiddenhand.helper";
+// import { readEmissionList } from "utils/database/beetsEmissions.db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") return res.status(501).send("not implemented");
-  const data = await readEmissionList();
+  // const data = await readEmissionList();
+  const data = await processHiddenhandApi();
   if (!data) return res.status(404).send("No object with given ID found");
   res.json(data);
 }
