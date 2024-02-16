@@ -2,7 +2,7 @@ import { type HiddenhandEntry } from "types/hiddenhand.raw";
 
 export async function getHiddenhandBribes(): Promise<HiddenhandEntry[]> {
   // console.log("Hiddenhand get bribes");
-  const url = `https://api.hiddenhand.finance/proposal/beethovenx`;
+  const url = "https://api.hiddenhand.finance/proposal/beethovenx";
   try {
     const result = await fetch(url);
     if (result.status !== 200) throw new Error("HTTP "+result.status);
@@ -15,4 +15,4 @@ export async function getHiddenhandBribes(): Promise<HiddenhandEntry[]> {
     console.error("failed HiddenHand API", error);
     return [];
   }
-}
+} 
