@@ -5,7 +5,7 @@ import { readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { getHiddenhandBribes } from "utils/externalData/hiddenhand";
 import { getSnapshotProposal } from "utils/externalData/snapshot";
-import { addToken, addOffer, addReward, editReward } from "./editBribedata";
+import { addToken, addOffer, addReward, editReward, editOffer } from "./editBribedata";
 
 export default async function processHiddenhandApi(): Promise<string[]> {
   const messageList = [] as string[];
@@ -44,8 +44,10 @@ export default async function processHiddenhandApi(): Promise<string[]> {
           if (newToken.token == "deus") newToken.coingeckoid = "deus-finance-2";
           if (newToken.token == "bpt-lzfoto") {
             newToken.isbpt = true;
-            newToken.tokenaddress = "0x838229095fa83bcd993ef225d01a990e3bc197a800020000000000000000075b";
-            newToken.bptpoolid = "0x838229095fa83bcd993ef225d01a990e3bc197a800020000000000000000075b";
+            newToken.tokenaddress =
+              "0x838229095fa83bcd993ef225d01a990e3bc197a800020000000000000000075b";
+            newToken.bptpoolid =
+              "0x838229095fa83bcd993ef225d01a990e3bc197a800020000000000000000075b";
           }
           tokenList.push(newToken);
         }
@@ -98,9 +100,10 @@ export default async function processHiddenhandApi(): Promise<string[]> {
           voteindex: Number(prop.index) - 1,
           poolname: prop.title,
           poolurl: "",
-          rewarddescription: "",
+          rewarddescription: "Vote for " + prop.title,
           offerId: 0,
           reward: [],
+          payoutthreshold: -1,
         };
         const bribeResult = await addOffer(BWnewBribe, round);
         if (!bribeResult) {
@@ -112,7 +115,9 @@ export default async function processHiddenhandApi(): Promise<string[]> {
       } else messageList.push("Bribe found " + prop.title);
 
       // foreach token in reduced bribes
+      let newDescription = "Vote for " + prop.title + " to get a share of";
       reducedBribes.forEach(bribetoken => {
+        newDescription += " " + bribetoken.amount.toFixed() + " $" + bribetoken.symbol + " and";
         // check if amount equals saved bribe
         const foundBribeToken = BWnewBribe?.reward.find(
           tok => tok.token.toLowerCase() == bribetoken.symbol.toLowerCase()
@@ -125,19 +130,26 @@ export default async function processHiddenhandApi(): Promise<string[]> {
             type: "fixed",
             isfixed: false,
             rewardId: 0,
-            isProtocolBribe: false,
+            isProtocolBribe: bribetoken.symbol == "bpt-lzfoto", //false,
           };
           addReward(newReward, round, BWnewBribe?.offerId || 0);
           messageList.push("Add bribe to " + prop.title + " using token " + bribetoken.symbol);
         } else if (foundBribeToken.amount != bribetoken.amount) {
-          // update amount 
+          // update amount
           foundBribeToken.amount = bribetoken.amount;
+          foundBribeToken.isProtocolBribe = bribetoken.symbol == "bpt-lzfoto";
           editReward(foundBribeToken, round, BWnewBribe?.offerId || 0);
           messageList.push(
             "Updated bribe amount to " + prop.title + " using token " + bribetoken.symbol
           );
         }
+        // update offer description
       });
+      newDescription = newDescription.slice(0, -4);
+      if (BWnewBribe) {
+        BWnewBribe.rewarddescription = newDescription;
+        await editOffer(BWnewBribe, round);
+      }
     } else {
       // totalValue == 0
       messageList.push("Entry " + prop.index + " has no offers.");
