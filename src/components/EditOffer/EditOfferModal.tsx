@@ -86,7 +86,7 @@ export function EditOfferModal(props: modalProps) {
     console.log("autofill");
     setPoolURL(prevData.poolurl);
     setDescription(prevData.rewarddescription);
-    setAssumption(prevData.assumption);
+    setAssumption(prevData.assumption || '');
     setRewards(prevData.reward);
     setRewardCap(prevData.rewardcap?.toString() || undefined);
     setPayoutThreshold(prevData.payoutthreshold?.toString() || undefined);

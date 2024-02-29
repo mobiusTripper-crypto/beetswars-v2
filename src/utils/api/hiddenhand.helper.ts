@@ -14,6 +14,7 @@ export default async function processHiddenhandApi(): Promise<string[]> {
   const round = Number(latest) || 0;
   // get bribefile
   const bribefile = await readOneBribefile(round);
+  const lastbribes = await readOneBribefile(round - 1);
   // read voteend
   const proposal = bribefile?.snapshot;
   const snapshot = await getSnapshotProposal(proposal || "");
@@ -96,10 +97,14 @@ export default async function processHiddenhandApi(): Promise<string[]> {
       // check for existing bribe entry or create one
       let BWnewBribe = BWbribes.find(offer => offer.voteindex + 1 == Number(prop.index));
       if (!BWnewBribe) {
+        const oldpool = lastbribes?.bribedata.find(oldOffer => oldOffer.poolname==prop.title);
+        console.log("old: ",oldpool?.poolname, " new: ",prop.title);
+        const newUrl = oldpool?.poolurl || '';
+        console.log("  url: ", newUrl);
         BWnewBribe = {
           voteindex: Number(prop.index) - 1,
           poolname: prop.title,
-          poolurl: "",
+          poolurl: newUrl,
           rewarddescription: "Vote for " + prop.title,
           offerId: 0,
           reward: [],
@@ -116,7 +121,7 @@ export default async function processHiddenhandApi(): Promise<string[]> {
 
       // foreach token in reduced bribes
       let newDescription = "Vote for " + prop.title + " to get a share of";
-      reducedBribes.forEach(bribetoken => {
+      reducedBribes.forEach(async bribetoken => {
         newDescription += " " + bribetoken.amount.toFixed() + " $" + bribetoken.symbol + " and";
         // check if amount equals saved bribe
         const foundBribeToken = BWnewBribe?.reward.find(
@@ -132,13 +137,13 @@ export default async function processHiddenhandApi(): Promise<string[]> {
             rewardId: 0,
             isProtocolBribe: bribetoken.symbol == "bpt-lzfoto", //false,
           };
-          addReward(newReward, round, BWnewBribe?.offerId || 0);
+          await addReward(newReward, round, BWnewBribe?.offerId || 0);
           messageList.push("Add bribe to " + prop.title + " using token " + bribetoken.symbol);
         } else if (foundBribeToken.amount != bribetoken.amount) {
           // update amount
           foundBribeToken.amount = bribetoken.amount;
           foundBribeToken.isProtocolBribe = bribetoken.symbol == "bpt-lzfoto";
-          editReward(foundBribeToken, round, BWnewBribe?.offerId || 0);
+          await editReward(foundBribeToken, round, BWnewBribe?.offerId || 0);
           messageList.push(
             "Updated bribe amount to " + prop.title + " using token " + bribetoken.symbol
           );
