@@ -11,7 +11,7 @@ export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
     payload.version = setMajor(round);
     const result = await insertBribefile(payload, round);
     if (!result) return null;
-    console.log("add round");
+    // console.log("add round");
     return result;
   } catch (error) {
     console.error(error);
@@ -31,7 +31,7 @@ export async function editRound(payload: Bribefile): Promise<Bribefile | null> {
     const newBribefile = { ...oldBribefile, ...rest };
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
-    console.log("edit round");
+    // console.log("edit round");
     return result;
   } catch (error) {
     console.error(error);
@@ -56,7 +56,7 @@ export async function addToken(payload: Tokendata, round: number): Promise<Token
     bribefile.version = incPatch(bribefile.version);
     const result = await insertBribefile(bribefile, round);
     if (!result) return null;
-    console.log("add token");
+    // console.log("add token");
     return result.tokendata;
   } catch (error) {
     console.error(error);
@@ -78,7 +78,7 @@ export async function editToken(payload: Tokendata, round: number): Promise<Toke
     const newPayload = { ...rest, tokendata: tokenArray };
     const result = await insertBribefile(newPayload, round);
     if (!result?.tokendata) return null;
-    console.log("edit token");
+    // console.log("edit token");
     return result.tokendata;
   } catch (error) {
     console.error(error);
@@ -94,7 +94,7 @@ export async function deleteToken(tokenId: number, round: number): Promise<boole
     const newBribefile = { ...bribefile, tokendata: newTokens };
     newBribefile.version = incPatch(bribefile.version);
     const result = await insertBribefile(newBribefile, round);
-    console.log("delete token");
+    // console.log("delete token");
     return !!result;
   } catch (error) {
     console.error(error);
@@ -119,7 +119,7 @@ export async function addOffer(payload: Bribedata, round: number): Promise<Bribe
     bribefile.version = setMinor(bribefile.bribedata.length, bribefile.version);
     const result = await insertBribefile(bribefile, round);
     if (!result) return null;
-    console.log("add offer");
+    // console.log("add offer");
     return result.bribedata;
   } catch (error) {
     console.error(error);
@@ -141,7 +141,7 @@ export async function editOffer(payload: Bribedata, round: number): Promise<Brib
     const newPayload = { ...rest, bribedata: bribeArray };
     const result = await insertBribefile(newPayload, round);
     if (!result?.bribedata) return null;
-    console.log("edit offer");
+    // console.log("edit offer");
     return result.bribedata;
   } catch (error) {
     console.error(error);
@@ -157,7 +157,7 @@ export async function deleteOffer(offerId: number, round: number): Promise<boole
     const newBribefile = { ...bribefile, bribedata: newOffers };
     newBribefile.version = incPatch(setMinor(newOffers.length, bribefile.version));
     const result = await insertBribefile(newBribefile, round);
-    console.log("delete offer");
+    // console.log("delete offer");
     return !!result;
   } catch (error) {
     console.error(error);
@@ -191,7 +191,7 @@ export async function addReward(
     const newBribefile = { ...rest, bribedata: newBribedata };
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
-    console.log("add reward");
+    // console.log("add reward");
     return result.bribedata;
   } catch (error) {
     console.error(error);
@@ -219,7 +219,7 @@ export async function editReward(
     rest.version = incPatch(bribefile.version);
     const result = await insertBribefile(newBribefile, round);
     if (!result) return null;
-    console.log("edit reward");
+    // console.log("edit reward");
     return result.bribedata;
   } catch (error) {
     console.error(error);
@@ -239,7 +239,7 @@ export async function deleteReward(round: number, offer: number, reward: number)
     rest.version = incPatch(bribefile.version);
     const newBribefile = { ...rest, bribedata: newBribedata };
     const result = await insertBribefile(newBribefile, round);
-    console.log("delete reward");
+    // console.log("delete reward");
     return !!result;
   } catch (error) {
     console.error(error);

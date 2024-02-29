@@ -61,14 +61,16 @@ export default async function processHiddenhandApi(): Promise<string[]> {
   BWtokens.forEach(tkn => {
     tokenList = tokenList.filter(item => item.token != tkn.token);
   });
-  console.log(tokenList);
+  // console.log(tokenList);
 
   // write
   tokenList.forEach(async tkn => {
     const tokenResult = await addToken(tkn, round);
     if (!tokenResult) {
+      // console.log("Adding token failed: " + tkn.token)
       messageList.push("Adding token failed: " + tkn.token);
     } else {
+      // console.log("Adding token: " + tkn.token)
       messageList.push("Adding token: " + tkn.token);
     }
   });
@@ -98,9 +100,9 @@ export default async function processHiddenhandApi(): Promise<string[]> {
       let BWnewBribe = BWbribes.find(offer => offer.voteindex + 1 == Number(prop.index));
       if (!BWnewBribe) {
         const oldpool = lastbribes?.bribedata.find(oldOffer => oldOffer.poolname==prop.title);
-        console.log("old: ",oldpool?.poolname, " new: ",prop.title);
+        // console.log("old: ",oldpool?.poolname, " new: ",prop.title);
         const newUrl = oldpool?.poolurl || '';
-        console.log("  url: ", newUrl);
+        // console.log("  url: ", newUrl);
         BWnewBribe = {
           voteindex: Number(prop.index) - 1,
           poolname: prop.title,
@@ -114,6 +116,7 @@ export default async function processHiddenhandApi(): Promise<string[]> {
         if (!bribeResult) {
           messageList.push("Adding bribe failed: " + prop.title);
         } else {
+          console.log("Adding bribe: " + prop.title);
           messageList.push("Adding bribe: " + prop.title);
           BWnewBribe = bribeResult.find(res => res.poolname == prop.title); // now containing offerId
         }
