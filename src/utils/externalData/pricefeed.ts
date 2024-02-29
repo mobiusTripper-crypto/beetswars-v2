@@ -20,7 +20,11 @@ export async function getPrice(
     if (token.tokenaddress) return await getTokenPrice(timestamp, token.tokenaddress);
     return 0;
   }
-  if (token.isbpt && token.tokenaddress) return await getPoolPriceLive(token.tokenaddress);
+  if (token.isbpt && token.tokenaddress) {
+    let price = await getPoolPriceLive(token.tokenaddress);
+    if (!price) price = await getPoolPriceHist(Date.now() ,token.tokenaddress);
+    return price || 0;
+  }
   if (token.tokenaddress) {
     let price = await getTokenPriceLive(token.tokenaddress);
     if (!price) price = await getRpcPrice(token.tokenaddress);
