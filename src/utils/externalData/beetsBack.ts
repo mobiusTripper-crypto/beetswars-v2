@@ -107,3 +107,34 @@ export async function getPoolPriceLive(address: string): Promise<number> {
     return 0;
   }
 }
+
+// get current price for single token
+export async function getTokenPriceLive(address: string): Promise<number> {
+  type TokenData = {
+      address: string;
+      price: number;
+  };
+  const queryUrl = "https://backend-v3.beets-ftm-node.com/graphql";
+  const query = gql`
+  query TokenPrice {
+    tokenGetCurrentPrices(
+      chains: FANTOM
+    )
+    {
+      address
+      price
+    }
+  }
+  `;
+  try {
+    const { tokenGetCurrentPrices } = (await request(queryUrl, query)) as {
+      tokenGetCurrentPrices: TokenData[];
+    };
+    const token = tokenGetCurrentPrices.find(tkn => tkn.address == address);
+    const result = token?.price || 0;
+    return result;
+  } catch (error) {
+    console.error("Beetswars backend getTokenPriceLive: ", error);
+    return 0;
+  }
+}
