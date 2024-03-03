@@ -155,8 +155,8 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
     }
   });
   bribefile.bribedata = NewBribes;
-  const versionMinor = bribefile.version.split(".")[0];
-  if (Number(versionMinor) == NewBribes.length) {
+  const versionMinor = bribefile.version.split(".")[1];
+  if (Number(versionMinor) !== NewBribes.length) {
     bribefile.version = setMinor(NewBribes.length, bribefile.version);
   } else {
     bribefile.version = incPatch(bribefile.version);
