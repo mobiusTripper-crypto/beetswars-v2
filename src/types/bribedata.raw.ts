@@ -32,12 +32,12 @@ export const Bribedata = z.object({
   poolname: z.string(),
   poolurl: z.string(),
   rewarddescription: z.string(),
-  assumption: z.string().optional(),
-  percentagethreshold: z.number().optional(),
-  rewardcap: z.number().optional(),
-  additionalrewards: Additionalrewards.array().optional(),
+  assumption: z.string().nullable().optional(),
+  percentagethreshold: z.number().nullable().optional(),
+  rewardcap: z.number().nullable().optional(),
+  additionalrewards: Additionalrewards.array().nullable().optional(),
   reward: Reward.array(),
-  payoutthreshold: z.number().optional(),
+  payoutthreshold: z.number().nullable().optional(),
   offerId: z.number(),
 });
 export type Bribedata = z.infer<typeof Bribedata>;

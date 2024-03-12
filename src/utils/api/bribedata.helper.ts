@@ -53,7 +53,7 @@ export async function getBribeDataCalculated(round = 0): Promise<BribeData | nul
         poolname: bribe.poolname,
         poolurl: bribe.poolurl,
         rewarddescription: bribe.rewarddescription,
-        assumption: bribe.assumption,
+        assumption: bribe.assumption || undefined,
         ...offer,
       };
       return bribeOffer;
