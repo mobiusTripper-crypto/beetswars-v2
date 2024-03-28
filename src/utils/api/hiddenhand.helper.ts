@@ -140,7 +140,7 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
             type: "fixed",
             isfixed: false,
             rewardId: nextRewardId,
-            isProtocolBribe: bribetoken.symbol == "bpt-lzfoto",
+            isProtocolBribe: bribetoken.symbol == "bpt-lzfoto" || bribetoken.symbol == "bb-ftmmen",
           };
           // if (newReward)
           newRewards.push(newReward);
@@ -148,7 +148,7 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
         } else if (foundBribeToken.amount != bribetoken.amount) {
           // update amount
           foundBribeToken.amount = bribetoken.amount;
-          foundBribeToken.isProtocolBribe = bribetoken.symbol == "bpt-lzfoto";
+          foundBribeToken.isProtocolBribe = bribetoken.symbol == "bpt-lzfoto" || bribetoken.symbol == "bb-ftmmen";
           newRewards.push(foundBribeToken);
         } else {
           newRewards.push(foundBribeToken);
