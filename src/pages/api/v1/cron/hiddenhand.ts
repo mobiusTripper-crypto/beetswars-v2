@@ -24,7 +24,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).send("No object with given ID found");
   }
   res.send(JSON.stringify(data, null, "  "));
-  // res.json(data);
-
-  return res.status(500).send("data retrieval failed");
 }
