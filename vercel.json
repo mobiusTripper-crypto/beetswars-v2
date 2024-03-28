@@ -7,6 +7,10 @@
     {
       "path": "/api/v1/cron/voteEnd",
       "schedule": "5,10,15,25 19 * * 0"
+    },
+    {
+      "path": "/api/v1/cron/hiddenhand",
+      "schedule": "*/10 * * * 4-7"
     }
   ]
 }

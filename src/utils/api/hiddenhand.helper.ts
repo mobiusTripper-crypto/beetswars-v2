@@ -53,6 +53,13 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
             newToken.bptpoolid =
               "0x838229095fa83bcd993ef225d01a990e3bc197a800020000000000000000075b";
           }
+          if (newToken.token == "bb-ftmmen") {
+            newToken.isbpt = true;
+            newToken.tokenaddress =
+              "0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760";
+            newToken.bptpoolid =
+              "0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760";
+          }
           tokenList.push(newToken);
           nextTokenId++;
         }
@@ -133,7 +140,7 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
             type: "fixed",
             isfixed: false,
             rewardId: nextRewardId,
-            isProtocolBribe: bribetoken.symbol == "bpt-lzfoto",
+            isProtocolBribe: bribetoken.symbol == "bpt-lzfoto" || bribetoken.symbol == "bb-ftmmen",
           };
           // if (newReward)
           newRewards.push(newReward);
@@ -141,7 +148,7 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
         } else if (foundBribeToken.amount != bribetoken.amount) {
           // update amount
           foundBribeToken.amount = bribetoken.amount;
-          foundBribeToken.isProtocolBribe = bribetoken.symbol == "bpt-lzfoto";
+          foundBribeToken.isProtocolBribe = bribetoken.symbol == "bpt-lzfoto" || bribetoken.symbol == "bb-ftmmen";
           newRewards.push(foundBribeToken);
         } else {
           newRewards.push(foundBribeToken);
