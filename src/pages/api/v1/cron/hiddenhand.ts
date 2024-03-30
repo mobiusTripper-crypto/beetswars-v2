@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!bd) {
     return res.status(500).send("data retrieval failed");
   }
-  const now = Math.floor(Date.now() / 1000);
+  const now = Date.now();
   if (now > bd.header.voteEnd) {
     return res.status(503).send("No active vote period found");
   }
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!data) {
     return res.status(404).send("No object with given ID found");
   }
-  const dateReadable = new Date(now * 1000).toUTCString();
-  await insertCronLog({ timestamp: now, jobName: "hiddenhand", dateReadable });
+  const dateReadable = new Date(now).toUTCString();
+  await insertCronLog({ timestamp: Math.floor(now / 1000), jobName: "hiddenhand", dateReadable });
   res.send(JSON.stringify(data, null, "  "));
 }
