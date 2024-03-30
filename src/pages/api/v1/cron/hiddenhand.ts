@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getBribeData from "utils/api/bribedata.helper";
 import processHiddenhandApi from "utils/api/hiddenhand.helper";
 import { findConfigEntry } from "utils/database/config.db";
+import { insertCronLog } from "utils/database/cronLog.db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
@@ -23,5 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!data) {
     return res.status(404).send("No object with given ID found");
   }
+  const dateReadable = new Date(now * 1000).toUTCString();
+  await insertCronLog({ timestamp: now, jobName: "hiddenhand", dateReadable });
   res.send(JSON.stringify(data, null, "  "));
 }
