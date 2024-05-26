@@ -2,6 +2,7 @@ import type { Tokendata } from "types/bribedata.raw";
 import { getPoolPriceHist, getPoolPriceLive, getTokenPrice, getTokenPriceLive } from "./beetsBack";
 import { getCoingeckoCurrentPrice, getCoingeckoPrice } from "./coingecko";
 import { getRpcPrice } from "./liveRpcQueries";
+import { findTokenEntry, updateTokenPriceCache } from "utils/database/tokens.db";
 
 export async function getPrice(
   history: boolean,
@@ -20,16 +21,30 @@ export async function getPrice(
     if (token.tokenaddress) return await getTokenPrice(timestamp, token.tokenaddress);
     return 0;
   }
-  if (token.isbpt && token.tokenaddress) {
-    let price = await getPoolPriceLive(token.tokenaddress);
-    if (!price) price = await getPoolPriceHist(Date.now() ,token.tokenaddress);
-    return price || 0;
-  }
   if (token.tokenaddress) {
-    let price = await getTokenPriceLive(token.tokenaddress);
+    if (token.isbpt && token.bptpoolid) {
+      let price = await getPoolPriceLive(token.bptpoolid);
+      if (!price) price = await getPoolPriceHist(Date.now() ,token.bptpoolid);
+      return price || 0;
+    }
+    let price = await getTokenPriceCached(token.tokenaddress);
+    // let price = await getTokenPriceLive(token.tokenaddress);
     if (!price) price = await getRpcPrice(token.tokenaddress);
     if (price) return price;
   }
   if (token.coingeckoid) return await getCoingeckoCurrentPrice(token.coingeckoid);
   return 0;
+}
+
+export async function getTokenPriceCached(address: string): Promise<number> {
+  const now = Date.now();
+  const cacheEntry = await findTokenEntry( address );
+
+  if (cacheEntry && cacheEntry.cacheprice && cacheEntry.cachetimestamp && now - cacheEntry.cachetimestamp < 60000) { // 60 Sekunden
+    return cacheEntry.cacheprice;
+  }
+
+  const cacheprice = await getTokenPriceLive(address);
+  if(cacheprice) await updateTokenPriceCache(address, cacheprice, now);
+  return cacheprice;
 }

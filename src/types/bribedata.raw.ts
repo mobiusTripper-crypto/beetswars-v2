@@ -8,6 +8,8 @@ export const Tokendata = z.object({
   isbpt: z.boolean().nullable().optional(),
   lastprice: z.number().nullable().optional(),
   tokenId: z.number(),
+  cacheprice: z.number().nullable().optional(),
+  cachetimestamp: z.number().nullable().optional(),
 });
 export type Tokendata = z.infer<typeof Tokendata>;
 

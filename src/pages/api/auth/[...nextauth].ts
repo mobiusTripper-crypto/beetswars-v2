@@ -17,6 +17,7 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn({ user }) {
       const isAllowedToSignIn = (await userlist()).includes(user.name || "");
+      console.log(`User ${user.name} sign-in attempt: ${isAllowedToSignIn ? "allowed" : "denied"}`);
       return isAllowedToSignIn;
       // Or you can return a URL to redirect to:  return '/unauthorized'
     },

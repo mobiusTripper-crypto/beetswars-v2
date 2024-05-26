@@ -1,11 +1,12 @@
 import type { Bribedata, Bribefile, Reward } from "types/bribedata.raw";
-import { type Tokendata } from "types/bribedata.raw";
+import type { Tokendata } from "types/bribedata.raw";
 import type { HiddenhandBribe } from "types/hiddenhand.raw";
 import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
 import { findConfigEntry } from "utils/database/config.db";
 import { getHiddenhandBribes } from "utils/externalData/hiddenhand";
 import { getSnapshotProposal } from "utils/externalData/snapshot";
 import { incPatch, setMinor } from "./semVer.helper";
+import { setTokenEntry } from "utils/database/tokens.db";
 
 export default async function processHiddenhandApi(): Promise<Bribefile | string> {
   const latest = await findConfigEntry("latest");
@@ -72,7 +73,11 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
     tokenList = tokenList.filter(item => item.token != tkn.token);
   });
   // fill BWtokens
-  tokenList.forEach(tkn => BWtokens.push(tkn));
+  tokenList.forEach(tkn => {
+    const dbres = setTokenEntry(tkn);
+    if (!dbres) console.error("Could not save token to database");
+    BWtokens.push(tkn);
+  });
   // write back
   bribefile.tokendata = BWtokens;
 
