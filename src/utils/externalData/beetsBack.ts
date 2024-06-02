@@ -1,4 +1,4 @@
-import { request, gql } from "graphql-request";
+import { /*request,*/ gql } from "graphql-request";
 
 // get historic price for single token
 export async function getTokenPrice(timestamp: number, address: string): Promise<number> {
@@ -135,7 +135,7 @@ export async function getPoolPriceLive(address: string): Promise<number> {
         query: query,
       }),
     }).then(res => res.json())) as {
-      poolGetPool: PoolData[];
+      poolGetPool: PoolData;
     };
 
     const result =
