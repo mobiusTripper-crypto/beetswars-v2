@@ -6,11 +6,11 @@
     },
     {
       "path": "/api/v1/cron/voteEnd",
-      "schedule": "5,10,15,25 19 * * 0"
+      "schedule": "5,10,15,25 19 * * 1"
     },
     {
       "path": "/api/v1/cron/hiddenhand",
-      "schedule": "*/10 * * * 4,5,6,0"
+      "schedule": "*/10 * * * 4,5,6,1"
     }
   ]
 }
