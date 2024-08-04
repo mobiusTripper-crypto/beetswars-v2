@@ -32,3 +32,10 @@ export interface SnapProposal {
   choices: string[]; // list of pools
   strategies: SpaceStrategy[]; // JSON object of all strategies
 }
+
+export interface RoundProposal {
+  id: string;
+  title: string;
+  start: number;
+  snapshot: string;
+}

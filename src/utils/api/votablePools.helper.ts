@@ -26,7 +26,7 @@ export async function initialInsertFromSnapshot(
         poolName: choice,
         voteindex: index,
         round,
-        isUncapped: false,
+        isUncapped: true,
         capMultiplier: 1.0,
       } as VotablePool;
     });
