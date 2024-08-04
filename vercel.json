@@ -11,6 +11,10 @@
     {
       "path": "/api/v1/cron/hiddenhand",
       "schedule": "*/10 * * * 4,5,6,0,1"
+    },
+    {
+      "path": "/api/v1/cron/snapshot",
+      "schedule": "*/20 * * * 3,4"
     }
   ]
 }
