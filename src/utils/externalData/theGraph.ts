@@ -4,9 +4,10 @@ import { getBlockByTsRPC } from "./liveRpcQueries";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
+const apikey = process.env.THEGRAPH_APIKEY as string;
+
 export async function getBeetsPerBlock(block: number): Promise<number> {
   const queryUrl = "https://api.studio.thegraph.com/proxy/73674/masterchefv2/version/latest/";
-  // const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/masterchefv2";
   const query = gql`
   query {
     masterChefs(first: 1, block:{number: ${block}}) {
@@ -31,8 +32,7 @@ export async function getBeetsPerBlock(block: number): Promise<number> {
 }
 
 export async function getBlockByTsGraph(ts: number): Promise<number> {
-  const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/fantom-blocks";
-  // const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/fantom-blocks";
+  const queryUrl = "https://gateway-arbitrum.network.thegraph.com/api/" + apikey + "/subgraphs/id/3drjZDpA9hAuYGA19ttEkhW432mVe2XHy5YarBDVYHbz";
   const query = gql`
     query {
       blocks(
@@ -56,10 +56,8 @@ export async function getBlockByTsGraph(ts: number): Promise<number> {
     });
     return Number(closest.number);
   } catch (error) {
-    // console.error("failed query theGraph getBlockByTsGraph");
     console.error("no blocks by theGraph, trying RPC");
     return await getBlockByTsRPC(ts);
-    // return 0;
   }
 }
 
@@ -68,7 +66,6 @@ export async function getRelicsFbeetsLocked(
   voterAdresses?: string[]
 ): Promise<number> {
   const queryUrl = "https://api.studio.thegraph.com/proxy/73674/reliquary/version/latest/";
-  // const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/reliquary";
   try {
     let allResults: RelicBalance[] = [];
     const first = 1000;
@@ -119,7 +116,6 @@ export async function getRelicsFbeetsLocked(
 
 export async function getRelicCount(block: number): Promise<number> {
   const queryUrl = "https://api.studio.thegraph.com/proxy/73674/reliquary/version/latest/";
-  // const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/reliquary";
   const query = gql`
   query {
     reliquaries(
@@ -148,7 +144,6 @@ export async function getRelicCount(block: number): Promise<number> {
 
 export async function getRelicLevelInfo(block: number) {
   const queryUrl = "https://api.studio.thegraph.com/proxy/73674/reliquary/version/latest/";
-  // const queryUrl = "https://api.thegraph.com/subgraphs/name/beethovenxfi/reliquary";
   const query = gql`
   query {
     poolLevels(
