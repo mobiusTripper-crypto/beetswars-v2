@@ -1,5 +1,5 @@
 import { request, gql } from "graphql-request";
-import type { SnapProposal, SnapSplitVote, SnapVote, SnapVotePerPool } from "types/snapshot.raw";
+import type { RoundProposal, SnapProposal, SnapSplitVote, SnapVote, SnapVotePerPool } from "types/snapshot.raw";
 
 const queryUrl = "https://hub.snapshot.org/graphql";
 
@@ -94,6 +94,34 @@ export async function getSnapshotProposal(proposal: string): Promise<SnapProposa
     return data.proposal as SnapProposal;
   } catch (error) {
     console.error("failed getSnapshotProposal: ", error);
+    return null;
+  }
+}
+
+export async function getSnapshotLatestRound(): Promise<RoundProposal | null> {
+
+const QUERY = gql`
+  query Proposals {
+    proposals(
+      first: 300
+      skip: 0
+      where: { space_in: ["beets.eth"], title_contains: "Farming Incentive Gauge Vote" }
+      orderBy: "created"
+      orderDirection: desc
+    ) {
+      id
+      title
+      start
+      snapshot
+    }
+  }
+`;
+
+  try {
+    const data = await request(queryUrl, QUERY);
+    return data.proposals[0] as RoundProposal;
+  } catch (error) {
+    console.error("failed getSnapshotLatestRound: ", error);
     return null;
   }
 }
