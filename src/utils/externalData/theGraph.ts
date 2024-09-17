@@ -7,7 +7,7 @@ const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 const apikey = process.env.THEGRAPH_APIKEY as string;
 
 export async function getBeetsPerBlock(block: number): Promise<number> {
-  const queryUrl = "https://api.studio.thegraph.com/proxy/73674/masterchefv2/version/latest/";
+  const queryUrl = "https://api.studio.thegraph.com/query/73674/masterchefv2/version/latest/";
   const query = gql`
   query {
     masterChefs(first: 1, block:{number: ${block}}) {
@@ -65,7 +65,7 @@ export async function getRelicsFbeetsLocked(
   block: number,
   voterAdresses?: string[]
 ): Promise<number> {
-  const queryUrl = "https://api.studio.thegraph.com/proxy/73674/reliquary/version/latest/";
+  const queryUrl = "https://api.studio.thegraph.com/query/73674/reliquary/version/latest/";
   try {
     let allResults: RelicBalance[] = [];
     const first = 1000;
@@ -115,7 +115,7 @@ export async function getRelicsFbeetsLocked(
 }
 
 export async function getRelicCount(block: number): Promise<number> {
-  const queryUrl = "https://api.studio.thegraph.com/proxy/73674/reliquary/version/latest/";
+  const queryUrl = "https://api.studio.thegraph.com/query/73674/reliquary/version/latest/";
   const query = gql`
   query {
     reliquaries(
@@ -143,7 +143,7 @@ export async function getRelicCount(block: number): Promise<number> {
 }
 
 export async function getRelicLevelInfo(block: number) {
-  const queryUrl = "https://api.studio.thegraph.com/proxy/73674/reliquary/version/latest/";
+  const queryUrl = "https://api.studio.thegraph.com/query/73674/reliquary/version/latest/";
   const query = gql`
   query {
     poolLevels(
