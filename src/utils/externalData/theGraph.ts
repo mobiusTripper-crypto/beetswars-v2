@@ -1,5 +1,5 @@
 import { request, gql } from "graphql-request";
-import type { Blocks, RelicBalance, RelicCount, RelicPoolLevels } from "types/theGraph.raw";
+import type { Blocks, RelicCount, RelicPoolLevels, RelicList } from "types/theGraph.raw";
 import { getBlockByTsRPC } from "./liveRpcQueries";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
@@ -67,45 +67,40 @@ export async function getRelicsFbeetsLocked(
 ): Promise<number> {
   const queryUrl = "https://api.studio.thegraph.com/query/73674/reliquary/version/latest/";
   try {
-    let allResults: RelicBalance[] = [];
+    let allResults: RelicList[] = [];
     const first = 1000;
-    let skip = 0;
+    let id = 0;
     let hasMore = true;
     while (hasMore) {
       const query = gql`
         query fbeetsLocked {
-          users(
+          relics(
             block: {number: ${block}}
-            where: {address_not_in: ["0x0000000000000000000000000000000000000000"]}
+            where: {
+              userAddress_not: "0x0000000000000000000000000000000000000000"
+              relicId_gt: ${id}
+              }
             first: ${first}
-            skip: ${skip}
+            orderBy: relicId
+            orderDirection: asc
           ) {
-            address
-            relics {
-              relicId
-              balance
-            }
+            relicId
+            balance
+            userAddress
           }
         }`;
       const result = await request(queryUrl, query);
-      allResults = [...allResults, ...result.users];
-      hasMore = result.users.length === first;
-      skip += first;
+      allResults = [...allResults, ...result.relics];
+      hasMore = result.relics.length === first;
+      id = result.relics[result.relics.length - 1].relicId;
     }
     if (!allResults) return 0;
 
-    const filteredUsers = !voterAdresses
+    const filteredRelics = !voterAdresses
       ? allResults
-      : allResults.filter(x => voterAdresses.includes(x.address.toLowerCase()));
-    const userBalances = filteredUsers.map(x => {
-      return {
-        address: x.address,
-        balance: x.relics.reduce((sum, x) => {
-          return sum + parseFloat(x.balance);
-        }, 0),
-      };
-    });
-    const total = userBalances.reduce((sum, x) => sum + x.balance, 0);
+      : allResults.filter(x => voterAdresses.includes(x.userAddress.toLowerCase()));
+
+    const total = filteredRelics.reduce((sum, x) => sum + parseFloat(x.balance), 0);
     return total;
   } catch (error) {
     console.error("failed query theGraph getRelicsFbeetsLocked");
@@ -113,6 +108,62 @@ export async function getRelicsFbeetsLocked(
     return 0;
   }
 }
+
+// export async function getRelicsFbeetsLocked(
+//   block: number,
+//   voterAdresses?: string[]
+// ): Promise<number> {
+//   const queryUrl = "https://api.studio.thegraph.com/query/73674/reliquary/version/latest/";
+//   try {
+//     let allResults: RelicBalance[] = [];
+//     const first = 1000;
+//     let skip = 0;
+//     let hasMore = true;
+//     while (hasMore) {
+//       const query = gql`
+//         query fbeetsLocked {
+//           users(
+//             block: {number: ${block}}
+//             where: {address_not_in: ["0x0000000000000000000000000000000000000000"]}
+//             first: ${first}
+//             skip: ${skip}
+//           ) {
+//             address
+//             relics {
+//               relicId
+//               balance
+//             }
+//           }
+//         }`;
+//       const result = await request(queryUrl, query);
+//       allResults = [...allResults, ...result.users];
+//       hasMore = result.users.length === first;
+//       skip += first;
+//       console.log ("Skip: ", skip, " hasMore: ", hasMore, " Blocksize: ", result.users.length);
+//       console.log ("first: ", result.users[998]);
+//       console.log ("last: ", result.users[999]);
+//     }
+//     if (!allResults) return 0;
+
+//     const filteredUsers = !voterAdresses
+//       ? allResults
+//       : allResults.filter(x => voterAdresses.includes(x.address.toLowerCase()));
+//     const userBalances = filteredUsers.map(x => {
+//       return {
+//         address: x.address,
+//         balance: x.relics.reduce((sum, x) => {
+//           return sum + parseFloat(x.balance);
+//         }, 0),
+//       };
+//     });
+//     const total = userBalances.reduce((sum, x) => sum + x.balance, 0);
+//     return total;
+//   } catch (error) {
+//     console.error("failed query theGraph getRelicsFbeetsLocked");
+//     console.error(error);
+//     return 0;
+//   }
+// }
 
 export async function getRelicCount(block: number): Promise<number> {
   const queryUrl = "https://api.studio.thegraph.com/query/73674/reliquary/version/latest/";

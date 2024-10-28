@@ -27,6 +27,14 @@ export const RelicBalance = z.object({
 
 export type RelicBalance = z.infer<typeof RelicBalance>;
 
+export const RelicList = z.object({
+  relicId: z.number(),
+  balance: z.string(),
+  userAddress: z.string(),
+});
+
+export type RelicList = z.infer<typeof RelicList>;
+
 export const RelicCount = z.object({
   reliquaries: z
     .object({
