@@ -79,6 +79,7 @@ export async function getRelicsFbeetsLocked(
             where: {
               userAddress_not: "0x0000000000000000000000000000000000000000"
               relicId_gt: ${id}
+              balance_gt: 0
               }
             first: ${first}
             orderBy: relicId
