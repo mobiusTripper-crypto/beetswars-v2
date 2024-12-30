@@ -19,7 +19,7 @@ export default async function getOverallStats(): Promise<OverallStats | null> {
     return !x ? 0 : x;
   });
   const avgVotingApr =
-    (votingApr.reduce((sum, a) => sum + a ?? 0) / rounds).toLocaleString(undefined, {
+    (votingApr.reduce((sum, a) => sum + a || 0 ,0) / rounds).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }) + " %";

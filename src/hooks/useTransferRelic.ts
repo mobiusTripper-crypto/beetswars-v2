@@ -9,7 +9,8 @@ import {
 } from "wagmi";
 import { type EthAddressType, EthAddress } from "types/ethAdress.raw";
 
-const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
+// const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
+const RELIC_CONTRACT = "0x973670ce19594f857a7cd85ee834c7a74a941684";
 
 const defaultOptions: Partial<UseToastOptions> = {
   duration: 5000,

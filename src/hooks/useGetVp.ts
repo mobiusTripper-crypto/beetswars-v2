@@ -40,7 +40,8 @@ const useQqueryVp = (snapshot: number | undefined, address: string | undefined) 
   });
 
 async function getVotingPower(snapshot: number | undefined, address: string | undefined) {
-  const network = "250";
+  // const network = "250";
+  const network = "146";
   const space = "beets.eth";
   const delegation = false;
   //  const strategies = [];
