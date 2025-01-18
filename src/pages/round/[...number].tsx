@@ -50,8 +50,8 @@ export default function Round() {
     }
   ).data?.bribefile;
 
-  const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
-
+  // const snapshotLink = "https://snapshot.org/#/beets.eth/proposal/" + bribeData?.header.proposal;
+  const snapshotLink = "https://snapshot.org/#/s:beets-gauges.eth/proposal/" + bribeData?.header.proposal;
   console.log("vote state:", voteStateActive, requestedRound, roundList.latest, router.isReady);
 
   if (!bribeData) {

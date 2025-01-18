@@ -505,18 +505,16 @@ function Chart1() {
 
   return (
     <>
-      <Text
-        fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
-        fontWeight="600"
-        margin="20px"
-        textAlign="center"
-      >
-        Gauge Vote History
-      </Text>
-      <ReactECharts option={option} onEvents={onEvents} style={{ height: 1200 }} />
-      <Text variant="body2" align="center">
-        (clicking on data points loads historical pages)
-      </Text>
+        <Text
+            fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+            fontWeight="600"
+            margin="20px"
+            textAlign="center"
+          >
+            Gauge Vote History
+          </Text><ReactECharts option={option} onEvents={onEvents} style={{ height: 1200 }} /><Text variant="body2" align="center">
+              (clicking on data points loads historical pages)
+        </Text>
     </>
   );
 }

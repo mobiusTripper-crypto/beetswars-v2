@@ -8,7 +8,7 @@ import { CgCardSpades as CardIcon } from "react-icons/cg";
 import { FaCoins as BribersIcon } from "react-icons/fa";
 //import { FaTools as ToolsIcon } from "react-icons/fa";
 import { GoTools as ToolsIcon } from "react-icons/go";
-import { ImStatsBars as StatsIcon, ImTable as TableIcon } from "react-icons/im";
+import { ImTable as TableIcon } from "react-icons/im";  // ImStatsBars as StatsIcon, 
 import { BiLineChart as ChartIcon } from "react-icons/bi";
 import { RoundSelector } from "components/RoundSelector";
 import React from "react";
@@ -107,7 +107,7 @@ export const TopRow = () => {
   const dashboardLink = "/round";
   const cardLink = dashboardLink + "/" + requestedRound + "/cards";
   const tableLink = dashboardLink + "/" + requestedRound + "/table";
-  const wdafLink = "/snapshotTimes";
+  // const wdafLink = "/snapshotTimes"; // not on Sonic
   const bribersdashLink = "/bribersDashboard";
   const chartLink = "/gaugeVoteHistory";
   const relicsLink = "/relicTools";
@@ -226,7 +226,7 @@ export const TopRow = () => {
                   color={asPath.includes(`${chartLink}`) ? `${linkActiveColor}` : ""}
                 />
               </Link>
-              <Link href={wdafLink}>
+              {/* <Link href={wdafLink}>
                 <Icon
                   title="Snapshot Times"
                   as={StatsIcon}
@@ -236,7 +236,7 @@ export const TopRow = () => {
                   margin={iconProps.margin}
                   color={asPath.includes(`${wdafLink}`) ? `${linkActiveColor}` : ""}
                 />
-              </Link>
+              </Link> */}
               <Link href={relicsLink}>
                 <Icon
                   title="Relic Tools"
