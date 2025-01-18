@@ -20,6 +20,8 @@ import { useEffect, useState } from "react";
 import type { VotablePool } from "types/votablePools.raw";
 import { DashboardGrid } from "components/DashboardGrid";
 
+const sonic = true;
+
 const Dashboard: NextPage = () => {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
 
@@ -53,7 +55,18 @@ const Dashboard: NextPage = () => {
   };
 
   return (
+
     <Container maxW="container.xl" centerContent>
+       {sonic ? (
+      <Text
+        fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
+        fontWeight="600"
+        margin="20px"
+        textAlign="center"
+      >
+        Briber&apos;s Dashboard not yet available on Sonic
+      </Text>
+    ) : (
       <VStack align="center">
         <Text
           fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
@@ -115,6 +128,7 @@ const Dashboard: NextPage = () => {
           </Box>
         </Flex>
       </VStack>
+    )}
     </Container>
   );
 };

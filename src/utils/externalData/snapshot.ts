@@ -105,7 +105,7 @@ const QUERY = gql`
     proposals(
       first: 300
       skip: 0
-      where: { space_in: ["beets.eth"], title_contains: "Farming Incentive Gauge Vote" }
+      where: { space_in: ["beets-gauges.eth"], title_contains: "Beets Sonic gauge vote" }
       orderBy: "created"
       orderDirection: desc
     ) {

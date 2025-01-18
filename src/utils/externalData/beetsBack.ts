@@ -4,12 +4,13 @@ import { request, gql } from "graphql-request";
 export async function getTokenPrice(timestamp: number, address: string): Promise<number> {
   type Chartdata = { id: string; price: string; timestamp: number };
   const queryUrl = "https://backend-v3.beets-ftm-node.com/graphql";
+  // chain: FANTOM
   const query = gql`
     query Chartdata {
       tokenGetPriceChartData(
         address: "${address.toLowerCase()}"
         range: THIRTY_DAY
-        chain: FANTOM
+        chain: SONIC
       ) {
         id
         price
@@ -46,7 +47,7 @@ export async function getPoolPriceHist(timestamp: number, address: string): Prom
       poolGetSnapshots(
         id: "${address}"
         range: THIRTY_DAYS
-        chain: FANTOM
+        chain: SONIC
       ) {
         sharePrice
         timestamp
@@ -86,7 +87,7 @@ export async function getPoolPriceLive(address: string): Promise<number> {
     query PoolData {
       poolGetPool(
         id: "${address}"
-        chain: FANTOM
+        chain: SONIC
       ) {
         dynamicData{
           totalLiquidity
@@ -118,7 +119,7 @@ export async function getTokenPriceLive(address: string): Promise<number> {
   const query = gql`
   query TokenPrice {
     tokenGetCurrentPrices(
-      chains: FANTOM
+      chains: SONIC
     )
     {
       address

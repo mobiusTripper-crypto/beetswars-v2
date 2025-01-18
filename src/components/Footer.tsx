@@ -16,7 +16,7 @@ export function Footer() {
         </Link>{" "}
         service independent of{" "}
         <Link as={NextLink} href={beetsLink} isExternal>
-          BeethovenX <Icon as={ArrowIcon} boxSize="0.8em" />
+          Beets.fi <Icon as={ArrowIcon} boxSize="0.8em" />
         </Link>{" "}
         and please do your <Link as={NextLink} href="/admin">own</Link> research. This is not investment advice!
       </Text>

@@ -8,7 +8,7 @@ import type { Config } from "types/config.raw";
 export async function addRoundFromSnapshot(): Promise<string | null> {
   const latest = Number(await findConfigEntry("latest")) || 0; // latest round number in database
   const latestProposal = await getSnapshotLatestRound(); // latest round proposal on snapshot
-  const match = latestProposal?.title.match(/\(round (\d+)\)/);
+  const match = latestProposal?.title.match(/\(Round (\d+)\)/); // adjusted to Sonic
   const round = match ? parseInt(match[1] || "", 10) : 0; // round number
 
   // check if there is a proposal that is not added to database
