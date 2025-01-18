@@ -32,10 +32,37 @@ const fantomChain: Chain = {
   testnet: false,
 };
 
+const sonicChain: Chain = {
+  id: 146,
+  name: "Sonic",
+  network: "sonic",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Sonic",
+    symbol: "S",
+  },
+  rpcUrls: {
+    public: { http: ["https://rpc.soniclabs.com"] },
+    default: { http: ["https://rpc.soniclabs.com"] },
+  },
+  blockExplorers: {
+    default: { name: "SonicScan", url: "https://sonicscan.org/" },
+  },
+  testnet: false,
+};
+
+// export const { chains, provider, webSocketProvider } = configureChains(
+//   [fantomChain, sonicChain],
+//   [publicProvider()]
+// );
 export const { chains, provider, webSocketProvider } = configureChains(
-  [fantomChain],
+  [sonicChain],
   [publicProvider()]
 );
+// export const { chains, provider, webSocketProvider } = configureChains(
+//   [fantomChain],
+//   [publicProvider()]
+// );
 
 const { connectors } = getDefaultWallets({
   appName: "beetswars live",

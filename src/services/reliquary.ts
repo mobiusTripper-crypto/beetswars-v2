@@ -4,7 +4,8 @@ import type { BigNumber } from "ethers";
 import { Contract } from "ethers";
 import ReliquaryAbi from "utils/abi/Reliquary.json";
 
-const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
+const RELIC_CONTRACT = "0x973670ce19594f857a7cd85ee834c7a74a941684"; //Sonic
+// const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec"; //Fantom
 
 type AmountHumanReadable = string;
 
