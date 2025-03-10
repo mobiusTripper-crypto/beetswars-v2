@@ -6,7 +6,7 @@ import {
   Switch,
   Card,
   VStack,
-  Button,
+  // Button,
   useColorModeValue,
   Container,
   Flex,
@@ -20,17 +20,15 @@ import { useEffect, useState } from "react";
 import type { VotablePool } from "types/votablePools.raw";
 import { DashboardGrid } from "components/DashboardGrid";
 
-const sonic = true;
-
 const Dashboard: NextPage = () => {
   const bgCard = useColorModeValue("#D5E0EC", "#1C2635");
 
-  const latest = trpc.dashboard.roundlist.useQuery().data?.latest ?? 0;
+  // const latest = trpc.dashboard.roundlist.useQuery().data?.latest ?? 0;
   const { requestedRound } = useGlobalContext();
   const [round, setRound] = useState(requestedRound as number);
   const [voteindex, setVoteindex] = useState(22);
   const [selected, setSelected] = useState(false);
-  const [future, setFuture] = useState(false);
+  // const [future, setFuture] = useState(false);
 
   const commonData = trpc.dashboard.list.useQuery(
     { round: round || 0 },
@@ -46,27 +44,18 @@ const Dashboard: NextPage = () => {
   ).data?.pools as VotablePool[];
 
   useEffect(() => {
-    if (!requestedRound || !latest) return;
-    setRound(future ? latest + 1 : requestedRound);
-  }, [requestedRound, voteindex, future, latest]);
-  const futureButtonHandler = () => {
-    setSelected(false);
-    setFuture(!future);
-  };
+    if (!requestedRound) return;
+    setRound(requestedRound);
+  }, [requestedRound, voteindex]);
+  // }, [requestedRound, voteindex, future, latest]);
+  // const futureButtonHandler = () => {
+  //   setSelected(false);
+  //   setFuture(!future);
+  // };
 
   return (
 
     <Container maxW="container.xl" centerContent>
-       {sonic ? (
-      <Text
-        fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
-        fontWeight="600"
-        margin="20px"
-        textAlign="center"
-      >
-        Briber&apos;s Dashboard not yet available on Sonic
-      </Text>
-    ) : (
       <VStack align="center">
         <Text
           fontSize={["sm", "xl", "3xl", "4xl", "5xl"]}
@@ -87,7 +76,7 @@ const Dashboard: NextPage = () => {
             borderRadius={20}
           >
             <Heading as="h3" size="md" mt={6}>
-              {future ? "future prediction" : `Round ${requestedRound}`}
+              Round {requestedRound}
             </Heading>
             <Text mt={12} alignItems="center">
               activate single pool data for round {requestedRound}
@@ -97,7 +86,7 @@ const Dashboard: NextPage = () => {
               isChecked={selected}
               onChange={() => setSelected(!selected)}
               m={6}
-              disabled={future}
+              // disabled={future}
             />
             <Select
               onChange={e => setVoteindex(parseInt(e.target.value))}
@@ -111,9 +100,9 @@ const Dashboard: NextPage = () => {
                   </option>
                 ))}
             </Select>
-            <Button mt={12} border="1px" onClick={futureButtonHandler}>
+            {/* <Button mt={12} border="1px" onClick={futureButtonHandler}>
               {future ? "show current" : "show prediction"}
-            </Button>
+            </Button> */}
           </Card>
           <Box>
             {!commonData || (selected && !poolData) ? (
@@ -128,7 +117,6 @@ const Dashboard: NextPage = () => {
           </Box>
         </Flex>
       </VStack>
-    )}
     </Container>
   );
 };

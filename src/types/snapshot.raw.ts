@@ -38,4 +38,5 @@ export interface RoundProposal {
   title: string;
   start: number;
   snapshot: string;
+  end: number;
 }

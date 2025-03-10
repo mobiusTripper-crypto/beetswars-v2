@@ -49,6 +49,7 @@ export const Bribefile = z.object({
   snapshot: z.string(),
   description: z.string(),
   round: z.number(),
+  emission: z.number().optional(),
   voteStart: z.number().optional(),
   voteEnd: z.number().optional(),
   snapshotDateTime: z.number().optional(),

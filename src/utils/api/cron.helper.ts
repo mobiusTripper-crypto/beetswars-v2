@@ -6,7 +6,7 @@ import { getPrice } from "utils/externalData/pricefeed";
 import { getRelicsFbeetsLocked } from "utils/externalData/theGraph";
 import { editToken } from "./editBribedata";
 
-const FIRST_ROUND_FOR_RECLICS = 32;
+// const FIRST_ROUND_FOR_RECLICS = 32;
 
 export async function getData(round: number) {
   const newData = {} as Chartdata;
@@ -45,39 +45,43 @@ export async function getData(round: number) {
   // calculate prices
   const priceBeets = await getPrice(
     true,
-    { token: "BEETS", tokenId: 0, coingeckoid: "beethoven-x" },
+    {
+      token: "BEETS", tokenaddress: '0x2d0e0814e62d80056181f5cd932274405966e4f0', coingeckoid: "beethoven-x",
+      tokenId: 0
+    },
     end
   );
   const priceFbeets =
-    round < FIRST_ROUND_FOR_RECLICS
-      ? await getPrice(
+    // round < FIRST_ROUND_FOR_RECLICS
+    //   ? await getPrice(
+    //       true,
+    //       {
+    //         token: "FBEETS",
+    //         tokenId: 0,
+    //         tokenaddress: "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1",
+    //       },
+    //       end
+    //     )
+    //   : 
+      await getPrice(
           true,
           {
             token: "FBEETS",
             tokenId: 0,
-            tokenaddress: "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1",
-          },
-          end
-        )
-      : await getPrice(
-          true,
-          {
-            token: "FBEETS",
-            tokenId: 0,
-            tokenaddress: "0x9e4341acef4147196e99d648c5e43b3fc9d026780002000000000000000005ec",
+            tokenaddress: "0x10ac2f9dae6539e77e372adb14b1bf8fbd16b3e8000200000000000000000005", // on sonic
             isbpt: true,
           },
           end
         );
 
   let pricePerVp = priceFbeets;
-  if (round >= FIRST_ROUND_FOR_RECLICS) {
+  // if (round >= FIRST_ROUND_FOR_RECLICS) {
     const block = parseInt(prop.snapshot);
     const addresses = votes.map(x => x.voter.toLowerCase());
     const fbeetsLocked = await getRelicsFbeetsLocked(block, addresses);
     const result = (priceFbeets * fbeetsLocked) / totalVotes;
     pricePerVp = result;
-  }
+  // }
 
   // store to lastprice
   if (priceBeets > 0) {
@@ -150,6 +154,7 @@ export async function getData(round: number) {
   const totalBribes = Math.round(bribes.reduce((sum, x) => sum + x.usd, 0));
   const totalExternalBribes = Math.round(bribes.reduce((sum, x) => sum + x.usdExternal, 0));
   const emissions = await getEmissionForRound(round);
+  // const emissions = 300000; // hardcoded for now
   const bribersRoi = emissions?.avgBribeRoiInPercent ?? 0;
 
   // fill data

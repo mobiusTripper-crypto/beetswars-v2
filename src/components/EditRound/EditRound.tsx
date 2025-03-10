@@ -29,6 +29,7 @@ export function EditRoundModal(props: modalProps) {
   const [description, setDescription] = useState(data.description);
   const [snapshotId, setSnapshotId] = useState(data.snapshot);
   const [round, setRound] = useState(roundNumber?.toString() || "");
+  const [emission, setEmission] = useState(data.emission?.toString() || "");
 
   const save = () => {
     const payload = {
@@ -36,6 +37,7 @@ export function EditRoundModal(props: modalProps) {
       snapshot: snapshotId,
       description: description,
       round: Number(round),
+      emission: Number(emission),
       tokendata: isNew ? [] : data.tokendata,
       bribedata: isNew ? [] : data.bribedata,
     };
@@ -74,6 +76,10 @@ export function EditRoundModal(props: modalProps) {
                     value={snapshotId}
                     onChange={e => setSnapshotId(e.target.value)}
                   />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Emission</FormLabel>
+                  <Input value={emission} onChange={e => setEmission(e.target.value)} />
                 </FormControl>
               </VStack>
             </FormControl>

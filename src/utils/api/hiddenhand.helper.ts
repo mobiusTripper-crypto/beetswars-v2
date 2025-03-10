@@ -45,22 +45,6 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
             tokenaddress: bribe.token,
             tokenId: nextTokenId,
           };
-          // special guests
-          if (newToken.token == "deus") newToken.coingeckoid = "deus-finance-2";
-          // if (newToken.token == "bpt-lzfoto") {
-          //   newToken.isbpt = true;
-          //   newToken.tokenaddress =
-          //     "0x838229095fa83bcd993ef225d01a990e3bc197a800020000000000000000075b";
-          //   newToken.bptpoolid =
-          //     "0x838229095fa83bcd993ef225d01a990e3bc197a800020000000000000000075b";
-          // }
-          // if (newToken.token == "bb-ftmmen") {
-          //   newToken.isbpt = true;
-          //   newToken.tokenaddress =
-          //     "0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760";
-          //   newToken.bptpoolid =
-          //     "0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760";
-          // }
           tokenList.push(newToken);
           nextTokenId++;
         }

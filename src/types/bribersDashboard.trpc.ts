@@ -1,17 +1,17 @@
 import * as z from "zod";
 
 export const DashboardData = z.object({
-  beetsEmissionsPerDay: z.number(),
-  fantomBlocksPerDay: z.number(),
-  totalFbeetsSupply: z.number(),
+  // beetsEmissionsPerDay: z.number(),
+  // fantomBlocksPerDay: z.number(),
+  // totalFbeetsSupply: z.number(),
   roundBeetsEmissions: z.number(),
   roundEmissionsUsd: z.number(),
   totalVoteIncentives: z.number(),
   voteIncentivesRoi: z.number(),
   externalVoteIncentivesRoi: z.number().optional(),
-  poolsOverThreshold: z.number(),
-  totalVotingPower: z.number(),
-  totalRelics: z.number(),
+  // poolsOverThreshold: z.number(),
+  // totalVotingPower: z.number(),
+  // totalRelics: z.number(),
   payoutStatus: z.enum(["estimated", "payout active", "settled"]),
 });
 
