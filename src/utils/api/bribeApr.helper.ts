@@ -1,10 +1,12 @@
 import type { EmissionData } from "types/emission.raw";
+import { readOneBribefile } from "utils/database/bribefile.db";
 import { readOneChartdata } from "utils/database/chartdata.db";
 import { getPrice } from "utils/externalData/pricefeed";
-import { getBlockByTsGraph } from "utils/externalData/theGraph";
-import { getEmissionForBlockspan } from "./emission.helper";
+// import { getBlockByTsGraph } from "utils/externalData/theGraph";
+// import { getEmissionForBlockspan } from "./emission.helper";
 
 export async function getEmissionForRound(round: number): Promise<EmissionData | null> {
+  /*
   // start at Wed Jan 12, 2022 - the start of round 1 payout (I guess)
   const ROUND1 = 1641988800; // timestamp of 12-01-2022 12:00 pm UTC as reference point
   const TWOWEEKS = 14 * 24 * 60 * 60; // seconds
@@ -45,6 +47,13 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
   const block2 = await getBlockByTsGraph(end);
 
   const emission = factor * (await getEmissionForBlockspan(block1, block2));
+  */
+
+  const roundData = await readOneBribefile(round);
+
+  const payoutStatus = "settled";
+
+  const emission = roundData?.emission ? roundData.emission : 420000; // fixed value for now
 
   const chartdata = await readOneChartdata(round);
 
@@ -53,8 +62,9 @@ export async function getEmissionForRound(round: number): Promise<EmissionData |
       await getPrice(false, { token: "BEETS", tokenId: 0, coingeckoid: "beethoven-x" })
     : chartdata.priceBeets;
   const usdValue = emission * beetsPrice;
-  const voteEmissionPercent = round < 29 ? 0.3 : 0.5;
-  const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
+  // const voteEmissionPercent = round < 29 ? 0.3 : 0.5;
+  // const voteEmission = Math.round(emission * 0.872 * voteEmissionPercent); // 30% or 50% of 87.2% of emissions
+  const voteEmission = emission;
   const percentUsdValue = (voteEmission * beetsPrice) / 100;
 
   const externallyBribedVotes = chartdata?.externallyBribedVotes || 0;

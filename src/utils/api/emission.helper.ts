@@ -3,27 +3,27 @@ import { readEmissionList } from "utils/database/beetsEmissions.db";
 import { getTsByBlockRPC } from "utils/externalData/liveRpcQueries";
 import { getBeetsPerBlock, getBlockByTsGraph } from "utils/externalData/theGraph";
 
-export async function getEmissionForBlockspan(block1: number, block2: number): Promise<number> {
-  const emissionChange = await readEmissionList();
-  if (!emissionChange) return 0;
-  emissionChange.sort((a, b) => a.block - b.block);
+// export async function getEmissionForBlockspan(block1: number, block2: number): Promise<number> {
+//   const emissionChange = await readEmissionList();
+//   if (!emissionChange) return 0;
+//   emissionChange.sort((a, b) => a.block - b.block);
 
-  let currentTokenAmount = 0;
-  let sum = 0;
-  let lastBlock = block1;
+//   let currentTokenAmount = 0;
+//   let sum = 0;
+//   let lastBlock = block1;
 
-  for (const entry of emissionChange) {
-    if (entry.block > block2) break;
-    if (entry.block > block1) {
-      sum += (entry.block - lastBlock) * currentTokenAmount;
-      lastBlock = entry.block;
-    }
-    currentTokenAmount = entry.beets;
-  }
-  sum += (block2 - lastBlock + 1) * currentTokenAmount;
+//   for (const entry of emissionChange) {
+//     if (entry.block > block2) break;
+//     if (entry.block > block1) {
+//       sum += (entry.block - lastBlock) * currentTokenAmount;
+//       lastBlock = entry.block;
+//     }
+//     currentTokenAmount = entry.beets;
+//   }
+//   sum += (block2 - lastBlock + 1) * currentTokenAmount;
 
-  return sum;
-}
+//   return sum;
+// }
 
 // find recent beets emission changes
 export async function checkEmissionChange(lastEmission: Emission): Promise<Emission[]> {

@@ -113,6 +113,7 @@ const QUERY = gql`
       title
       start
       snapshot
+      end
     }
   }
 `;

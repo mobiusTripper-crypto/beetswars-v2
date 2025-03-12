@@ -166,6 +166,8 @@ const BribeForm: NextPage = () => {
                     {bribedataQuery.data.bribefile.snapshot}
                   </Text>
                 </GridItem>
+                <GridItem fontWeight="800">Emission</GridItem>
+                <GridItem>{bribedataQuery.data.bribefile.emission}</GridItem>
               </Grid>
               <VStack>
                 <Button onClick={setLatest}>Set Round {requestedRound} as latest</Button>
