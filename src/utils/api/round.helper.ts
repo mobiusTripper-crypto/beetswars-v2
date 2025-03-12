@@ -62,7 +62,7 @@ export async function getEmissionNumber(round: number): Promise<number | null> {
     }
     console.log("voteEnd: " + voteEnd);
     // try to get emission from beets github
-    const githubUrl = `https://raw.githubusercontent.com/beethovenxfi/gauge-automation/main/gauge-data/${voteEnd}.json`;
+    const githubUrl = `https://raw.githubusercontent.com/beethovenxfi/ops-automation/refs/heads/main/src/gaugeAutomation/gauge-data/${voteEnd}.json`;
     const response = await fetch(githubUrl);
     if (response.ok) {
       const data = await response.json();
