@@ -1,6 +1,6 @@
 import { request, gql } from "graphql-request";
 import type { RelicCount, RelicList } from "types/theGraph.raw"; // RelicPoolLevels
-import { getBlockByTsRPC } from "./liveRpcQueries";
+// import { getBlockByTsRPC } from "./liveRpcQueries";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
@@ -31,35 +31,35 @@ export async function getBeetsPerBlock(block: number): Promise<number> {
   }
 }
 
-export async function getBlockByTsGraph(ts: number): Promise<number> {
-  const queryUrl = "https://gateway-arbitrum.network.thegraph.com/api/" + apikey + "/subgraphs/id/3drjZDpA9hAuYGA19ttEkhW432mVe2XHy5YarBDVYHbz";
-  const query = gql`
-    query {
-      blocks(
-        orderDirection: desc
-        orderBy: timestamp
-        where: { timestamp_gt: ${ts - 10}, timestamp_lt: ${ts + 10}}
-      ) {
-        timestamp
-        number
-      }
-    }
-  `;
-  try {
-    const { blocks } = (await request(queryUrl, query)) as Blocks;
-    if (!blocks) {
-      console.log("no blocks by theGraph");
-      return await getBlockByTsRPC(ts);
-    }
-    const closest = blocks.reduce((a, b) => {
-      return Math.abs(+b.timestamp - ts) < Math.abs(+a.timestamp - ts) ? b : a;
-    });
-    return Number(closest.number);
-  } catch (error) {
-    console.error("no blocks by theGraph, trying RPC");
-    return await getBlockByTsRPC(ts);
-  }
-}
+// export async function getBlockByTsGraph(ts: number): Promise<number> {
+//   const queryUrl = "https://gateway-arbitrum.network.thegraph.com/api/" + apikey + "/subgraphs/id/3drjZDpA9hAuYGA19ttEkhW432mVe2XHy5YarBDVYHbz";
+//   const query = gql`
+//     query {
+//       blocks(
+//         orderDirection: desc
+//         orderBy: timestamp
+//         where: { timestamp_gt: ${ts - 10}, timestamp_lt: ${ts + 10}}
+//       ) {
+//         timestamp
+//         number
+//       }
+//     }
+//   `;
+//   try {
+//     const { blocks } = (await request(queryUrl, query)) as Blocks;
+//     if (!blocks) {
+//       console.log("no blocks by theGraph");
+//       return await getBlockByTsRPC(ts);
+//     }
+//     const closest = blocks.reduce((a, b) => {
+//       return Math.abs(+b.timestamp - ts) < Math.abs(+a.timestamp - ts) ? b : a;
+//     });
+//     return Number(closest.number);
+//   } catch (error) {
+//     console.error("no blocks by theGraph, trying RPC");
+//     return await getBlockByTsRPC(ts);
+//   }
+// }
 
 export async function getRelicsFbeetsLocked(
   block: number,
