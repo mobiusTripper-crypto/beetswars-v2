@@ -1,6 +1,6 @@
 import { request, gql } from "graphql-request";
 import type { RelicCount, RelicList } from "types/theGraph.raw"; // RelicPoolLevels
-// import { getBlockByTsRPC } from "./liveRpcQueries";
+import { getBlockByTsRPC } from "./liveRpcQueries";
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
