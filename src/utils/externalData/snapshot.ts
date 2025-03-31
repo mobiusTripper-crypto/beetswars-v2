@@ -31,7 +31,6 @@ export async function getSnapshotVotes(proposal: string): Promise<SnapVote[]> {
       hasMore = result.votes.length === first;
       skip += first;
     }
-    // console.log(proposal);
     return allResults;
   } catch (error) {
     console.error("failed getSnapshotVotes: ", error);
