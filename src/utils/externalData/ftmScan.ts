@@ -1,4 +1,4 @@
-import { getBlockByTsGraph } from "./theGraph";
+// import { getBlockByTsGraph } from "./theGraph";
 
 const apikey = process.env.FTMSCAN_APIKEY as string;
 
@@ -8,8 +8,8 @@ export async function getBlockByTs(ts: number): Promise<number> {
     const b = await fetch(url);
     const res: { status: string; message: string; result: string } = await b.json();
     if (!res || res.status !== "1") {
-      console.log("getBlockByTs divert to RPC");
-      return await getBlockByTsGraph(ts);
+      console.log("failed ftmscan getBlockByTs");
+      return 0; //await getBlockByTsGraph(ts);
     }
     return +res.result;
   } catch (error) {

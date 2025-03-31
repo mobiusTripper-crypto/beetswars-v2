@@ -1,7 +1,7 @@
 import type { Emission } from "types/emission.raw";
-import { checkEmissionChange } from "utils/api/emission.helper";
-import { findConfigEntry, setConfigEntry } from "./config.db";
-import { insertCronLog } from "./cronLog.db";
+// import { checkEmissionChange } from "utils/api/emission.helper";
+// import { findConfigEntry, setConfigEntry } from "./config.db";
+// import { insertCronLog } from "./cronLog.db";
 import clientPromise from "./mongodb";
 
 const dbName = process.env.DB_NAME;
@@ -37,30 +37,30 @@ export async function addEmission(data: Emission): Promise<boolean> {
   }
 }
 
-export async function updateEmissionChange(): Promise<Emission[]> {
-  try {
-    const client = await clientPromise;
-    const coll = client.db(dbName).collection<Emission>("emissiondata");
-    const items = await coll.find<Emission>({}, { projection: { _id: 0 } }).toArray(); // find all
+// export async function updateEmissionChange(): Promise<Emission[]> {
+//   try {
+//     const client = await clientPromise;
+//     const coll = client.db(dbName).collection<Emission>("emissiondata");
+//     const items = await coll.find<Emission>({}, { projection: { _id: 0 } }).toArray(); // find all
 
-    // no action if last entry younger than 1 day
-    const lastChange = await findConfigEntry("tsEmissionChange");
-    const now = Math.floor(Date.now() / 1000);
-    if (!!lastChange && Number(lastChange) >= now - 24 * 60 * 60) return items;
+//     // no action if last entry younger than 1 day
+//     const lastChange = await findConfigEntry("tsEmissionChange");
+//     const now = Math.floor(Date.now() / 1000);
+//     if (!!lastChange && Number(lastChange) >= now - 24 * 60 * 60) return items;
 
-    const lastEmission = items.reduce(
-      (max, x) => {
-        return max.block > x.block ? max : x;
-      },
-      { block: 0, beets: 0, timestamp: 0 }
-    );
-    const data = await checkEmissionChange(lastEmission);
-    await Promise.all(data.map(item => addEmission(item)));
-    await setConfigEntry({ name: "tsEmissionChange", data: Math.floor(Date.now() / 1000) });
-    const dateReadable = new Date(now * 1000).toUTCString();
-    await insertCronLog({ timestamp: now, jobName: "updateEmissionChange", dateReadable });
-    return await coll.find<Emission>({}, { projection: { _id: 0 } }).toArray();
-  } catch (error) {
-    return [];
-  }
-}
+//     const lastEmission = items.reduce(
+//       (max, x) => {
+//         return max.block > x.block ? max : x;
+//       },
+//       { block: 0, beets: 0, timestamp: 0 }
+//     );
+//     const data = await checkEmissionChange(lastEmission);
+//     await Promise.all(data.map(item => addEmission(item)));
+//     await setConfigEntry({ name: "tsEmissionChange", data: Math.floor(Date.now() / 1000) });
+//     const dateReadable = new Date(now * 1000).toUTCString();
+//     await insertCronLog({ timestamp: now, jobName: "updateEmissionChange", dateReadable });
+//     return await coll.find<Emission>({}, { projection: { _id: 0 } }).toArray();
+//   } catch (error) {
+//     return [];
+//   }
+// }
