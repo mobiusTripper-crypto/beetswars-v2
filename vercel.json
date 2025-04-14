@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/v1/cron/voteEnd",
-      "schedule": "5,10,15,25 19 * * 1"
+      "schedule": "5,10,15,25 19,20 * * 1"
     },
     {
       "path": "/api/v1/cron/hiddenhand",
