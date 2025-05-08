@@ -23,6 +23,7 @@ export async function getData(round: number) {
     })
     .map(x => (x.voteindex + 1).toString());
   const prop = await getSnapshotProposal(proposal);
+  console.log("prop", prop);
   const votes = await getSnapshotVotes(proposal);
   if (!prop) return newData;
   const { end } = prop;
@@ -52,17 +53,6 @@ export async function getData(round: number) {
     end
   );
   const priceFbeets =
-    // round < FIRST_ROUND_FOR_RECLICS
-    //   ? await getPrice(
-    //       true,
-    //       {
-    //         token: "FBEETS",
-    //         tokenId: 0,
-    //         tokenaddress: "0xfcef8a994209d6916eb2c86cdd2afd60aa6f54b1",
-    //       },
-    //       end
-    //     )
-    //   : 
       await getPrice(
           true,
           {
@@ -75,13 +65,11 @@ export async function getData(round: number) {
         );
 
   let pricePerVp = priceFbeets;
-  // if (round >= FIRST_ROUND_FOR_RECLICS) {
-    const block = parseInt(prop.snapshot);
+    const block = parseInt(prop.snapshot,10);
     const addresses = votes.map(x => x.voter.toLowerCase());
     const fbeetsLocked = await getRelicsFbeetsLocked(block, addresses);
     const result = (priceFbeets * fbeetsLocked) / totalVotes;
     pricePerVp = result;
-  // }
 
   // store to lastprice
   if (priceBeets > 0) {
