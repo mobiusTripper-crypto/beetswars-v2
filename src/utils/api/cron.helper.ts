@@ -23,7 +23,6 @@ export async function getData(round: number) {
     })
     .map(x => (x.voteindex + 1).toString());
   const prop = await getSnapshotProposal(proposal);
-  console.log("prop", prop);
   const votes = await getSnapshotVotes(proposal);
   if (!prop) return newData;
   const { end } = prop;
