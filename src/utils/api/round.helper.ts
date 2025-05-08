@@ -5,6 +5,7 @@ import type { Bribefile } from "types/bribedata.raw";
 import { initialInsertFromSnapshot } from "./votablePools.helper";
 import type { Config } from "types/config.raw";
 import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
+import { getAutomationData } from "utils/externalData/github";
 
 export async function addRoundFromSnapshot(): Promise<string | null> {
   const latest = Number(await findConfigEntry("latest")) || 0; // latest round number in database
@@ -62,18 +63,18 @@ export async function getEmissionNumber(round: number): Promise<number | null> {
     }
     console.log("voteEnd: " + voteEnd);
     // try to get emission from beets github
-    const githubUrl = `https://raw.githubusercontent.com/beethovenxfi/ops-automation/refs/heads/main/src/gaugeAutomation/gauge-data/${voteEnd}.json`;
-    const response = await fetch(githubUrl);
-    if (response.ok) {
-      const data = await response.json();
-      if (!data.beetsToDistribute) return null; // no emission found
+    // human readable link: https://github.com/beethovenxfi/ops-automation/tree/main/src/gaugeAutomation/gauge-data
+    // const githubUrl = `https://raw.githubusercontent.com/beethovenxfi/ops-automation/refs/heads/main/src/gaugeAutomation/gauge-data/${voteEnd}.json`;
+    // const response = await fetch(githubUrl);
+    // if (response.ok) {
+    //   const data = await response.json();
+      const data = await getAutomationData(voteEnd); 
+      if (!data?.beetsToDistribute) return null; // no emission found
       // write back to Bribefile
       roundData.emission = Number(data.beetsToDistribute);
       insertBribefile(roundData, round);
       return Number(data.beetsToDistribute); // return emission
-    }
-    // if not found try again later
-    return null
+    
   } else {
     return roundData.emission;
   }

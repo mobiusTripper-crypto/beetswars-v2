@@ -139,3 +139,26 @@ export async function getTokenPriceLive(address: string): Promise<number> {
     return 0;
   }
 }
+
+export async function getFancyPoolName(id: string): Promise<string> {
+  const queryUrl = "https://backend-v3.beets-ftm-node.com/graphql";
+  const query = gql`
+    query PoolData {
+      poolGetPool(
+        id: "${id}"
+        chain: SONIC
+      ) {
+        name
+      }
+    }
+  `;
+  try {
+    const { poolGetPool } = (await request(queryUrl, query)) as {
+      poolGetPool: { name: string };
+    };
+    return poolGetPool.name;
+  } catch (error) {
+    console.error("Beetswars backend getFancyPoolName: ", error);
+    return "no name";
+  }
+}
