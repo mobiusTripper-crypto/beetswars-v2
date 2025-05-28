@@ -24,6 +24,8 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
   const voteend = snapshot?.end;
   // get API data
   const automation = await getAutomationData(voteend || 0);
+  if (!automation) return "Error: automation API data not found";
+
   const apidata = await getHiddenhandBribes();
   if (!apidata || !automation) return "Error: API data not found";
   // check if API->voteend equals bribefile->voteend
@@ -107,7 +109,7 @@ export default async function processHiddenhandApi(): Promise<Bribefile | string
           newUrl +=
             poolIdLength > 42 ? "sonic/v2/" + autopool?.poolId : "sonic/v3/" + autopool?.poolId;
         }
-        const fancyPoolName = await getFancyPoolName(autopool?.poolId || "0") || "";
+        const fancyPoolName = (await getFancyPoolName(autopool?.poolId || "0")) || "";
         BWnewBribe = {
           voteindex: Number(prop.index) - 1,
           poolname: fancyPoolName,

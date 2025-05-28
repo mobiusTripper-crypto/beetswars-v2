@@ -316,7 +316,7 @@ function Chart1() {
         gridIndex: 2,
         axisLabel: { color: limeColor, align: "right" },
         position: "left",
-        max: 70000000,
+        max: 90000000,
       },
       {
         name: "Incentivised Votes",
@@ -328,7 +328,7 @@ function Chart1() {
         axisLabel: { color: "green", align: "left" },
         nameLocation: "start",
         show: false,
-        max: 70000000,
+        max: 90000000,
       },
       {
         name: "Incentivised Votes Ratio",
