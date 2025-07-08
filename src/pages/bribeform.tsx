@@ -14,6 +14,13 @@ import {
   // useToast,
   VStack,
   Progress,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
@@ -22,7 +29,7 @@ import { EditRoundModal } from "components/EditRound/EditRound";
 import { DeleteOfferModal } from "components/DeleteOfferModal";
 import { EditOfferModal } from "components/EditOffer/EditOfferModal";
 import type { Bribedata, Bribefile, Tokendata } from "types/bribedata.raw";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { EditTokenModal } from "components/EditToken/EditToken";
 import { DeleteTokenModal } from "components/EditToken/DeleteTokenModal";
@@ -54,11 +61,24 @@ const BribeForm: NextPage = () => {
   const queryClient = useQueryClient();
   const { requestedRound } = useGlobalContext();
   const { data: session, status } = useSession();
-
+  
   useEffect(() => {
     if (!session) Router.push("/admin");
   });
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
+  const removeBribefile = trpc.bribes.deleteRound.useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      Router.push("/admin");
+    },
+  });
+  const handleDeleteRound = async () => {
+    if (!requestedRound) return;
+    await removeBribefile.mutateAsync({ round: requestedRound });
+    onClose();
+  }
   const bribedataQuery = trpc.bribes.list_raw.useQuery(
     { round: requestedRound },
     { enabled: !!requestedRound && !!session }
@@ -119,19 +139,6 @@ const BribeForm: NextPage = () => {
   const setLatest = () => {
     requestedRound && setlatest.mutate({ latest: requestedRound });
   };
-  // // this function shows toast message - just for testing button function
-  // // TODO: remove after testing
-  // const toast = useToast();
-  // function showToast(action: string) {
-  //   toast({
-  //     title: "Button clicked.",
-  //     description: action,
-  //     status: "success",
-  //     duration: 5000,
-  //     isClosable: true,
-  //   });
-  // }
-  // //////////////////////////////
 
   if (session && status === "authenticated") {
     if (bribedataQuery.isLoading)
@@ -177,6 +184,52 @@ const BribeForm: NextPage = () => {
                   data={bribedataQuery.data.bribefile}
                   onSubmit={saveEditRound}
                 />
+                {/* Add Delete Round Button */}
+                <Button
+                  colorScheme="red"
+                  onClick={onOpen}
+                  isDisabled={
+                    bribedataQuery.data.bribefile.bribedata.length > 0
+                  }
+                  title={
+                    bribedataQuery.data.bribefile.bribedata.length > 0
+                      ? "Cannot delete: offers exist in this round"
+                      : ""
+                  }
+                >
+                  Delete Round {requestedRound}
+                </Button>
+                {/* Confirm Delete Modal */}
+                <AlertDialog
+                  isOpen={isOpen}
+                  leastDestructiveRef={cancelRef}
+                  onClose={onClose}
+                >
+                  <AlertDialogOverlay>
+                    <AlertDialogContent>
+                      <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                        Delete Round {requestedRound}
+                      </AlertDialogHeader>
+                      <AlertDialogBody>
+                        Are you sure? This will permanently delete round {requestedRound} and cannot be undone.
+                      </AlertDialogBody>
+                      <AlertDialogFooter>
+                        <Button ref={cancelRef} onClick={onClose}>
+                          Cancel
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          onClick={handleDeleteRound}
+                          ml={3}
+                          isLoading={removeBribefile.isLoading}
+                        >
+                          Delete
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialogOverlay>
+                </AlertDialog>
+
               </VStack>
             </HStack>
           </CardBody>
