@@ -1,8 +1,10 @@
 import { Bribedata, Bribefile, Reward, Tokendata } from "types/bribedata.raw";
 import type { Suggestion } from "types/offerSuggestions.trpc";
 import { getSnapshotProposal } from "../externalData/snapshot";
-import { insertBribefile, readOneBribefile } from "utils/database/bribefile.db";
+import { insertBribefile, readOneBribefile, removeBribefile } from "utils/database/bribefile.db";
 import { incPatch, setMajor, setMinor } from "./semVer.helper";
+import type { Config } from "types/config.raw";
+import { setConfigEntry } from "utils/database/config.db";
 
 export async function addRound(payload: Bribefile): Promise<Bribefile | null> {
   try {
@@ -36,6 +38,22 @@ export async function editRound(payload: Bribefile): Promise<Bribefile | null> {
   } catch (error) {
     console.error(error);
     return null;
+  }
+}
+
+export async function deleteRound(round: number): Promise<boolean> {
+  try {
+    //remove bribefile from database
+    const result = await removeBribefile(round);
+    if (!result) return false;
+    // set latest
+    const entry: Config = { name: "latest", data: round - 1 }; // set latest round to previous
+    const newLatest = await setConfigEntry(entry);
+    if (!newLatest) return false;
+    return result;
+  } catch (error) {
+    console.error(error);
+    return false;
   }
 }
 

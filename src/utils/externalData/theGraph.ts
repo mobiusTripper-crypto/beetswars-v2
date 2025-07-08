@@ -4,10 +4,11 @@ import type { RelicCount, RelicList } from "types/theGraph.raw"; // RelicPoolLev
 
 const RELIC_CONTRACT = "0x1ed6411670c709f4e163854654bd52c74e66d7ec";
 
-// const apikey = process.env.THEGRAPH_APIKEY as string;
+const apikey = process.env.THEGRAPH_APIKEY as string;
 
 export async function getBeetsPerBlock(block: number): Promise<number> {
-  const queryUrl = "https://api.studio.thegraph.com/query/73674/masterchefv2/version/latest/";
+  // const queryUrl = "https://api.studio.thegraph.com/query/73674/masterchefv2/version/latest/";
+  const queryUrl = "https://gateway.thegraph.com/api/" + apikey + "/deployments/id/QmUM8aU6H3gFx6JL65GQV5baPPjczU9hUb6VRiDQ1jEp3B";
   const query = gql`
   query {
     masterChefs(first: 1, block:{number: ${block}}) {
@@ -65,7 +66,8 @@ export async function getRelicsFbeetsLocked(
   block: number,
   voterAdresses?: string[]
 ): Promise<number> {
-  const queryUrl = "https://api.studio.thegraph.com/query/73674/mabeets-sonic/version/latest/";
+  // const queryUrl = "https://api.studio.thegraph.com/query/73674/mabeets-sonic/version/latest/";
+  const queryUrl = "https://gateway.thegraph.com/api/" + apikey + "/deployments/id/QmUM8aU6H3gFx6JL65GQV5baPPjczU9hUb6VRiDQ1jEp3B";
   try {
     let allResults: RelicList[] = [];
     const first = 1000;
@@ -167,7 +169,8 @@ export async function getRelicsFbeetsLocked(
 // }
 
 export async function getRelicCount(block: number): Promise<number> {
-  const queryUrl = "https://api.studio.thegraph.com/query/73674/mabeets-sonic/version/latest/";
+  // const queryUrl = "https://api.studio.thegraph.com/query/73674/mabeets-sonic/version/latest/";
+  const queryUrl = "https://gateway.thegraph.com/api/" + apikey + "/deployments/id/QmUM8aU6H3gFx6JL65GQV5baPPjczU9hUb6VRiDQ1jEp3B";
   const query = gql`
   query {
     reliquaries(
