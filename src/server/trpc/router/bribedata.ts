@@ -8,6 +8,7 @@ import {
   addToken,
   deleteOffer,
   deleteToken,
+  deleteRound,
   editOffer,
   editRound,
   editToken,
@@ -71,6 +72,16 @@ export const bribedataRouter = router({
     const result: Bribefile | null = await editRound(input);
     return result;
   }),
+  deleteRound: publicProcedure
+    .input(z.object({ round: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const session = ctx as Session;
+      if (!session.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      const result: boolean = await deleteRound(input.round);
+      return result;
+    }),
   addToken: publicProcedure
     .input(z.object({ payload: Tokendata, round: z.number() }))
     .mutation(async ({ input, ctx }) => {
